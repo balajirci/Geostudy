@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FlagDrill">
+<meta name="theme-color" content="#080d18">
+<title>Flag Drill – Orgs & Regions</title>
+<style>
+:root{
+  --bg:#080d18;--s1:#0f1724;--s2:#19243a;--s3:#1f2d45;--border:#253348;
+  --accent:#00c8f0;--gold:#ffd700;--green:#34d975;--red:#ff453a;
+  --yellow:#ffd60a;--text:#e8f0fa;--muted:#6b85a3;--dim:#3a4f6a;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;height:-webkit-fill-available;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased;overscroll-behavior:none;}
+#app{display:flex;flex-direction:column;height:100%;height:-webkit-fill-available;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom);}
+
+/* HEADER */
+#hdr{background:var(--s1);border-bottom:1px solid var(--border);padding:10px 16px 8px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.logo{font-size:19px;font-weight:800;letter-spacing:1.5px;color:var(--accent);}
+.logo span{color:var(--gold);}
+.hpill{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-family:'SF Mono',Menlo,monospace;display:flex;gap:6px;align-items:center;}
+.hv{color:var(--accent);font-weight:700;}
+.hv.r{color:var(--red);}
+.hv.g{color:var(--gold);}
+
+/* CONTENT */
+#content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
+
+/* BOTTOM NAV */
+#bnav{background:var(--s1);border-top:1px solid var(--border);display:flex;flex-shrink:0;}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 10px;background:transparent;border:none;cursor:pointer;gap:3px;min-height:56px;}
+.nb:active{opacity:.6;}
+.ni{font-size:20px;line-height:1;}
+.nl{font-size:10px;color:var(--muted);font-weight:500;}
+.nb.act .nl{color:var(--accent);font-weight:700;}
+
+/* SCREENS */
+.scr{display:none;padding:14px;min-height:100%;}
+.scr.act{display:block;}
+#s-quiz.act,#s-facts.act{display:flex;flex-direction:column;gap:12px;}
+
+/* CAT PILLS */
+.catrow{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.catrow::-webkit-scrollbar{display:none;}
+.cp{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.cp:active{transform:scale(.95);}
+.cp.act{border-color:var(--accent);color:var(--accent);background:rgba(0,200,240,.1);}
+
+/* FLAG DISPLAY */
+.flag-wrap{background:var(--s1);border:2px solid var(--border);border-radius:18px;padding:20px;display:flex;align-items:center;justify-content:center;transition:border-color .3s,box-shadow .3s;min-height:220px;position:relative;}
+.flag-wrap.cor{border-color:var(--green);box-shadow:0 0 0 3px rgba(52,217,117,.2);}
+.flag-wrap.wrg{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,69,58,.2);}
+.flag-img{max-width:100%;max-height:180px;object-fit:contain;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.5);}
+.flag-loading{color:var(--muted);font-size:14px;text-align:center;}
+.flag-diff{position:absolute;top:12px;right:12px;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;background:var(--s2);border:1px solid var(--border);}
+.diff-1{color:var(--green);}
+.diff-2{color:var(--yellow);}
+.diff-3{color:var(--red);}
+
+/* QUESTION TEXT */
+.q-label{font-size:16px;font-weight:600;text-align:center;color:var(--text);}
+.q-sub{font-size:12px;color:var(--muted);text-align:center;margin-top:4px;}
+
+/* ANSWER OPTIONS GRID */
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.opt{background:var(--s2);border:2px solid var(--border);border-radius:14px;padding:14px 10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);text-align:center;transition:all .15s;line-height:1.4;}
+.opt:active{transform:scale(.95);}
+.opt.correct{background:rgba(52,217,117,.15);border-color:var(--green);color:var(--green);}
+.opt.wrong{background:rgba(255,69,58,.15);border-color:var(--red);color:var(--red);}
+.opt.reveal{background:rgba(52,217,117,.1);border-color:var(--green);color:var(--green);}
+.opt:disabled{pointer-events:none;}
+
+/* RESULT FEEDBACK */
+.feedback{text-align:center;padding:12px;border-radius:12px;background:var(--s2);border:1px solid var(--border);display:none;}
+.feedback.show{display:block;}
+.fb-icon{font-size:28px;margin-bottom:4px;}
+.fb-main{font-size:15px;font-weight:700;}
+.fb-main.g{color:var(--green);}
+.fb-main.r{color:var(--red);}
+.fb-sub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;}
+
+/* NEXT BUTTON */
+.btn-next{background:var(--accent);color:#000;font-size:16px;font-weight:700;height:54px;border-radius:14px;border:none;cursor:pointer;font-family:inherit;width:100%;display:none;}
+.btn-next.show{display:block;}
+.btn-next:active{transform:scale(.97);}
+
+/* SCORE ROW */
+.srow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.sc{background:var(--s2);border-radius:12px;padding:10px 6px;text-align:center;border:1px solid var(--border);}
+.sv{font-size:28px;font-weight:800;line-height:1;}
+.sv.g{color:var(--green);}.sv.r{color:var(--red);}.sv.gold{color:var(--gold);}
+.sl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:3px;}
+
+/* PROGRESS DOTS */
+.pdots{display:flex;gap:3px;flex-wrap:wrap;max-height:28px;overflow:hidden;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .25s;}
+.dot.c{background:var(--green);}
+.dot.w{background:var(--red);}
+.dot.cur{background:var(--accent);animation:pulse .9s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* FACTS MODE */
+.fact-card{background:var(--s1);border:2px solid var(--border);border-radius:18px;overflow:hidden;}
+.fact-flag{display:flex;align-items:center;justify-content:center;padding:20px;background:var(--s2);min-height:180px;}
+.fact-body{padding:16px;}
+.fact-name{font-size:20px;font-weight:800;margin-bottom:4px;}
+.fact-cat{font-size:11px;color:var(--accent);background:rgba(0,200,240,.1);border:1px solid rgba(0,200,240,.3);border-radius:10px;padding:2px 8px;display:inline-block;margin-bottom:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.fact-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.fact-item{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.5;padding:8px 0;border-bottom:1px solid var(--border);}
+.fact-item:last-child{border-bottom:none;}
+.fact-bullet{color:var(--accent);flex-shrink:0;font-size:16px;margin-top:1px;}
+.fact-nav{display:flex;gap:10px;padding:14px;}
+.fn-btn{flex:1;height:50px;border-radius:12px;border:1.5px solid var(--border);background:var(--s2);color:var(--text);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+.fn-btn:active{transform:scale(.95);}
+
+/* PROGRESS BAR */
+.prog-bar-wrap{background:var(--s2);border-radius:8px;padding:12px 14px;}
+.prog-bar-label{font-size:12px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;}
+.prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:3px;transition:width .4s;}
+
+/* HOME SCREEN */
+#s-home{padding:20px;}
+.home-title{font-size:28px;font-weight:800;margin-bottom:4px;}
+.home-sub{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:20px;}
+.home-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;cursor:pointer;}
+.home-card:active{transform:scale(.98);}
+.hc-top{display:flex;gap:12px;align-items:center;margin-bottom:8px;}
+.hc-icon{font-size:28px;}
+.hc-title{font-size:17px;font-weight:700;}
+.hc-sub{font-size:13px;color:var(--muted);line-height:1.5;}
+.hc-pills{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.hc-pill{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:3px 10px;font-size:11px;color:var(--muted);}
+.hc-pill b{color:var(--accent);}
+.start-btn{width:100%;height:54px;background:var(--accent);color:#000;font-size:16px;font-weight:700;border-radius:14px;border:none;cursor:pointer;font-family:inherit;margin-top:8px;}
+.start-btn:active{transform:scale(.97);}
+.start-btn.study{background:var(--s2);color:var(--text);border:1.5px solid var(--border);}
+
+/* FINAL OVERLAY */
+#fov{position:fixed;inset:0;background:rgba(8,13,24,.96);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;padding:24px;padding-top:calc(24px + var(--safe-top));padding-bottom:calc(24px + var(--safe-bottom));}
+#fov.show{display:flex;}
+.ft{font-size:38px;font-weight:800;color:var(--gold);}
+.fp{font-size:72px;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-2px;}
+.fs{color:var(--muted);font-size:14px;max-width:280px;line-height:1.6;}
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:280px;}
+.fc2{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:12px 6px;}
+.fv2{font-size:32px;font-weight:800;}
+.fl2{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:2px;}
+.fbtns{display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px;}
+</style>
+</head>
+<body>
+<script type="application/json" id="FLAG_DATA">[{"name":"United Nations (UN)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_United_Nations.svg?width=400","cat":"org","facts":["Light blue background","World map in white polar projection (centred on North Pole)","Surrounded by two olive branches","Adopted 1947","HQ: New York City"],"diff":1},{"name":"European Union (EU)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Europe.svg?width=400","cat":"org","facts":["Dark blue background","Circle of 12 gold stars (always 12 \u2014 not one per member)","Also the flag of the Council of Europe","Stars represent unity, solidarity, harmony"],"diff":1},{"name":"NATO","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_NATO.svg?width=400","cat":"org","facts":["Dark blue background","White four-pointed compass rose in centre","Circle connecting the four points","Founded 1949","HQ: Brussels, Belgium"],"diff":1},{"name":"African Union (AU)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_African_Union.svg?width=400","cat":"org","facts":["Dark green background","55 gold stars around the border (one per member state)","Gold outline map of Africa in centre","Founded 2002, replacing the OAU","HQ: Addis Ababa, Ethiopia"],"diff":2},{"name":"ASEAN","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_ASEAN.svg?width=400","cat":"org","facts":["Blue background","10 stalks of rice in a circle (one per member state)","Red circle in centre","Founded 1967","HQ: Jakarta, Indonesia"],"diff":2},{"name":"Arab League","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Arab_League.svg?width=400","cat":"org","facts":["Green background","Gold chain of links around the border","Gold crescent and sword in centre","Founded 1945","HQ: Cairo, Egypt"],"diff":2},{"name":"Commonwealth of Nations","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Commonwealth_of_Nations.svg?width=400","cat":"org","facts":["Dark blue background","Globe with spear-like lines forming a letter C","Gold and white design","56 member states","HQ: London, UK"],"diff":2},{"name":"Olympic Movement","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Olympic_flag.svg?width=400","cat":"org","facts":["White background","Five interlocking rings: blue, yellow, black, green, red (left to right)","Designed by Pierre de Coubertin, 1913","Rings represent five continents","No continent is officially assigned to a specific ring"],"diff":1},{"name":"International Red Cross","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Red_Cross.svg?width=400","cat":"org","facts":["White background","Red cross in centre","Reverse of the Swiss flag (tribute to Henri Dunant)","Muslim countries use Red Crescent instead","Founded 1863"],"diff":1},{"name":"Red Crescent","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Red_Crescent.svg?width=400","cat":"org","facts":["White background","Red crescent moon in centre","Used instead of Red Cross in Muslim-majority countries","Recognised 1929 Geneva Convention","Iran previously used Red Lion and Sun"],"diff":2},{"name":"World Health Organization (WHO)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_World_Health_Organization.svg?width=400","cat":"org","facts":["UN light blue background","WHO emblem: Rod of Asclepius (snake on staff) over UN world map","Founded 1948","HQ: Geneva, Switzerland","Agency of the United Nations"],"diff":2},{"name":"UNESCO","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_UNESCO.svg?width=400","cat":"org","facts":["Blue background","UNESCO logo: temple/building with rays above","Full name: UN Educational, Scientific and Cultural Organization","Founded 1945","HQ: Paris, France"],"diff":3},{"name":"OAS (Organization of American States)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Organization_of_American_States.svg?width=400","cat":"org","facts":["White background","OAS seal: flags of member states arranged in circle","35 member states from across the Americas","Founded 1948","HQ: Washington D.C., USA"],"diff":3},{"name":"MERCOSUR","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Mercosur.svg?width=400","cat":"org","facts":["White background","Stars in arc formation representing member states","South American trade bloc","Full name: Southern Common Market","Founded 1991"],"diff":3},{"name":"Gulf Cooperation Council (GCC)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Gulf_Cooperation_Council.svg?width=400","cat":"org","facts":["Green background","GCC symbol: map of Arabian Peninsula in gold circle","6 member states: Saudi Arabia, UAE, Kuwait, Qatar, Bahrain, Oman","Founded 1981","HQ: Riyadh, Saudi Arabia"],"diff":3},{"name":"ECOWAS","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_ECOWAS.svg?width=400","cat":"org","facts":["Green and white design","Map of West Africa","Economic Community of West African States","15 member states","HQ: Abuja, Nigeria"],"diff":3},{"name":"CARICOM","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_CARICOM.svg?width=400","cat":"org","facts":["Blue background","Interlocking C shapes (represent Caribbean Community)","Light blue represents the Caribbean Sea","20 member states and territories","HQ: Georgetown, Guyana"],"diff":3},{"name":"Interpol","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Interpol.svg?width=400","cat":"org","facts":["Light blue background","Globe with sword and olive branch","International Criminal Police Organization","194 member countries","HQ: Lyon, France"],"diff":3},{"name":"Scotland","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Scotland.svg?width=400","cat":"europe","facts":["Blue background","White diagonal cross (Saltire / St. Andrew's Cross)","Oldest flag in the world still in use","St. Andrew is patron saint of Scotland","Also appears in the Union Jack"],"diff":1},{"name":"Wales","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Wales.svg?width=400","cat":"europe","facts":["Red dragon (Y Ddraig Goch) on green and white horizontal halves","Only UK constituent country flag not in the Union Jack","Dragon represents the Welsh people","Green = grass, White = snow on mountains"],"diff":1},{"name":"England","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_England.svg?width=400","cat":"europe","facts":["White background","Red cross of St. George","Used since the 13th century","Forms the base of the Union Jack","St. George is patron saint of England"],"diff":1},{"name":"Catalonia (Spain)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Catalonia.svg?width=400","cat":"europe","facts":["Yellow background (gold)","Four horizontal red stripes","Called La Senyera","One of the oldest flags in Europe","Capital: Barcelona"],"diff":2},{"name":"Basque Country (Spain/France)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Basque_Country.svg?width=400","cat":"europe","facts":["Red background","White diagonal cross overlaid by green diagonal cross (similar to Union Jack pattern)","Called Ikurrina","Designed 1894","Spans northern Spain and southwestern France"],"diff":2},{"name":"Brittany (France)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Brittany.svg?width=400","cat":"europe","facts":["Black and white horizontal stripes","Black ermine symbols (small shapes) in top-left canton","Called Gwenn-ha-Du (White and Black)","Designed 1925","Northwestern France"],"diff":2},{"name":"Corsica (France)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Corsica.svg?width=400","cat":"europe","facts":["White background","Black Moor's head (profile) with white bandana across forehead","Called T\u00eate de Maure","Similar to flags of Sardinia (four Moor's heads)","Mediterranean island, birthplace of Napoleon"],"diff":2},{"name":"Sicily (Italy)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Sicily.svg?width=400","cat":"europe","facts":["Diagonal red and yellow halves","Trinacria in centre: three running legs, Medusa head with wheat ears","Trinacria = three-legged symbol representing the island's triangular shape","Oldest flag with mythological symbolism still in use","Largest island in the Mediterranean"],"diff":2},{"name":"Bavaria (Germany)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Bavaria_(lozengy).svg?width=400","cat":"europe","facts":["Blue and white diamond (lozenge) pattern","Called the Rautenflagge","Diamonds arranged in rows across the whole flag","Most populous German state","Capital: Munich"],"diff":2},{"name":"Greenland","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Greenland.svg?width=400","cat":"europe","facts":["White top half, red bottom half","Large circle offset to the left: top half red, bottom half white","Called Erfalasorput (Our Flag)","Adopted 1985","Territory of Denmark; world's largest island"],"diff":1},{"name":"Faroe Islands (Denmark)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Faroe_Islands.svg?width=400","cat":"europe","facts":["White background","Red Nordic cross with blue outline","Called Merki\u00f0","Nordic cross offset to the left (like all Nordic flags)","North Atlantic archipelago between Norway, Iceland, and Scotland"],"diff":2},{"name":"Kosovo","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Kosovo.svg?width=400","cat":"europe","facts":["Blue background","Gold outline map of Kosovo","Six white stars above the map (representing six ethnic groups)","Declared independence from Serbia in 2008","Partially recognised \u2014 about 100 UN member states recognise it"],"diff":2},{"name":"Gibraltar","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Gibraltar.svg?width=400","cat":"europe","facts":["White top half, red bottom half","Red three-towered castle in the white half","Gold key hanging from castle gate","British Overseas Territory","Strategically located at entrance to Mediterranean"],"diff":3},{"name":"Isle of Man","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Isle_of_Man.svg?width=400","cat":"europe","facts":["Red background","Triskelion: three armoured legs joined at thigh, with spurs","Called the Three Legs of Man","British Crown Dependency","Similar three-leg symbol to Sicily's Trinacria"],"diff":3},{"name":"Sardinia (Italy)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Sardinia.svg?width=400","cat":"europe","facts":["White background divided by red cross into four quadrants","Each quadrant contains a Moor's head (facing left, with white blindfold)","Four Moor's heads = the four Moorish kings defeated by Sardinian defenders","Called the Four Moors flag","Second largest island in the Mediterranean"],"diff":3},{"name":"Flanders (Belgium)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Vlag_van_het_Vlaamse_Gewest.svg?width=400","cat":"europe","facts":["Black background","Yellow lion rampant (with red claws and tongue)","Called the Vlaamse Leeuw (Flemish Lion)","Dutch-speaking northern region of Belgium","Economically the wealthier of Belgium's regions"],"diff":3},{"name":"Quebec (Canada)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Quebec.svg?width=400","cat":"americas","facts":["Blue background divided into four quadrants by white cross","White fleur-de-lis in each quadrant","Called the fleurdelis\u00e9","Adopted 1948","French-speaking province; largest by area in Canada"],"diff":1},{"name":"Puerto Rico (USA)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Puerto_Rico.svg?width=400","cat":"americas","facts":["Five horizontal stripes: three red, two white","Blue equilateral triangle on left with white five-pointed star","Same design as Cuba but triangle is blue (Cuba's is red)","US territory since 1898","Capital: San Juan"],"diff":2},{"name":"Aruba (Netherlands)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Aruba.svg?width=400","cat":"americas","facts":["Light blue background","Two narrow yellow horizontal stripes near the bottom","Four-pointed red star with white outline in upper left","Constituent country of the Kingdom of the Netherlands","Located off the coast of Venezuela"],"diff":2},{"name":"Cura\u00e7ao (Netherlands)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Cura%C3%A7ao.svg?width=400","cat":"americas","facts":["Blue background","Yellow horizontal stripe near the bottom","Two white five-pointed stars in upper left","Two stars represent Cura\u00e7ao and Klein Cura\u00e7ao","Constituent country of the Kingdom of the Netherlands"],"diff":3},{"name":"Bermuda (UK)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Bermuda.svg?width=400","cat":"americas","facts":["Red ensign (red background)","Union Jack in upper left canton","Bermuda coat of arms on right: British lion holding shield showing sinking ship","British Overseas Territory in the North Atlantic","Northernmost coral ecosystem in the world"],"diff":3},{"name":"Cayman Islands (UK)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Cayman_Islands.svg?width=400","cat":"americas","facts":["Blue ensign","Union Jack in upper left","Coat of arms: three stars on waves, lion above, pineapple and turtle","Three stars = three islands (Grand Cayman, Cayman Brac, Little Cayman)","British Overseas Territory; major offshore financial centre"],"diff":3},{"name":"Hong Kong (China SAR)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Hong_Kong.svg?width=400","cat":"asia","facts":["Red background","White stylised bauhinia flower in centre","Flower has five petals, each with a red star-tipped stripe","Special Administrative Region of China since 1997","Bauhinia blakeana is Hong Kong's city flower"],"diff":1},{"name":"Macau (China SAR)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Macau.svg?width=400","cat":"asia","facts":["Green background","White lotus flower above white bridge and water","Five gold stars (one large, four small \u2014 same as China's flag)","Special Administrative Region of China since 1999","Was a Portuguese colony"],"diff":2},{"name":"Taiwan (Republic of China)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Republic_of_China.svg?width=400","cat":"asia","facts":["Red background","Blue canton (top left) with white sun \u2014 12-rayed sun","12 rays represent 12 months and the 12 traditional Chinese hours","Red = Han Chinese people, Blue = sky and freedom, White = sun and equality","Often tested as the flag of a Chinese-administered territory"],"diff":1},{"name":"Palestine","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Palestine.svg?width=400","cat":"asia","facts":["Three horizontal bands: black, white, green","Red triangle on the left (hoist side)","Pan-Arab colours","Adopted by the PLO in 1964","Observer state at the United Nations since 2012"],"diff":2},{"name":"Tibet (Snow Lion flag)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Tibet.svg?width=400","cat":"asia","facts":["Blue and red stripes radiating from snowy mountain","Two snow lions facing Dharma wheel (sun with yin-yang)","Used by Tibetan government-in-exile (Dharamsala, India)","Banned in China","Snow lion = national symbol of Tibet"],"diff":2},{"name":"Kurdistan Region (Iraq)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Kurdistan.svg?width=400","cat":"asia","facts":["Three horizontal bands: red, white, green","Gold sun with 21 rays in the centre","21 rays = 21 March (Nowruz, Kurdish New Year)","Autonomous region in northern Iraq","Kurdish people also live in Turkey, Iran, and Syria"],"diff":3},{"name":"French Polynesia (France)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_French_Polynesia.svg?width=400","cat":"asia","facts":["Three horizontal bands: red, white, red (wide)","In the centre: a traditional double-hulled canoe on waves","Five people in the canoe representing five island groups","Over 100 islands in the South Pacific","Capital: Papeete (on the island of Tahiti)"],"diff":3},{"name":"Guam (USA)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Guam.svg?width=400","cat":"asia","facts":["Dark blue background with narrow red border","Oval coat of arms in centre: proa (sailboat) on water with a coconut palm and the word GUAM","US territory in the western Pacific","Largest island in Micronesia","Strategically important US military base"],"diff":3},{"name":"New Caledonia (France)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_New_Caledonia.svg?width=400","cat":"asia","facts":["Unofficial indigenous flag: three horizontal bands blue, red, green with yellow disc and black symbol (Kanak flag)","French territory uses the French tricolour officially","Located in the South Pacific near Australia","Has one of the world's largest nickel reserves","Capital: Noum\u00e9a"],"diff":3},{"name":"Western Sahara (SADR)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Sahrawi_Arab_Democratic_Republic.svg?width=400","cat":"africa","facts":["Three horizontal bands: black, white, green","Red triangle on left","White crescent and star in centre","Pan-Arab colours","Disputed territory \u2014 Morocco controls most of it; SADR claims it all"],"diff":2},{"name":"Somaliland","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Somaliland.svg?width=400","cat":"africa","facts":["Three horizontal bands: green, white, red","Green band has the Shahada (Islamic declaration of faith) in Arabic","White band has a black star","Self-declared republic \u2014 not internationally recognised","Broke away from Somalia in 1991"],"diff":3},{"name":"Azores (Portugal)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Azores.svg?width=400","cat":"africa","facts":["Blue background on right two-thirds, white vertical stripe on left","Nine yellow stars on the blue background (one per island)","Goshawk (A\u00e7or bird) on the white stripe \u2014 name means 'goshawks'","Portuguese autonomous region in the North Atlantic","Capital: Ponta Delgada"],"diff":3},{"name":"Canary Islands (Spain)","img":"https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Canary_Islands.svg?width=400","cat":"africa","facts":["Three vertical bands: white, white, white (plain white flag)","Coat of arms shows seven green islands with a dog on each side","Name comes from Latin Canariae Insulae (Island of Dogs)","Spanish autonomous community in the Atlantic off northwest Africa","Has two capitals: Las Palmas de Gran Canaria and Santa Cruz de Tenerife"],"diff":3}]</script>
+
+<div id="app">
+  <div id="hdr">
+    <div class="logo">FLAG<span>DRILL</span></div>
+    <div class="hpill">
+      <span class="hv" id="hc">0</span>/<span class="hv r" id="hw">0</span>
+      <span style="color:var(--dim)">·</span>
+      <span class="hv g" id="hp">—</span>
+    </div>
+  </div>
+
+  <div id="content">
+
+    <!-- HOME -->
+    <div class="scr act" id="s-home">
+      <div class="home-title">🏳️ Flag Drill</div>
+      <div class="home-sub">53 flags of international organisations and autonomous regions. Specifically the flags Abhinav doesn't already know — not countries.</div>
+
+      <div class="home-card" onclick="startQuiz('all')">
+        <div class="hc-top"><span class="hc-icon">⚡</span><div><div class="hc-title">Visual Quiz — All Flags</div></div></div>
+        <div class="hc-sub">See the flag, pick the name from 4 options. Shuffled every session.</div>
+        <div class="hc-pills">
+          <div class="hc-pill"><b>53</b> flags</div>
+          <div class="hc-pill">Multiple choice</div>
+          <div class="hc-pill">All categories</div>
+        </div>
+        <button class="start-btn" onclick="event.stopPropagation();startQuiz('all')">Start Quiz — All 53</button>
+      </div>
+
+      <div class="home-card" onclick="startQuiz('org')">
+        <div class="hc-top"><span class="hc-icon">🌐</span><div><div class="hc-title">Organisations Only</div></div></div>
+        <div class="hc-sub">UN, EU, NATO, AU, ASEAN, Arab League, Commonwealth, Olympics and more.</div>
+        <div class="hc-pills"><div class="hc-pill"><b>18</b> org flags</div><div class="hc-pill">High exam frequency</div></div>
+        <button class="start-btn" onclick="event.stopPropagation();startQuiz('org')">Start — Organisations</button>
+      </div>
+
+      <div class="home-card" onclick="startQuiz('europe')">
+        <div class="hc-top"><span class="hc-icon">🇪🇺</span><div><div class="hc-title">European Regions</div></div></div>
+        <div class="hc-sub">Scotland, Wales, Catalonia, Corsica, Sicily, Bavaria, Kosovo, Greenland and more.</div>
+        <div class="hc-pills"><div class="hc-pill"><b>16</b> flags</div><div class="hc-pill">Europe</div></div>
+        <button class="start-btn" onclick="event.stopPropagation();startQuiz('europe')">Start — Europe</button>
+      </div>
+
+      <div class="home-card" onclick="startQuiz('americas')">
+        <div class="hc-top"><span class="hc-icon">🌎</span><div><div class="hc-title">Americas Territories</div></div></div>
+        <div class="hc-sub">Quebec, Puerto Rico, Aruba, Curaçao, Bermuda, Cayman Islands.</div>
+        <div class="hc-pills"><div class="hc-pill"><b>6</b> flags</div><div class="hc-pill">Americas</div></div>
+        <button class="start-btn" onclick="event.stopPropagation();startQuiz('americas')">Start — Americas</button>
+      </div>
+
+      <div class="home-card" onclick="startQuiz('asia')">
+        <div class="hc-top"><span class="hc-icon">🌏</span><div><div class="hc-title">Asia / Pacific Territories</div></div></div>
+        <div class="hc-sub">Hong Kong, Macau, Taiwan, Palestine, Tibet, Kurdistan, French Polynesia, Guam.</div>
+        <div class="hc-pills"><div class="hc-pill"><b>9</b> flags</div><div class="hc-pill">Asia & Pacific</div></div>
+        <button class="start-btn" onclick="event.stopPropagation();startQuiz('asia')">Start — Asia/Pacific</button>
+      </div>
+
+      <div class="home-card" onclick="showFacts()">
+        <div class="hc-top"><span class="hc-icon">📖</span><div><div class="hc-title">Study Mode — Flag Facts</div></div></div>
+        <div class="hc-sub">See every flag with key facts: what the symbols mean, colours represent, history. Essential for verbal questions.</div>
+        <div class="hc-pills"><div class="hc-pill">All 53 flags</div><div class="hc-pill">With facts</div><div class="hc-pill">Swipe through</div></div>
+        <button class="start-btn study" onclick="event.stopPropagation();showFacts()">Browse Flag Facts</button>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="scr" id="s-quiz">
+      <div class="prog-bar-wrap">
+        <div class="prog-bar-label">
+          <span id="q-num">Q 1 / 53</span>
+          <span id="q-cat-tag" style="color:var(--accent)">—</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      </div>
+
+      <div class="flag-wrap" id="flag-wrap">
+        <div class="flag-loading" id="flag-loading">Loading flag…</div>
+        <img id="flag-img" class="flag-img" style="display:none" alt="flag" onload="flagLoaded()" onerror="flagError()">
+        <div class="flag-diff" id="flag-diff"></div>
+      </div>
+
+      <div class="q-label">What is this flag?</div>
+
+      <div class="options" id="options"></div>
+
+      <div class="feedback" id="feedback">
+        <div class="fb-icon" id="fb-icon">✅</div>
+        <div class="fb-main" id="fb-main"></div>
+        <div class="fb-sub" id="fb-sub"></div>
+      </div>
+
+      <div class="srow">
+        <div class="sc"><div class="sv g" id="sc-c">0</div><div class="sl">Correct</div></div>
+        <div class="sc"><div class="sv r" id="sc-w">0</div><div class="sl">Wrong</div></div>
+        <div class="sc"><div class="sv gold" id="sc-p">—</div><div class="sl">Accuracy</div></div>
+      </div>
+
+      <div class="pdots" id="pdots"></div>
+
+      <button class="btn-next" id="btn-next" onclick="nextQ()">Next Flag →</button>
+    </div>
+
+    <!-- FACTS -->
+    <div class="scr" id="s-facts">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;color:var(--muted);font-family:'SF Mono',Menlo,monospace" id="fact-num">1 / 53</span>
+        <span style="font-size:10px;color:var(--accent);background:rgba(0,200,240,.1);border:1px solid rgba(0,200,240,.3);border-radius:10px;padding:2px 8px;font-weight:600;text-transform:uppercase" id="fact-cat-tag">—</span>
+      </div>
+
+      <div class="fact-card">
+        <div class="fact-flag">
+          <img id="fact-img" class="flag-img" style="max-height:160px" alt="flag">
+        </div>
+        <div class="fact-body">
+          <div class="fact-name" id="fact-name">—</div>
+          <div id="fact-cat" class="fact-cat">—</div>
+          <ul class="fact-list" id="fact-list"></ul>
+        </div>
+      </div>
+
+      <div class="fact-nav">
+        <button class="fn-btn" onclick="factPrev()">← Prev</button>
+        <button class="fn-btn" onclick="factNext()">Next →</button>
+      </div>
+
+      <div class="catrow" style="padding:0 0 8px">
+        <button class="cp act" onclick="setFactCat('all')" id="fcp-all">All (53)</button>
+        <button class="cp" onclick="setFactCat('org')" id="fcp-org">🌐 Orgs (18)</button>
+        <button class="cp" onclick="setFactCat('europe')" id="fcp-europe">🇪🇺 Europe (16)</button>
+        <button class="cp" onclick="setFactCat('americas')" id="fcp-americas">🌎 Americas (6)</button>
+        <button class="cp" onclick="setFactCat('asia')" id="fcp-asia">🌏 Asia/Pacific (9)</button>
+        <button class="cp" onclick="setFactCat('africa')" id="fcp-africa">🌍 Africa (4)</button>
+      </div>
+
+      <button class="start-btn" onclick="startQuizFromFacts()" style="margin-top:4px">⚡ Quiz This Category</button>
+    </div>
+
+  </div>
+
+  <div id="bnav">
+    <button class="nb act" id="nb-home" onclick="showTab('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
+    <button class="nb" id="nb-quiz" onclick="showTab('quiz')"><span class="ni">⚡</span><span class="nl">Quiz</span></button>
+    <button class="nb" id="nb-facts" onclick="showFacts()"><span class="ni">📖</span><span class="nl">Study</span></button>
+  </div>
+</div>
+
+<div id="fov">
+  <div class="ft">Quiz Done!</div>
+  <div class="fp" id="fpct">0%</div>
+  <div class="fs" id="fsub">—</div>
+  <div class="fg">
+    <div class="fc2"><div class="fv2" style="color:var(--green)" id="fcor">0</div><div class="fl2">Correct</div></div>
+    <div class="fc2"><div class="fv2" style="color:var(--red)" id="fwrg">0</div><div class="fl2">Wrong</div></div>
+    <div class="fc2"><div class="fv2" style="color:var(--gold)" id="ftot">0</div><div class="fl2">Total</div></div>
+  </div>
+  <div class="fbtns">
+    <button class="start-btn" onclick="restartQuiz()">Play Again</button>
+    <button class="start-btn study" onclick="hideFinal();showTab('home')">Back to Home</button>
+  </div>
+</div>
+
+<script>
+const FLAGS = JSON.parse(document.getElementById('FLAG_DATA').textContent);
+
+// State
+let qs=[],idx=0,curQ=null;
+let sC=0,sW=0;
+let dots=[];
+let answered=false;
+let curCat='all';
+let factQs=[],factIdx=0,factCat='all';
+
+const $=id=>document.getElementById(id);
+const sv=(id,v)=>{const e=$(id);if(e)e.textContent=v;};
+
+const CAT_LABELS={'org':'🌐 Org','europe':'🇪🇺 Europe','americas':'🌎 Americas','asia':'🌏 Asia','africa':'🌍 Africa','all':'All'};
+const DIFF_LABELS={1:'Easy',2:'Medium',3:'Hard'};
+const DIFF_CLS={1:'diff-1',2:'diff-2',3:'diff-3'};
+
+function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function getPool(cat){
+  if(cat==='all') return shuf([...FLAGS]);
+  return shuf(FLAGS.filter(f=>f.cat===cat));
+}
+
+// ── TABS ──
+function showTab(t){
+  ['home','quiz','facts'].forEach(x=>{
+    $('s-'+x).classList.remove('act');
+    $('nb-'+x).classList.remove('act');
+  });
+  $('s-'+t).classList.add('act');
+  $('nb-'+t).classList.add('act');
+}
+
+// ── QUIZ ──
+function startQuiz(cat){
+  curCat=cat;
+  qs=getPool(cat); idx=0; sC=0; sW=0; answered=false;
+  updHdr(); buildDots();
+  showTab('quiz');
+  loadQ();
+}
+
+function buildDots(){
+  const el=$('pdots'); el.innerHTML=''; dots=[];
+  const max=Math.min(qs.length,53);
+  for(let i=0;i<max;i++){
+    const d=document.createElement('div');
+    d.className='dot'+(i===0?' cur':'');
+    el.appendChild(d); dots.push(d);
+  }
+}
+function markDot(i,cls){
+  if(i<dots.length){dots[i].className='dot '+cls;if(i+1<dots.length)dots[i+1].classList.add('cur');}
+}
+
+function loadQ(){
+  if(idx>=qs.length){showFinal();return;}
+  curQ=qs[idx]; answered=false;
+  sv('q-num','Q '+(idx+1)+' / '+qs.length);
+  sv('q-cat-tag',CAT_LABELS[curQ.cat]||curQ.cat);
+  $('prog-fill').style.width=((idx/qs.length)*100)+'%';
+  
+  // Difficulty badge
+  const dEl=$('flag-diff');
+  dEl.textContent=DIFF_LABELS[curQ.diff]||'';
+  dEl.className='flag-diff '+(DIFF_CLS[curQ.diff]||'');
+  
+  // Flag image
+  $('flag-wrap').className='flag-wrap';
+  $('flag-loading').style.display='block';
+  $('flag-img').style.display='none';
+  $('flag-img').src=curQ.img;
+  
+  // Feedback
+  $('feedback').className='feedback';
+  $('btn-next').className='btn-next';
+  
+  // Build options: 1 correct + 3 wrong
+  const correct=curQ.name;
+  const others=FLAGS.filter(f=>f.name!==correct);
+  const wrong=shuf(others).slice(0,3).map(f=>f.name);
+  const opts=shuf([correct,...wrong]);
+  
+  const el=$('options'); el.innerHTML='';
+  opts.forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.textContent=opt;
+    b.onclick=()=>selectOpt(b,opt,correct);
+    el.appendChild(b);
+  });
+}
+
+function flagLoaded(){
+  $('flag-loading').style.display='none';
+  $('flag-img').style.display='block';
+}
+function flagError(){
+  $('flag-loading').textContent='⚠ Image unavailable (needs internet)';
+}
+
+function selectOpt(btn,chosen,correct){
+  if(answered) return;
+  answered=true;
+  const ok=chosen===correct;
+  if(ok){sC++;markDot(idx,'c');}
+  else{sW++;markDot(idx,'w');}
+  updHdr();
+  
+  // Style buttons
+  document.querySelectorAll('.opt').forEach(b=>{
+    if(b.textContent===correct) b.className='opt reveal';
+    else if(b===btn&&!ok) b.className='opt wrong';
+    else b.className='opt';
+    b.disabled=true;
+  });
+  
+  // Highlight question card
+  $('flag-wrap').className='flag-wrap '+(ok?'cor':'wrg');
+  
+  // Feedback
+  const fb=$('feedback');
+  $('fb-icon').textContent=ok?'✅':'❌';
+  $('fb-main').textContent=ok?'Correct!':'Wrong';
+  $('fb-main').className='fb-main '+(ok?'g':'r');
+  // Show a key fact
+  const fact=curQ.facts[0]||'';
+  $('fb-sub').textContent=ok?'Key fact: '+fact:'Answer: '+correct+'. '+fact;
+  fb.className='feedback show';
+  
+  $('btn-next').className='btn-next show';
+}
+
+function nextQ(){idx++;loadQ();}
+
+function updHdr(){
+  const tot=sC+sW;
+  const pct=tot>0?Math.round(sC/tot*100)+'%':'—';
+  sv('hc',sC); sv('hw',sW); sv('hp',pct);
+  sv('sc-c',sC); sv('sc-w',sW); sv('sc-p',pct);
+}
+
+function showFinal(){
+  const tot=sC+sW;
+  const pct=tot>0?Math.round(sC/tot*100):0;
+  sv('fpct',pct+'%');
+  const g=pct>=90?'🏆 Excellent! Competition ready.':pct>=75?'⭐ Strong — a few more passes':pct>=60?'📈 Good progress — keep drilling':pct>=45?'💪 Getting there — review the facts too':'🔄 Start with Study Mode first';
+  sv('fsub',sC+' correct of '+tot+'. '+g);
+  sv('fcor',sC); sv('fwrg',sW); sv('ftot',tot);
+  $('fov').classList.add('show');
+}
+function hideFinal(){$('fov').classList.remove('show');}
+function restartQuiz(){hideFinal();startQuiz(curCat);}
+
+// ── FACTS ──
+function showFacts(){
+  setFactCat('all');
+  showTab('facts');
+  $('nb-facts').classList.add('act');
+}
+
+function setFactCat(cat){
+  factCat=cat;
+  factQs=cat==='all'?[...FLAGS]:FLAGS.filter(f=>f.cat===cat);
+  factIdx=0;
+  document.querySelectorAll('#s-facts .catrow .cp').forEach(b=>b.classList.remove('act'));
+  $('fcp-'+(cat==='all'?'all':cat)).classList.add('act');
+  showFactCard();
+}
+
+function showFactCard(){
+  if(!factQs.length) return;
+  if(factIdx>=factQs.length) factIdx=0;
+  if(factIdx<0) factIdx=factQs.length-1;
+  const f=factQs[factIdx];
+  $('fact-img').src=f.img;
+  sv('fact-name',f.name);
+  $('fact-cat').textContent=CAT_LABELS[f.cat]||f.cat;
+  sv('fact-num',(factIdx+1)+' / '+factQs.length);
+  sv('fact-cat-tag',CAT_LABELS[f.cat]||f.cat);
+  const list=$('fact-list');
+  list.innerHTML=f.facts.map(fact=>`<li class="fact-item"><span class="fact-bullet">◆</span><span>${fact}</span></li>`).join('');
+}
+
+function factNext(){factIdx++;showFactCard();}
+function factPrev(){factIdx--;showFactCard();}
+
+function startQuizFromFacts(){
+  startQuiz(factCat==='all'?'all':factCat);
+}
+
+// Keyboard
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'){e.preventDefault();
+    const qActive=$('s-quiz').classList.contains('act');
+    const fActive=$('s-facts').classList.contains('act');
+    if(qActive&&answered) nextQ();
+    else if(fActive) factNext();
+  }
+  if((e.key==='ArrowRight')&&$('s-facts').classList.contains('act')) factNext();
+  if((e.key==='ArrowLeft')&&$('s-facts').classList.contains('act')) factPrev();
+});
+
+// iOS scroll fix
+document.addEventListener('touchmove',e=>{if(e.target.closest('#content'))return;e.preventDefault();},{passive:false});
+</script>
+</body>
+</html>
