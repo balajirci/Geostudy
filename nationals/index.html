@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canadian Geographic Challenge – National Finals Study Guide</title>
+<style>
+  :root {
+    --red: #A32D2D;
+    --maple: #CC2929;
+    --gold: #BA7517;
+    --teal: #0F6E56;
+    --blue: #185FA5;
+    --green: #3B6D11;
+    --bg: #FAFAF9;
+    --card: #ffffff;
+    --border: #D3D1C7;
+    --text: #2C2C2A;
+    --muted: #5F5E5A;
+    --light: #F1EFE8;
+    --accent-bg: #EAEFFB;
+    --tag-r: #FCEBEB;
+    --tag-rt: #A32D2D;
+    --tag-g: #EAF3DE;
+    --tag-gt: #3B6D11;
+    --tag-b: #E6F1FB;
+    --tag-bt: #185FA5;
+    --tag-a: #FAEEDA;
+    --tag-at: #854F0B;
+    --tag-t: #E1F5EE;
+    --tag-tt: #0F6E56;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.75; }
+  
+  /* HEADER */
+  .header { background: var(--maple); color: white; padding: 2.5rem 2rem 2rem; text-align: center; position: relative; }
+  .header::after { content: '🍁'; font-size: 48px; display: block; margin-top: 0.5rem; }
+  .header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 0.5rem; }
+  .header .subtitle { font-size: 1rem; opacity: 0.9; font-style: italic; }
+  .header .badge { display: inline-block; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 4px 16px; font-size: 0.8rem; margin-top: 0.75rem; letter-spacing: 0.5px; }
+
+  /* NAV */
+  .toc { background: #fff; border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; flex-wrap: wrap; gap: 8px; position: sticky; top: 0; z-index: 100; }
+  .toc a { font-size: 12px; font-family: Arial, sans-serif; color: var(--maple); text-decoration: none; padding: 4px 10px; border: 1px solid #F7C1C1; border-radius: 12px; background: #FCEBEB; white-space: nowrap; }
+  .toc a:hover { background: var(--maple); color: white; }
+
+  /* LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  
+  /* SECTION */
+  .section { margin-bottom: 3rem; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--maple); }
+  .section-icon { font-size: 24px; }
+  .section-title { font-size: 1.4rem; color: var(--maple); font-weight: 700; }
+  .section-num { font-size: 0.75rem; background: var(--maple); color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-family: Arial, sans-serif; font-weight: 700; flex-shrink: 0; }
+  
+  /* ALERT BOX */
+  .alert { background: #FAEEDA; border-left: 4px solid var(--gold); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin: 1rem 0 1.5rem; font-size: 0.9rem; font-family: Arial, sans-serif; }
+  .alert strong { color: var(--gold); }
+  .alert.blue { background: var(--accent-bg); border-color: var(--blue); }
+  .alert.blue strong { color: var(--blue); }
+  .alert.green { background: #EAF3DE; border-color: var(--green); }
+  .alert.green strong { color: var(--green); }
+  .alert.red { background: #FCEBEB; border-color: var(--red); }
+  .alert.red strong { color: var(--red); }
+
+  /* CARDS GRID */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.25rem; }
+  .card h3 { font-size: 0.95rem; color: var(--maple); margin-bottom: 0.5rem; font-family: Arial, sans-serif; font-weight: 700; }
+  .card p, .card li { font-size: 0.875rem; color: var(--text); font-family: Arial, sans-serif; line-height: 1.6; }
+  .card ul { padding-left: 1.1rem; }
+  .card ul li { margin-bottom: 3px; }
+  .card.teal-accent { border-top: 3px solid var(--teal); }
+  .card.red-accent { border-top: 3px solid var(--maple); }
+  .card.blue-accent { border-top: 3px solid var(--blue); }
+  .card.gold-accent { border-top: 3px solid var(--gold); }
+  .card.green-accent { border-top: 3px solid var(--green); }
+
+  /* TOPIC TABLE */
+  .topic-table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-family: Arial, sans-serif; font-size: 0.875rem; }
+  .topic-table th { background: var(--maple); color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+  .topic-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .topic-table tr:nth-child(even) { background: var(--light); }
+  .topic-table tr:hover { background: #F5C4B360; }
+  .topic-table .priority { font-weight: 700; }
+  .priority-high { color: var(--red); }
+  .priority-med { color: var(--gold); }
+  .priority-low { color: var(--teal); }
+
+  /* TAG */
+  .tag { display: inline-block; font-size: 10px; font-family: Arial, sans-serif; font-weight: 700; border-radius: 10px; padding: 2px 8px; margin: 2px 2px 2px 0; letter-spacing: 0.3px; }
+  .tag-r { background: var(--tag-r); color: var(--tag-rt); }
+  .tag-g { background: var(--tag-g); color: var(--tag-gt); }
+  .tag-b { background: var(--tag-b); color: var(--tag-bt); }
+  .tag-a { background: var(--tag-a); color: var(--tag-at); }
+  .tag-t { background: var(--tag-t); color: var(--tag-tt); }
+
+  /* DEEP DIVE */
+  .deep { background: white; border: 1px solid var(--border); border-radius: 10px; margin: 1rem 0; overflow: hidden; }
+  .deep-head { background: var(--light); padding: 0.85rem 1.25rem; font-family: Arial, sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+  .deep-body { padding: 1rem 1.25rem; font-family: Arial, sans-serif; font-size: 0.875rem; line-height: 1.7; }
+  .deep-body p { margin-bottom: 0.75rem; }
+  .deep-body ul { padding-left: 1.2rem; margin-bottom: 0.75rem; }
+  .deep-body li { margin-bottom: 4px; }
+  .deep-body h4 { color: var(--maple); font-size: 0.875rem; margin: 0.75rem 0 0.4rem; font-weight: 700; }
+  .deep-body table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+  .deep-body table th { background: var(--light); padding: 6px 10px; font-weight: 700; text-align: left; font-size: 0.8rem; }
+  .deep-body table td { padding: 6px 10px; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+
+  /* QUIZ BOX */
+  .quiz-box { background: #EAEFFB; border-radius: 10px; padding: 1.1rem 1.25rem; margin: 1rem 0; font-family: Arial, sans-serif; font-size: 0.875rem; }
+  .quiz-box h4 { color: var(--blue); font-size: 0.9rem; margin-bottom: 0.75rem; font-weight: 700; }
+  .quiz-q { margin-bottom: 0.6rem; font-weight: 600; color: var(--text); }
+  .quiz-a { color: var(--muted); font-size: 0.82rem; margin-bottom: 0.75rem; margin-left: 0.5rem; font-style: italic; }
+
+  /* FIELDWORK */
+  .fieldwork-steps { counter-reset: step; list-style: none; padding: 0; margin: 1rem 0; }
+  .fieldwork-steps li { counter-increment: step; display: flex; gap: 12px; margin-bottom: 1rem; align-items: flex-start; font-family: Arial, sans-serif; font-size: 0.875rem; }
+  .fieldwork-steps li::before { content: counter(step); background: var(--teal); color: white; border-radius: 50%; width: 24px; height: 24px; min-width: 24px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; margin-top: 2px; }
+  .fieldwork-steps li strong { display: block; color: var(--text); font-weight: 700; }
+
+  /* PROVINCE TABLE */
+  .prov-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin: 1rem 0; font-family: Arial, sans-serif; font-size: 0.8rem; }
+  .prov-card { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; background: white; }
+  .prov-card .prov-name { font-weight: 700; color: var(--maple); font-size: 0.85rem; margin-bottom: 4px; }
+  .prov-card .prov-cap { color: var(--muted); }
+  .prov-card .prov-facts { color: var(--text); margin-top: 4px; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 2rem; margin: 1rem 0; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .tl-item { position: relative; margin-bottom: 1.25rem; font-family: Arial, sans-serif; font-size: 0.875rem; }
+  .tl-item::before { content: ''; position: absolute; left: -1.85rem; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--maple); }
+  .tl-item strong { display: block; color: var(--text); font-weight: 700; }
+
+  /* RESOURCES */
+  .resource-list { list-style: none; padding: 0; margin: 0.75rem 0; }
+  .resource-list li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--border); font-family: Arial, sans-serif; font-size: 0.875rem; }
+  .resource-list li:last-child { border-bottom: none; }
+  .resource-icon { font-size: 16px; min-width: 20px; }
+  .resource-list a { color: var(--blue); font-weight: 600; }
+  .resource-list .rdesc { color: var(--muted); font-size: 0.8rem; display: block; }
+
+  /* STUDY PLAN */
+  .week-plan { display: grid; grid-template-columns: 100px 1fr; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1rem 0; font-family: Arial, sans-serif; font-size: 0.875rem; }
+  .week-label { background: var(--maple); color: white; padding: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.8rem; line-height: 1.3; border-bottom: 1px solid #cc4444; }
+  .week-content { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .week-label:last-of-type, .week-content:last-of-type { border-bottom: none; }
+  .week-content ul { padding-left: 1rem; }
+  .week-content li { margin-bottom: 3px; }
+
+  /* PRINT */
+  @media print {
+    .toc { display: none; }
+    .header { background: #CC2929 !important; -webkit-print-color-adjust: exact; }
+    .section { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.4rem; }
+    .toc { display: none; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Canadian Geographic Challenge<br>National Finals — Complete Study Guide</h1>
+  <div class="subtitle">Prepared for a National Finalist — Written Test · Fieldwork · Live Trivia</div>
+  <div class="badge">COMPREHENSIVE EDITION · 2025–2026</div>
+</div>
+
+<nav class="toc">
+  <a href="#format">Competition Format</a>
+  <a href="#physical">Physical Geography</a>
+  <a href="#provinces">Provinces & Territories</a>
+  <a href="#climate">Climate & Environment</a>
+  <a href="#biomes">Biomes & Ecosystems</a>
+  <a href="#indigenous">Indigenous Peoples</a>
+  <a href="#human">Human & Urban Geography</a>
+  <a href="#resources">Natural Resources</a>
+  <a href="#current">Current Events 2024–26</a>
+  <a href="#world">Global Geography</a>
+  <a href="#fieldwork">Fieldwork Prep</a>
+  <a href="#trivia">Live Trivia Tips</a>
+  <a href="#quiz">Practice Questions</a>
+  <a href="#plan">Study Plan</a>
+  <a href="#links">Key Resources</a>
+</nav>
+
+<div class="container">
+
+  <!-- COMPETITION FORMAT -->
+  <div class="section" id="format">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-icon">🏆</div>
+      <div class="section-title">Competition Format — What to Expect at Nationals</div>
+    </div>
+
+    <div class="alert red"><strong>Key fact:</strong> The 2025 National Final at 50 Sussex Drive (Ottawa) brought together 20 finalists aged 12–16 from every region of Canada for three days of written tests, outdoor fieldwork, and live-audience challenges covering both local and global geography.</div>
+
+    <div class="cards">
+      <div class="card red-accent">
+        <h3>📝 Part 1: Written Test</h3>
+        <ul>
+          <li>Short-answer and essay questions</li>
+          <li>Covers two specific geographic subjects (revealed in advance)</li>
+          <li>No multiple choice — detailed written responses required</li>
+          <li>2 hours to complete</li>
+          <li>Top scorers advance to fieldwork</li>
+        </ul>
+      </div>
+      <div class="card teal-accent">
+        <h3>🧭 Part 2: Fieldwork Exercise</h3>
+        <ul>
+          <li>Outdoor, hands-on geographic observation</li>
+          <li>Map reading and sketch mapping</li>
+          <li>Environmental analysis and data collection</li>
+          <li>Usually conducted in the Ottawa region</li>
+          <li>Top 5 fieldwork scores advance to live final</li>
+        </ul>
+      </div>
+      <div class="card blue-accent">
+        <h3>🎙️ Part 3: Live Final (Game Show Format)</h3>
+        <ul>
+          <li>Top 5 compete; scores reset to zero</li>
+          <li>Rapid-fire trivia, live audience</li>
+          <li>Both English and French permitted</li>
+          <li>Human and physical geography at local and global scales</li>
+          <li>Biodiversity, world places, exploration themes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="alert blue"><strong>Strategy tip:</strong> Your written test and fieldwork scores determine if you reach the live final — but they don't carry over. The live final is a completely fresh start. Master both depth (written) AND speed (trivia).</div>
+  </div>
+
+  <!-- PHYSICAL GEOGRAPHY -->
+  <div class="section" id="physical">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-icon">🏔️</div>
+      <div class="section-title">Physical Geography of Canada</div>
+    </div>
+
+    <div class="alert"><strong>Why this matters:</strong> The multimedia test and written components explicitly cover landforms, climate, and resource development. Expect map identification, structural geology questions, and physiographic region analysis.</div>
+
+    <div class="deep">
+      <div class="deep-head">Canada's 7 Physiographic Regions — Master These</div>
+      <div class="deep-body">
+        <h4>1. Canadian Shield</h4>
+        <p>Canada's largest and oldest landform region — covers roughly half the country. Centred on Hudson Bay. Composed of exposed Precambrian crystalline igneous and metamorphic rocks, over 540 million years old. Very thin, nutrient-poor soil. Rich in minerals: nickel, gold, uranium, diamonds. Contains thousands of lakes carved by glaciation. Surrounds Hudson Bay and extends through Ontario, Quebec, Nunavut, Manitoba, Saskatchewan, Alberta, and the NWT.</p>
+
+        <h4>2. Cordillera (Western Mountains)</h4>
+        <p>A series of mountain belts separated by plateaus and valleys, approximately 680 km wide. Includes the Rocky Mountains, Coast Mountains, Columbia Mountains, and Mackenzie Mountains. Formed by tectonic collision — the Pacific Plate forcing under the North American Plate. Contains Canada's highest peak: Mount Logan (5,959 m) in Yukon, the highest point in Canada and second-highest in North America. Part of the Pacific Ring of Fire — active volcanic and earthquake zone. Spans BC, Yukon, and parts of Alberta and NWT.</p>
+
+        <h4>3. Interior Plains (Prairies)</h4>
+        <p>Covers most of Alberta, Saskatchewan, and southern Manitoba, plus parts of NWT. Known as Canada's "breadbasket" — major wheat and canola growing region. Rich sedimentary soils from ancient shallow seas and glacial deposits. Three prairie levels rise westward: Manitoba lowlands → Saskatchewan plain → Alberta foothills. Rich in petroleum and natural gas (especially Alberta). Part of the Great Plains of North America.</p>
+
+        <h4>4. Great Lakes–St. Lawrence Lowlands</h4>
+        <p>The smallest physiographic region but the most populated — home to nearly one-third of all Canadians. Covers southern Ontario and southern Quebec. Includes Toronto, Montreal, Ottawa, Hamilton, and Windsor. Flat to gently rolling terrain from glacial deposits. The St. Lawrence Lowland is a rift valley formed by faulting. Major agricultural zone (tender fruit in Niagara, dairy farming). Economic heartland of Canada.</p>
+
+        <h4>5. Appalachian Region</h4>
+        <p>Old, eroded mountain range extending through New Brunswick, Nova Scotia, PEI, Newfoundland, and the Gaspé Peninsula of Quebec. Approximately 380 million years old — among North America's oldest exposed mountains. Rolling hills with river valleys. Chic-Choc, Notre-Dame, and Long Range Mountains are key ranges. Atlantic fisheries historically centred here. Includes the Bay of Fundy with the world's highest tides.</p>
+
+        <h4>6. Hudson Bay and Arctic Lowlands</h4>
+        <p>Low, flat, poorly drained land surrounding Hudson Bay and James Bay, plus the High Arctic islands. Covered in muskeg (waterlogged boggy terrain). Ground remains frozen much of the year (permafrost). Sparse population. Contains significant oil, gas, and lignite (coal) deposits in Arctic sedimentary rock layers.</p>
+
+        <h4>7. Arctic Lands (Innuitian Mountains + Arctic Archipelago)</h4>
+        <p>Canada's most northerly region — the Queen Elizabeth Islands and surrounding waters. Innuitian Mountains peak above 2,500 m. Largely unexplored and very sparsely populated. Permanent ice caps on Ellesmere Island. Home to polar bears, muskoxen, Arctic foxes. Increasingly significant for resource extraction and the Northwest Passage shipping route.</p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">Key Mountains, Rivers, and Water Bodies</div>
+      <div class="deep-body">
+        <h4>Major Mountains</h4>
+        <table>
+          <tr><th>Peak</th><th>Height</th><th>Location</th><th>Note</th></tr>
+          <tr><td>Mount Logan</td><td>5,959 m</td><td>Yukon (St. Elias Range)</td><td>Highest in Canada; 2nd-highest in North America</td></tr>
+          <tr><td>Mount Fairweather</td><td>4,663 m</td><td>BC/Alaska border</td><td>2nd-highest in Canada</td></tr>
+          <tr><td>Mount Robson</td><td>3,954 m</td><td>BC (Rockies)</td><td>Highest peak entirely within BC</td></tr>
+          <tr><td>Mount Columbia</td><td>3,747 m</td><td>Alberta/BC border</td><td>Highest in Alberta</td></tr>
+          <tr><td>Barbeau Peak</td><td>2,616 m</td><td>Ellesmere Island, Nunavut</td><td>Highest peak east of the Rockies</td></tr>
+        </table>
+
+        <h4>Major Rivers</h4>
+        <table>
+          <tr><th>River</th><th>Length</th><th>Drains To</th><th>Key Feature</th></tr>
+          <tr><td>Mackenzie River</td><td>4,241 km (system)</td><td>Arctic Ocean</td><td>Longest river in Canada</td></tr>
+          <tr><td>St. Lawrence River</td><td>1,197 km</td><td>Gulf of St. Lawrence → Atlantic</td><td>Drains Great Lakes; major shipping route</td></tr>
+          <tr><td>Yukon River</td><td>3,185 km (partly in USA)</td><td>Bering Sea</td><td>Flows through Yukon and Alaska</td></tr>
+          <tr><td>Nelson River</td><td>2,575 km (system)</td><td>Hudson Bay</td><td>Drains Lake Winnipeg</td></tr>
+          <tr><td>Columbia River</td><td>2,000 km (partly in USA)</td><td>Pacific Ocean</td><td>Major hydropower source</td></tr>
+          <tr><td>Fraser River</td><td>1,375 km</td><td>Pacific Ocean (Vancouver)</td><td>Major Pacific salmon river</td></tr>
+          <tr><td>Churchill River</td><td>1,609 km</td><td>Hudson Bay</td><td>Spans Saskatchewan and Manitoba</td></tr>
+        </table>
+
+        <h4>Great Lakes — Key Facts</h4>
+        <ul>
+          <li><strong>Superior</strong> — largest by surface area (world's largest freshwater lake by area); shared with USA</li>
+          <li><strong>Huron</strong> — second-largest Great Lake</li>
+          <li><strong>Erie</strong> — shallowest; most polluted historically; Niagara Falls at its outflow</li>
+          <li><strong>Ontario</strong> — smallest of the Great Lakes by surface area; drains into St. Lawrence River</li>
+          <li>The Great Lakes contain 21% of the world's surface fresh water</li>
+          <li>Together they form the largest freshwater system on Earth</li>
+        </ul>
+
+        <h4>Other Major Lakes</h4>
+        <ul>
+          <li><strong>Great Bear Lake</strong> (NWT) — largest lake entirely within Canada</li>
+          <li><strong>Great Slave Lake</strong> (NWT) — deepest lake in North America (614 m); Mackenzie River begins here</li>
+          <li><strong>Lake Winnipeg</strong> (MB) — 13th-largest lake in the world; massive but shallow</li>
+          <li><strong>Lake Athabasca</strong> (AB/SK) — near the Athabasca oil sands</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">Glaciation — Canada's Most Powerful Geographic Force</div>
+      <div class="deep-body">
+        <p>During the last Ice Age (ending roughly 10,000 years ago), massive ice sheets up to 3 km thick covered virtually all of Canada. The effects are still visible everywhere:</p>
+        <ul>
+          <li><strong>Drumlins</strong> — elongated hills formed under glaciers; abundant in Ontario</li>
+          <li><strong>Eskers</strong> — long winding ridges of sand and gravel; common in Canadian Shield</li>
+          <li><strong>Kettles</strong> — depressions formed when ice blocks melted; often filled with water (prairie potholes)</li>
+          <li><strong>Moraines</strong> — ridges of glacial debris; the Oak Ridges Moraine north of Toronto is a key example</li>
+          <li><strong>Fjords</strong> — deep, narrow coastal inlets carved by glaciers; abundant in BC and Labrador</li>
+          <li><strong>Canadian Shield thin soils</strong> — glaciers scraped away soil, exposing bedrock</li>
+          <li><strong>Prairie fertile soils</strong> — glacial deposits created deep, rich soils for agriculture</li>
+          <li><strong>Thousands of lakes</strong> — glacial scouring + meltwater filled depressions; Canada has ~2 million lakes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROVINCES & TERRITORIES -->
+  <div class="section" id="provinces">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-icon">🗺️</div>
+      <div class="section-title">Provinces, Territories & Capitals — Complete Reference</div>
+    </div>
+
+    <div class="prov-grid">
+      <div class="prov-card"><div class="prov-name">Ontario (ON)</div><div class="prov-cap">Capital: Toronto</div><div class="prov-facts">Largest population; manufacturing heartland; Great Lakes; CN Tower; Ottawa (nat'l capital)</div></div>
+      <div class="prov-card"><div class="prov-name">Quebec (QC)</div><div class="prov-cap">Capital: Quebec City</div><div class="prov-facts">Largest by area of provinces; French-speaking majority; St. Lawrence River; massive hydroelectric power</div></div>
+      <div class="prov-card"><div class="prov-name">British Columbia (BC)</div><div class="prov-cap">Capital: Victoria</div><div class="prov-facts">Rocky Mountains; Pacific coast; temperate rainforest; Vancouver; Pacific salmon</div></div>
+      <div class="prov-card"><div class="prov-name">Alberta (AB)</div><div class="prov-cap">Capital: Edmonton</div><div class="prov-facts">Oil sands (Fort McMurray); Rockies; most prairie land; cattle ranching; Banff, Jasper NPs</div></div>
+      <div class="prov-card"><div class="prov-name">Saskatchewan (SK)</div><div class="prov-cap">Capital: Regina</div><div class="prov-facts">Wheat capital; potash mining; flat prairies; Churchill River; Wascana Centre (large urban park)</div></div>
+      <div class="prov-card"><div class="prov-name">Manitoba (MB)</div><div class="prov-cap">Capital: Winnipeg</div><div class="prov-facts">Polar bear capital (Churchill); Hudson Bay; Lake Winnipeg; Métis heritage; Red River</div></div>
+      <div class="prov-card"><div class="prov-name">Nova Scotia (NS)</div><div class="prov-cap">Capital: Halifax</div><div class="prov-facts">Bay of Fundy (world's highest tides); Acadian heritage; Atlantic fisheries; Cabot Trail</div></div>
+      <div class="prov-card"><div class="prov-name">New Brunswick (NB)</div><div class="prov-cap">Capital: Fredericton</div><div class="prov-facts">Only officially bilingual province; Bay of Fundy; Fundy NP; forestry; Magnetic Hill</div></div>
+      <div class="prov-card"><div class="prov-name">Newfoundland & Labrador (NL)</div><div class="prov-cap">Capital: St. John's</div><div class="prov-facts">Most easterly point in North America; Grand Banks fishery collapse; L'Anse aux Meadows (Viking site); iceberg alley</div></div>
+      <div class="prov-card"><div class="prov-name">Prince Edward Island (PE)</div><div class="prov-cap">Capital: Charlottetown</div><div class="prov-facts">Smallest province; red soil; potato farming; Anne of Green Gables (L.M. Montgomery); Confederation Bridge</div></div>
+      <div class="prov-card"><div class="prov-name">Northwest Territories (NT)</div><div class="prov-cap">Capital: Yellowknife</div><div class="prov-facts">Great Bear & Great Slave Lakes; diamond mining; Mackenzie River; aurora borealis; Dene, Métis peoples</div></div>
+      <div class="prov-card"><div class="prov-name">Yukon (YT)</div><div class="prov-cap">Capital: Whitehorse</div><div class="prov-facts">Mount Logan (Canada's highest); Klondike Gold Rush; Kluane NP; bears (grizzly, ice bears); Yukon River</div></div>
+      <div class="prov-card"><div class="prov-name">Nunavut (NU)</div><div class="prov-cap">Capital: Iqaluit</div><div class="prov-facts">Newest territory (created 1999); largest by area; mostly Inuit; Baffin Island; permafrost; polar bears</div></div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">Key Provincial/Territorial Facts for Trivia</div>
+      <div class="deep-body">
+        <ul>
+          <li>Nunavut became Canada's newest territory on <strong>April 1, 1999</strong></li>
+          <li>Canada has <strong>10 provinces</strong> and <strong>3 territories</strong></li>
+          <li>Largest province by area: <strong>Quebec</strong> (largest territory: Nunavut)</li>
+          <li>Smallest province by area: <strong>Prince Edward Island</strong></li>
+          <li>Most populated province: <strong>Ontario</strong></li>
+          <li>Least populated province: <strong>Prince Edward Island</strong> (least populated territory: Yukon)</li>
+          <li>Only officially bilingual province: <strong>New Brunswick</strong></li>
+          <li>Canada's national capital: <strong>Ottawa, Ontario</strong></li>
+          <li>Confederation Bridge (connecting PEI to New Brunswick) is the longest bridge over ice-covered water in the world — 12.9 km</li>
+          <li>The Bay of Fundy's tides can reach <strong>16 metres</strong> — the world's highest tidal range</li>
+          <li>L'Anse aux Meadows, NL, is the only confirmed <strong>Viking settlement</strong> in North America (~1,000 CE)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIMATE -->
+  <div class="section" id="climate">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-icon">🌡️</div>
+      <div class="section-title">Climate Zones, Weather Patterns & Climate Change</div>
+    </div>
+
+    <div class="cards">
+      <div class="card red-accent">
+        <h3>Continental Climate</h3>
+        <p>Interior and Prairie provinces. Extreme temperature ranges — bitterly cold winters (can drop below -40°C), warm summers. Low precipitation. Dry, open landscape.</p>
+        <p><em>Key cities: Winnipeg, Regina, Saskatoon</em></p>
+      </div>
+      <div class="card blue-accent">
+        <h3>Oceanic (Maritime West)</h3>
+        <p>BC coast. Mild, rainy winters; warm, drier summers. Temperate rainforest conditions. Vancouver Island shields coast from major storms.</p>
+        <p><em>Key cities: Vancouver, Victoria, Prince Rupert</em></p>
+      </div>
+      <div class="card teal-accent">
+        <h3>Maritime East</h3>
+        <p>Atlantic provinces. Influenced by cold Labrador Current. More precipitation, fog, and storms than the west coast. Cooler summers.</p>
+        <p><em>Key cities: Halifax, St. John's, Moncton</em></p>
+      </div>
+      <div class="card gold-accent">
+        <h3>Humid Continental</h3>
+        <p>Southern Ontario and Quebec. Four distinct seasons. Cold winters, warm-to-hot summers. Moderate precipitation year-round. Snow cover 3–5 months.</p>
+        <p><em>Key cities: Toronto, Montreal, Ottawa</em></p>
+      </div>
+      <div class="card green-accent">
+        <h3>Subarctic</h3>
+        <p>Boreal forest zone across most of northern Canada. Very long, cold winters; short, cool summers. Permafrost in many areas. Low precipitation but high snowfall.</p>
+      </div>
+      <div class="card red-accent">
+        <h3>Arctic / Tundra</h3>
+        <p>Canada's far north. Permanent frozen ground (permafrost). Very low precipitation (polar desert conditions in some areas). Temperatures rarely rise above 10°C even in summer. 24-hour daylight in summer, polar night in winter.</p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">Climate Change in Canada — A National Priorities Issue</div>
+      <div class="deep-body">
+        <p>Canada is warming at approximately twice the global average rate — the Arctic is warming at roughly three times the global average. This is a major focus of Canadian Geographic magazine and a near-certain topic at the national finals.</p>
+
+        <h4>Key Climate Change Facts for Canada</h4>
+        <ul>
+          <li>Arctic summer sea ice has been declining sharply — multi-year ice (older, thicker) is being replaced by thin seasonal ice</li>
+          <li>Permafrost thaw is destabilizing infrastructure in northern communities — roads, buildings, runways</li>
+          <li>The Northwest Passage is increasingly navigable as sea ice retreats, with major implications for shipping and sovereignty</li>
+          <li>Forest fires have increased dramatically in size and frequency across the boreal forest — 2023 was a record wildfire year in Canada</li>
+          <li>Rising sea levels threaten low-lying coastal areas, particularly Atlantic communities and the Fraser River delta</li>
+          <li>Glacier retreat in the Rockies and BC Coast Range threatens freshwater supplies downstream</li>
+          <li>Species range shifts: many plants and animals moving northward or to higher elevations</li>
+          <li>Boil water advisories affect dozens of Indigenous communities — a major equity and human geography issue</li>
+        </ul>
+
+        <h4>Inuit Observations (from Indigenous Peoples Atlas of Canada)</h4>
+        <p>Inuit communities in the Arctic and Subarctic have documented unprecedented sea ice loss, ocean acidification, permafrost melt, and coastal erosion. Climate change undermines access to country foods (wild-harvested foods), increases on-ice hazards, and threatens cultural sovereignty. Inuit Nunangat (the Inuit homeland across the Arctic) is at the forefront of climate impacts.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIOMES & ECOSYSTEMS -->
+  <div class="section" id="biomes">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-icon">🌲</div>
+      <div class="section-title">Biomes, Ecozones & Wildlife</div>
+    </div>
+
+    <div class="alert green"><strong>Know this:</strong> Canada has 31 official ecozones (18 terrestrial, 12 marine, 1 freshwater). The major biomes are the ones most frequently tested, but the ecozone framework shows up in map questions.</div>
+
+    <table class="topic-table">
+      <tr><th>Biome</th><th>Location in Canada</th><th>Key Characteristics</th><th>Signature Species</th></tr>
+      <tr><td><strong>Boreal Forest (Taiga)</strong></td><td>Northern band across all provinces; largest in Quebec, Ontario, BC, AB, SK, MB</td><td>Largest intact forest on Earth (~2.4M km²); coniferous trees (spruce, fir, pine); peat bogs; 300,000 km² undisturbed by roads or cities</td><td>Woodland caribou, Canada lynx, moose, wolves, boreal chickadee</td></tr>
+      <tr><td><strong>Tundra</strong></td><td>Arctic and sub-Arctic — Nunavut, NWT, northern Quebec (Nunavik), Yukon</td><td>Below treeline; permafrost; dwarf shrubs, sedges, lichens, mosses; very short growing season</td><td>Polar bear, Arctic fox, muskox, snowy owl, lemming, caribou</td></tr>
+      <tr><td><strong>Temperate Rainforest</strong></td><td>BC's north coast and Vancouver Island; narrow coastal strip</td><td>Extremely high rainfall (3,000–5,000 mm/yr); ancient towering cedars, Douglas-fir; moss-draped; Great Bear Rainforest</td><td>Spirit bear (white Kermode bear), Pacific salmon, bald eagle, wolverine, Sitka spruce</td></tr>
+      <tr><td><strong>Prairie/Grassland</strong></td><td>Southern AB, SK, MB</td><td>Flat to gently rolling; deep fertile soils; very low precipitation; once covered by bison herds</td><td>Pronghorn antelope, burrowing owl, ferruginous hawk, black-footed ferret (nearly extinct in wild), prairie dog</td></tr>
+      <tr><td><strong>Temperate Deciduous Forest</strong></td><td>Southern Ontario and southwestern Quebec</td><td>Mixed hardwoods (maple, oak, beech, hickory); four distinct seasons; rich biodiversity</td><td>White-tailed deer, wild turkey, various warblers, Carolinian tree species</td></tr>
+      <tr><td><strong>Mountain / Alpine</strong></td><td>Rocky Mountains, Coast Mountains (BC, AB, YT)</td><td>Elevation-based zones from valley bottom to alpine tundra; treeline is the key boundary</td><td>Grizzly bear, mountain goat, bighorn sheep, pika, golden eagle</td></tr>
+      <tr><td><strong>Semi-Arid / Shrub-Steppe</strong></td><td>Okanagan Valley, BC; southern AB badlands</td><td>Canada's driest region; cactus, sagebrush; unique biodiversity; hoodoos in Badlands</td><td>Rattlesnake, sagebrush sparrow, burrowing owl, antelope brush</td></tr>
+      <tr><td><strong>Great Lakes–St. Lawrence Mixed Forest</strong></td><td>Ontario, southern Quebec</td><td>Transition between deciduous and boreal; maples (sugar maple — Canada's icon), birch, pine</td><td>Loon, great blue heron, beavers, mink</td></tr>
+    </table>
+
+    <div class="deep">
+      <div class="deep-head">Iconic Canadian Wildlife — Know These for Trivia</div>
+      <div class="deep-body">
+        <ul>
+          <li><strong>Polar bear</strong> — "sea bear"; Canada has 60% of the world's polar bears; Churchill, MB is the "Polar Bear Capital of the World"; threatened by sea ice loss</li>
+          <li><strong>Woodland caribou</strong> — national icon; found in boreal forest; threatened by habitat fragmentation from resource extraction</li>
+          <li><strong>Spirit bear (Kermode bear)</strong> — white-furred black bear; found only in the Great Bear Rainforest, BC; sacred to First Nations; "ghost bear"</li>
+          <li><strong>Beaver</strong> — Canada's national animal; dam-builder; critical ecosystem engineer (creates wetlands); featured on the nickel</li>
+          <li><strong>Pronghorn</strong> — fastest land animal in North America; found in southern prairies; threatened by fencing; the subject of a recent Can Geo story (2025)</li>
+          <li><strong>Atlantic salmon</strong> — iconic but severely endangered; subject of conservation battles in NB and NS</li>
+          <li><strong>Whooping crane</strong> — Canada's tallest bird; one of North America's most endangered species; breeds at Wood Buffalo NP</li>
+          <li><strong>Lake sturgeon</strong> — ancient fish; some individuals over 100 years old; threatened by habitat loss and overfishing</li>
+          <li><strong>Right whale (North Atlantic)</strong> — critically endangered; accidentally killed in fishing gear and by ship strikes in Gulf of St. Lawrence</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">National Parks — Key Facts</div>
+      <div class="deep-body">
+        <p>Canada has <strong>47 national parks</strong> and numerous national park reserves, protected areas, and marine conservation areas. Together they cover over 340,000 km².</p>
+        <table>
+          <tr><th>Park</th><th>Province/Territory</th><th>Key Feature</th></tr>
+          <tr><td>Wood Buffalo NP</td><td>AB/NWT border</td><td>Largest national park in Canada; largest free-roaming bison herd; whooping crane nesting; UNESCO World Heritage Site</td></tr>
+          <tr><td>Banff NP</td><td>Alberta</td><td>Canada's first national park (1885); Canadian Rockies; Lake Louise; Icefields Parkway; Banff townsite</td></tr>
+          <tr><td>Jasper NP</td><td>Alberta</td><td>Columbia Icefield (largest in Rockies); dark sky preserve; largest NP in the Canadian Rockies</td></tr>
+          <tr><td>Gros Morne NP</td><td>Newfoundland</td><td>UNESCO World Heritage Site; rare mantle rock exposed at surface; fjords; ancient geology</td></tr>
+          <tr><td>Pacific Rim NP Reserve</td><td>BC</td><td>Wild surf; old-growth rainforest; west coast trail; whale watching</td></tr>
+          <tr><td>Nahanni NP Reserve</td><td>NWT</td><td>UNESCO World Heritage Site; Virginia Falls (nearly twice the height of Niagara); South Nahanni River</td></tr>
+          <tr><td>Auyuittuq NP</td><td>Nunavut</td><td>"Land that never melts"; Baffin Island; dramatic fjords and glaciers</td></tr>
+          <tr><td>Riding Mountain NP</td><td>Manitoba</td><td>Escarpment plateau; elk herds; diverse ecosystems at the junction of boreal, deciduous, and grassland</td></tr>
+          <tr><td>Cape Breton Highlands NP</td><td>Nova Scotia</td><td>Cabot Trail; dramatic coastal highlands; moose; Celtic cultural heritage</td></tr>
+          <tr><td>Fundy NP</td><td>New Brunswick</td><td>Bay of Fundy; highest tides; coastal cliffs; salmon rivers</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- INDIGENOUS PEOPLES -->
+  <div class="section" id="indigenous">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-icon">🪶</div>
+      <div class="section-title">Indigenous Peoples — A Core Theme at Nationals</div>
+    </div>
+
+    <div class="alert red"><strong>Critical for finals:</strong> The Canadian Geographic Challenge and Can Geo magazine both place major emphasis on Indigenous geography, knowledge systems, and current issues. This is virtually guaranteed to appear in your written test and live trivia. The <em>Indigenous Peoples Atlas of Canada</em> is the primary RCGS reference — study it.</div>
+
+    <div class="deep">
+      <div class="deep-head">The Three Groups: First Nations, Inuit, and Métis</div>
+      <div class="deep-body">
+        <h4>First Nations</h4>
+        <p>More than 630 distinct First Nations in Canada, representing over 50 language families and hundreds of dialects. Geographic distribution spans all regions: from Coast Salish peoples on BC's coast, to Haudenosaunee (Six Nations) in Ontario, to Cree nations across the boreal forest, to Mi'kmaq in Atlantic Canada. Traditional territories do not align with provincial boundaries.</p>
+        <ul>
+          <li><strong>Coast Salish, Haida, Tlingit, Tsimshian</strong> — Pacific Northwest coast; totem poles; salmon cultures</li>
+          <li><strong>Nehiyawak (Cree)</strong> — largest First Nation by population; spans from Quebec to Alberta; boreal forest and plains Cree</li>
+          <li><strong>Anishinaabe (Ojibwe/Chippewa)</strong> — Great Lakes region; birchbark canoes; Algonquian language family</li>
+          <li><strong>Haudenosaunee (Iroquois Confederacy)</strong> — Six Nations: Mohawk, Oneida, Onondaga, Cayuga, Seneca, Tuscarora; longhouse culture; Wampum records</li>
+          <li><strong>Dene Nation</strong> — NWT and northern BC; Athabascan language speakers</li>
+          <li><strong>Blackfoot Confederacy</strong> — southern Alberta plains; treaty relationships with Crown</li>
+        </ul>
+
+        <h4>Inuit</h4>
+        <p>Approximately 65,000 Inuit in Canada. Their traditional homeland is <strong>Inuit Nunangat</strong>, which covers four regions:</p>
+        <ul>
+          <li><strong>Nunatsiavut</strong> — northern Labrador</li>
+          <li><strong>Nunavik</strong> — northern Quebec</li>
+          <li><strong>Nunavut</strong> — territory created in 1999 (Inuit-majority government)</li>
+          <li><strong>Inuvialuit Settlement Region</strong> — NWT and Yukon Arctic coast</li>
+        </ul>
+        <p>Inuktitut is the primary Inuit language. Traditional knowledge (Inuit Qaujimajatuqangit) is integral to understanding Arctic environments. Key food sources: caribou, seal, beluga whale, Arctic char.</p>
+
+        <h4>Métis</h4>
+        <p>A distinct Indigenous people of mixed First Nations and European (primarily French) ancestry. Historically centred in the Red River Settlement (Winnipeg area). Louis Riel led the Red River Resistance (1869–70) and Northwest Resistance (1885). The Métis National Council represents Métis across western Canada. Distinct culture: Michif language (blend of Cree and French), Red River jig, beaded floral art.</p>
+      </div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">Current Issues — What Can Geo Magazine Covers</div>
+      <div class="deep-body">
+        <h4>Boil Water Advisories</h4>
+        <p>Many First Nations communities have faced long-term boil water advisories — some lasting over 25 years. Neskantaga First Nation in northern Ontario experienced a <strong>30-year boil water advisory</strong>, the longest in Canadian history (covered in Can Geo January/February 2025). The federal government committed to ending all long-term advisories, but progress has been uneven.</p>
+
+        <h4>Land Rights and Sovereignty</h4>
+        <p>Treaties between Indigenous nations and the Crown govern much of Canada's land. Many treaty agreements are disputed or were never honoured. Comprehensive land claims (modern treaties) continue to be negotiated, particularly in BC where many treaties were never signed.</p>
+
+        <h4>Residential Schools and Truth &amp; Reconciliation</h4>
+        <p>Over 150,000 Indigenous children were forced into residential schools over more than a century. The Truth and Reconciliation Commission's 94 Calls to Action (2015) guide reconciliation work. In 2021, discoveries of unmarked graves at former school sites shook Canada nationally. Orange Shirt Day (September 30) is now a federal statutory holiday — National Day for Truth and Reconciliation.</p>
+
+        <h4>Indigenous-Led Conservation</h4>
+        <p>Many Indigenous nations are leading conservation initiatives using Traditional Ecological Knowledge (TEK) alongside Western science. Examples include:</p>
+        <ul>
+          <li>Guardian programs — Indigenous stewards protecting traditional territories</li>
+          <li>Blueberry River First Nations' successful legal case limiting industrial activity in their territory (BC, 2021)</li>
+          <li>Great Bear Rainforest agreements involving Coastal First Nations in BC</li>
+          <li>Can Geo (Jan/Feb 2025): "Tyonnhehkwen: The Life Sustainers" — weaving Indigenous and settler knowledge for sustainable land use</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUMAN GEOGRAPHY -->
+  <div class="section" id="human">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-icon">🏙️</div>
+      <div class="section-title">Human Geography — Population, Cities & Culture</div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">Canadian Population Geography</div>
+      <div class="deep-body">
+        <p>Canada is the world's <strong>second-largest country by land area</strong> (~9.98 million km²) but with a population of approximately <strong>40 million</strong> (2024). This makes it one of the most sparsely populated large nations on Earth.</p>
+
+        <h4>Settlement Patterns</h4>
+        <ul>
+          <li>Roughly <strong>90% of Canadians</strong> live within 160 km of the US border</li>
+          <li>The <strong>Main Street Corridor</strong> (Windsor–Quebec City) contains the densest concentration of population</li>
+          <li><strong>Ecumene</strong> — the inhabited area of Canada — covers only a fraction of the total land</li>
+          <li>Urban population: over <strong>80%</strong> of Canadians live in cities (one of the highest rates in the world)</li>
+          <li>Census Metropolitan Areas (CMAs) with 100,000+ population anchor regional economies</li>
+        </ul>
+
+        <h4>Largest Cities (approximate populations)</h4>
+        <table>
+          <tr><th>City</th><th>Province</th><th>CMA Population (approx.)</th></tr>
+          <tr><td>Toronto</td><td>Ontario</td><td>~6.4 million (Canada's largest)</td></tr>
+          <tr><td>Montreal</td><td>Quebec</td><td>~4.3 million</td></tr>
+          <tr><td>Vancouver</td><td>British Columbia</td><td>~2.7 million</td></tr>
+          <tr><td>Calgary</td><td>Alberta</td><td>~1.5 million</td></tr>
+          <tr><td>Edmonton</td><td>Alberta</td><td>~1.4 million</td></tr>
+          <tr><td>Ottawa–Gatineau</td><td>ON/QC</td><td>~1.5 million (national capital)</td></tr>
+          <tr><td>Winnipeg</td><td>Manitoba</td><td>~900,000</td></tr>
+          <tr><td>Quebec City</td><td>Quebec</td><td>~850,000 (only walled city in North America)</td></tr>
+          <tr><td>Hamilton</td><td>Ontario</td><td>~800,000</td></tr>
+          <tr><td>Halifax</td><td>Nova Scotia</td><td>~470,000 (Atlantic Canada's largest)</td></tr>
+        </table>
+
+        <h4>Immigration and Cultural Geography</h4>
+        <ul>
+          <li>Canada is one of the world's most immigration-dependent economies, accepting ~400,000+ new permanent residents annually</li>
+          <li>Top source countries in recent years: India, Philippines, China, Nigeria, France</li>
+          <li>Canada is officially <strong>multicultural</strong> — policy since 1971 under Trudeau (Pierre Elliott)</li>
+          <li>Bilingualism: English and French are official languages (Constitution Act 1982, Charter of Rights and Freedoms)</li>
+          <li>Francophone communities outside Quebec: Acadians (NB, NS, PEI, NL), Franco-Ontarians, Franco-Manitobans</li>
+          <li>Canada has one of the world's highest per-capita rates of immigration</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">Canadian History — Geographic Context</div>
+      <div class="deep-body">
+        <h4>Key Dates and Events</h4>
+        <div class="timeline">
+          <div class="tl-item"><strong>~1,000 CE</strong> Norse explorer Leif Eriksson reaches Vinland (L'Anse aux Meadows, NL) — first confirmed European contact</div>
+          <div class="tl-item"><strong>1497</strong> John Cabot (Giovanni Caboto) reaches Newfoundland for England — claims northeastern North America</div>
+          <div class="tl-item"><strong>1534–1542</strong> Jacques Cartier maps the Gulf of St. Lawrence and names Canada (from Huron-Iroquois "kanata" meaning village/settlement)</div>
+          <div class="tl-item"><strong>1608</strong> Samuel de Champlain founds Quebec City — first permanent French settlement</div>
+          <div class="tl-item"><strong>1670</strong> Hudson's Bay Company (HBC) chartered — controls Rupert's Land (Hudson Bay watershed); major fur trade era begins</div>
+          <div class="tl-item"><strong>1763</strong> Treaty of Paris — France cedes New France to Britain; Quebec Act 1774 protects French civil law and Catholic religion</div>
+          <div class="tl-item"><strong>1812–1815</strong> War of 1812 — Canadian militia repels US invasion; burning of York (Toronto); Laura Secord's famous ride</div>
+          <div class="tl-item"><strong>1867</strong> Confederation — British North America Act joins Ontario, Quebec, Nova Scotia, New Brunswick into the Dominion of Canada. Sir John A. Macdonald first PM.</div>
+          <div class="tl-item"><strong>1869–70</strong> Red River Resistance — Louis Riel leads Métis; Manitoba becomes a province</div>
+          <div class="tl-item"><strong>1885</strong> Canadian Pacific Railway completed — transcontinental link; Northwest Rebellion; Riel hanged</div>
+          <div class="tl-item"><strong>1896–1899</strong> Klondike Gold Rush — Yukon; 100,000 prospectors; Dawson City boomtown</div>
+          <div class="tl-item"><strong>1999</strong> Nunavut created — largest land claim settlement in Canadian history; Inuit-majority territory</div>
+        </div>
+
+        <h4>Notable Canadian Explorers</h4>
+        <ul>
+          <li><strong>Alexander Mackenzie</strong> — first European to cross North America overland (1793); Mackenzie River named after him</li>
+          <li><strong>Samuel Hearne</strong> — first European to reach the Arctic Ocean overland (via Coppermine River, 1771)</li>
+          <li><strong>David Thompson</strong> — mapped more of North America than any other person; charted the Columbia River system</li>
+          <li><strong>Sir John Franklin</strong> — Arctic explorer whose 1845 expedition to find the Northwest Passage ended in disaster; all 129 crew died; HMS Erebus and Terror found 2014–2016</li>
+          <li><strong>Matthew Flinders</strong> — mapped Australia (not Canada, common confusion)</li>
+          <li><strong>Henry Hudson</strong> — Dutch-born, English-employed; explored Hudson Bay (1610–11); crew mutinied and left him there</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- NATURAL RESOURCES -->
+  <div class="section" id="resources">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-icon">⛏️</div>
+      <div class="section-title">Natural Resources — Energy, Mining & Agriculture</div>
+    </div>
+
+    <div class="cards">
+      <div class="card red-accent">
+        <h3>Oil & Natural Gas</h3>
+        <ul>
+          <li>Alberta's <strong>oil sands</strong> (Athabasca) — world's 3rd-largest proven oil reserves</li>
+          <li>Controversial: significant greenhouse gas emissions, tailings ponds, land disturbance</li>
+          <li>Trans Mountain Pipeline — carries oil from Alberta to BC coast; expanded 2024</li>
+          <li>Offshore: Hibernia platform (Grand Banks, NL); Sable Island (NS)</li>
+          <li>Fracking controversy in BC and Quebec</li>
+        </ul>
+      </div>
+      <div class="card blue-accent">
+        <h3>Hydroelectric Power</h3>
+        <ul>
+          <li>Canada is the <strong>3rd-largest hydroelectric producer</strong> in the world</li>
+          <li>Quebec's James Bay Project (La Grande complex) — one of the largest hydro systems on Earth</li>
+          <li>BC: Columbia River, Peace River dams (Site C — controversial)</li>
+          <li>Manitoba: Churchill River system</li>
+          <li>Labrador: Churchill Falls (exports power to Quebec under controversial contract)</li>
+          <li>Hydro provides ~60% of Canada's electricity</li>
+        </ul>
+      </div>
+      <div class="card teal-accent">
+        <h3>Mining & Minerals</h3>
+        <ul>
+          <li>Canadian Shield: nickel (Sudbury — "Nickel Capital of the World"), gold, uranium, copper</li>
+          <li>NWT: diamonds (Canada is among the world's top producers of gem-quality diamonds)</li>
+          <li>Saskatchewan: <strong>potash</strong> — Canada produces ~30% of the world's potash (key fertilizer)</li>
+          <li>BC: copper, molybdenum, coal</li>
+          <li>Yukon/NWT: gold, silver, zinc, lead</li>
+          <li>Lithium increasingly sought for EV batteries</li>
+        </ul>
+      </div>
+      <div class="card gold-accent">
+        <h3>Forestry</h3>
+        <ul>
+          <li>Canada has ~9% of the world's forests; boreal forest is the world's largest intact forest</li>
+          <li>BC: softwoods (Douglas-fir, cedar) — major lumber exporter</li>
+          <li>Pulp and paper: Quebec and Ontario</li>
+          <li>Ongoing controversy: old-growth logging in BC (Fairy Creek blockade, 2021)</li>
+          <li>Sustainable Forestry Initiative (SFI) and FSC certification systems used</li>
+        </ul>
+      </div>
+      <div class="card green-accent">
+        <h3>Agriculture</h3>
+        <ul>
+          <li>Saskatchewan and Manitoba: wheat, canola, barley, flaxseed</li>
+          <li>Ontario: corn, soybeans, vegetables, tender fruits (Niagara)</li>
+          <li>BC: Okanagan apples, wine grapes, berries</li>
+          <li>Alberta: cattle (beef production); feedlots</li>
+          <li>PEI: potatoes (seed and table)</li>
+          <li>Canada is among the world's top food exporters</li>
+        </ul>
+      </div>
+      <div class="card red-accent">
+        <h3>Fisheries</h3>
+        <ul>
+          <li>Atlantic: cod (collapsed 1992 — Canadian Grand Banks cod moratorium)</li>
+          <li>Lobster, snow crab: major Atlantic industries; NS, NB, PEI, NL, QC</li>
+          <li>Pacific: Pacific salmon (5 species); BC; threatened by habitat loss, climate change</li>
+          <li>Great Lakes: commercial and sport fishery; invasive species (sea lamprey, zebra mussels) are major threats</li>
+          <li>Aquaculture growing — salmon farming in BC, mussels and oysters in Atlantic</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CURRENT EVENTS -->
+  <div class="section" id="current">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-icon">📰</div>
+      <div class="section-title">Current Events 2024–2026 — Canadian Geographic Magazine Focus</div>
+    </div>
+
+    <div class="alert red"><strong>Expect this at finals:</strong> The live trivia and written components will test awareness of recent issues from 2024–2026 Canadian Geographic magazine. Know these stories well.</div>
+
+    <div class="deep">
+      <div class="deep-head">Recent Canadian Geographic Magazine Stories — 2024–2025</div>
+      <div class="deep-body">
+        <h4>January/February 2025</h4>
+        <ul>
+          <li><strong>"The Good Bear"</strong> — Ice bears of Klukshu, Yukon: grizzly bears that fish for salmon; the age-old relationship between bears, salmon, and Yukon First Nations people; threatened by climate change. Photography by Peter Mather.</li>
+          <li><strong>Neskantaga First Nation, Ontario</strong> — A 30-year boil water advisory and its devastating impact on community health, culture, and self-determination.</li>
+          <li><strong>"Wings Over Niagara"</strong> — Migratory and wintering birds at Niagara Falls in winter; species congregate due to open water.</li>
+          <li><strong>Aurora Borealis 2024</strong> — An epic year for northern lights viewing, including sightings far south of normal range due to high solar activity.</li>
+          <li><strong>"Tyonnhehkwen: The Life Sustainers"</strong> — Weaving Indigenous Haudenosaunee knowledge with settler farming practices to work sustainably with the land in the Great Lakes watershed.</li>
+        </ul>
+
+        <h4>2025 Issues</h4>
+        <ul>
+          <li><strong>"Born to Run"</strong> (2025) — Pronghorn antelope on the Canadian prairies, historically blocked by fencing; conservation volunteers reconnecting fragmented grassland corridors for North America's fastest land mammal.</li>
+          <li><strong>"Yukon Ghosts"</strong> — Wildlife photography essay by Peter Mather; wildlife hidden in plain sight across Yukon's vast landscape.</li>
+          <li><strong>"Frame by Frame"</strong> — One filmmaker's battle to save wild Atlantic salmon in New Brunswick.</li>
+          <li><strong>Tundra Flower</strong> — Nunavik singer-songwriter Elisapie; Inuit cultural perseverance and identity.</li>
+          <li><strong>"Nature Meant Us All to Be Wildflowers"</strong> (March/April 2025) — Friendship, loss, and healing following the footsteps of an early 20th-century mountain explorer in the Rockies.</li>
+          <li><strong>"The Great Turning"</strong> — Climate change, mental health, and finding hope for the future; eco-anxiety as a growing phenomenon among young Canadians.</li>
+          <li><strong>Making History</strong> — The canoe throughout the Great Lakes watershed; historical and cultural significance of this iconic watercraft.</li>
+        </ul>
+
+        <h4>Major Environmental Issues (2024–2026)</h4>
+        <ul>
+          <li><strong>2023 Wildfire Season</strong> — Record-breaking; over 18 million hectares burned across Canada; smoke blanketed US cities; widespread evacuation of northern communities including Yellowknife</li>
+          <li><strong>Trans Mountain Pipeline Expansion</strong> — Completed 2024; tripled capacity; major oil-to-tanker debate; BC First Nations opposition</li>
+          <li><strong>Gulf of St. Lawrence North Atlantic Right Whale Protection</strong> — Ongoing battle to protect critically endangered whales (~340 remaining) from fishing gear and shipping in Canadian waters</li>
+          <li><strong>Great Bear Rainforest</strong> — Ongoing conservation challenges; old-growth protection; Spirit Bear populations</li>
+          <li><strong>Northwest Passage Sovereignty</strong> — As Arctic ice melts, debate over whether the NWP is international waters (US/EU position) or Canadian internal waters (Canada's position)</li>
+          <li><strong>UNDRIP</strong> — Canada adopted the UN Declaration on the Rights of Indigenous Peoples into federal law (Bill C-15, 2021); implementation ongoing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORLD GEOGRAPHY -->
+  <div class="section" id="world">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-icon">🌍</div>
+      <div class="section-title">Global Geography — Canadian Geographic Perspective</div>
+    </div>
+
+    <div class="alert blue"><strong>At nationals:</strong> Questions test "global geographic thinking." Canada's connections to world systems — trade, climate agreements, biodiversity, international aid — are fair game alongside place-name identification.</div>
+
+    <div class="cards">
+      <div class="card blue-accent">
+        <h3>Continents & Major Facts</h3>
+        <ul>
+          <li>Largest continent: Asia (44.6M km²)</li>
+          <li>Smallest continent: Australia/Oceania</li>
+          <li>Most populous: Asia (~4.7 billion)</li>
+          <li>Highest point: Mount Everest, Nepal/China (8,849 m)</li>
+          <li>Lowest land: Dead Sea shore (-430 m)</li>
+          <li>Largest ocean: Pacific (larger than all land combined)</li>
+          <li>Deepest ocean trench: Mariana Trench (11,000+ m)</li>
+        </ul>
+      </div>
+      <div class="card teal-accent">
+        <h3>World Rivers & Lakes</h3>
+        <ul>
+          <li>Longest river: Nile (Africa) or Amazon (contested by length vs. flow)</li>
+          <li>Largest river by discharge: Amazon</li>
+          <li>Largest lake: Caspian Sea (saltwater, technically a lake)</li>
+          <li>Largest freshwater lake: Lake Superior (shared Canada/USA)</li>
+          <li>Deepest lake: Lake Baikal, Russia (1,642 m)</li>
+          <li>Largest tropical rainforest: Amazon Basin</li>
+        </ul>
+      </div>
+      <div class="card gold-accent">
+        <h3>Biomes — Global</h3>
+        <ul>
+          <li>Largest biome: Taiga/boreal forest (circumpolar)</li>
+          <li>Most biodiverse biome: tropical rainforest</li>
+          <li>Largest desert: Antarctica (cold desert); largest hot desert: Sahara</li>
+          <li>Coral reefs: Great Barrier Reef (Australia) largest; severely bleached by warming oceans</li>
+          <li>Mangroves: critical coastal ecosystems, increasingly threatened</li>
+        </ul>
+      </div>
+      <div class="card green-accent">
+        <h3>Global Environmental Issues</h3>
+        <ul>
+          <li>Paris Agreement: target to limit warming to 1.5°C above pre-industrial levels</li>
+          <li>COP summits: annual UN climate conferences</li>
+          <li>Biodiversity: UN target — 30×30 (protect 30% of land and ocean by 2030)</li>
+          <li>Deforestation: Amazon and Congo Basin under pressure</li>
+          <li>Plastic pollution: Pacific and Atlantic garbage patches</li>
+          <li>Ocean acidification: absorbs 30% of CO₂ emissions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">World Map Knowledge — Countries, Capitals, and Regions</div>
+      <div class="deep-body">
+        <h4>Key Countries to Know (and their capitals)</h4>
+        <table>
+          <tr><th>Region</th><th>Countries / Capitals to Know</th></tr>
+          <tr><td>South America</td><td>Brazil/Brasília; Argentina/Buenos Aires; Chile/Santiago; Peru/Lima; Colombia/Bogotá; Venezuela/Caracas; Bolivia/Sucre (seat of government: La Paz)</td></tr>
+          <tr><td>Africa</td><td>Egypt/Cairo; Nigeria/Abuja; South Africa/Pretoria (+ Cape Town, Bloemfontein); Kenya/Nairobi; Ethiopia/Addis Ababa; DRC/Kinshasa; Ghana/Accra; Morocco/Rabat</td></tr>
+          <tr><td>Asia</td><td>China/Beijing; Japan/Tokyo; India/New Delhi; Russia/Moscow; Indonesia/Jakarta; South Korea/Seoul; Saudi Arabia/Riyadh; Iran/Tehran; Pakistan/Islamabad</td></tr>
+          <tr><td>Europe</td><td>France/Paris; Germany/Berlin; UK/London; Italy/Rome; Spain/Madrid; Poland/Warsaw; Ukraine/Kyiv; Sweden/Stockholm; Netherlands/Amsterdam</td></tr>
+          <tr><td>Oceania</td><td>Australia/Canberra; New Zealand/Wellington; Papua New Guinea/Port Moresby; Fiji/Suva</td></tr>
+          <tr><td>Central America/Caribbean</td><td>Mexico/Mexico City; Cuba/Havana; Jamaica/Kingston; Haiti/Port-au-Prince; Panama/Panama City</td></tr>
+        </table>
+
+        <h4>Key Geographical Records</h4>
+        <ul>
+          <li>Largest country by area: Russia</li>
+          <li>Smallest country: Vatican City</li>
+          <li>Most populous country: India (surpassed China in 2023)</li>
+          <li>Longest coastline: Canada (202,080 km — longest in the world)</li>
+          <li>Country with most time zones: France (12 zones including overseas territories)</li>
+          <li>Northernmost capital city: Reykjavik, Iceland</li>
+          <li>Southernmost capital city: Wellington, New Zealand</li>
+          <li>Highest capital city: Quito, Ecuador / La Paz, Bolivia (contested by elevation)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIELDWORK -->
+  <div class="section" id="fieldwork">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <div class="section-icon">🧭</div>
+      <div class="section-title">Fieldwork Exercise — How to Prepare</div>
+    </div>
+
+    <div class="alert green"><strong>What happened at the 2025 final:</strong> Finalists went outdoors in Ottawa for hands-on fieldwork — observing, mapping, and analyzing geographic features in the real world. Think like a geographer, not just a trivia player.</div>
+
+    <ul class="fieldwork-steps">
+      <li>
+        <div>
+          <strong>Map Reading & Topographic Maps</strong>
+          Practice reading topographic maps (contour lines, scale, legend, compass rose, grid references). Know how to calculate slope, identify landforms from contours, and find elevations. Natural Resources Canada topographic maps are the Canadian standard.
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Compass Skills & Orienteering</strong>
+          Know how to use a compass to determine direction and bearing. Practice taking bearings from landmarks. Understand magnetic declination in Canada (varies by region). Be able to navigate a route using map + compass.
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Environmental Observation</strong>
+          Practice identifying rock types (igneous, sedimentary, metamorphic), soil horizons, vegetation communities, drainage patterns, and signs of human modification of the landscape. What is the evidence of glaciation? What is the land use in this area?
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Sketch Mapping</strong>
+          Practice drawing quick, accurate sketch maps of an area with: title, scale (bar scale), north arrow, legend/key, labels for key features. Must be clear enough for someone unfamiliar with the area to understand.
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Land Use Analysis</strong>
+          Identify and categorize land uses visible in an area (residential, commercial, industrial, agricultural, conservation, institutional). Be able to explain why certain land uses appear where they do geographically.
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Water Features Analysis</strong>
+          Understand watershed, drainage basins, floodplains, river meanders, erosion and deposition. Identify how a river changes as it moves from upper to lower course. Look for evidence of human modification (dams, channelization, berms).
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Geographic Questions Framework</strong>
+          At any fieldwork site, ask: <em>What is here? Why is it here? How did it form? How does it connect to the broader landscape? What are the human impacts? What will it look like in the future?</em> These six questions mirror how geographers think.
+        </div>
+      </li>
+    </ul>
+
+    <div class="alert"><strong>Practice tip:</strong> Go outside at least once a week before the final. Walk a local area — a park, a ravine, a waterfront — and practise observing, sketching, and describing it geographically. Ottawa is rich in geography: the Ottawa River, Rideau Canal, Gatineau Hills, Greenbelt, glacial features, and urban land use contrasts.</div>
+  </div>
+
+  <!-- LIVE TRIVIA -->
+  <div class="section" id="trivia">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <div class="section-icon">🎙️</div>
+      <div class="section-title">Live Trivia Final — Strategy and Format</div>
+    </div>
+
+    <div class="cards">
+      <div class="card red-accent">
+        <h3>Speed + Accuracy</h3>
+        <p>The game-show format rewards both correctness and speed. Wrong answers typically lose points. When unsure, your best-reasoned guess is often worth attempting. Don't freeze — commit.</p>
+      </div>
+      <div class="card blue-accent">
+        <h3>Elimination Reasoning</h3>
+        <p>Even in buzzer rounds, think: "Which options can I eliminate immediately?" Narrow to your best choice. Canada's geography is systematic — use what you know about regions to narrow possibilities.</p>
+      </div>
+      <div class="card gold-accent">
+        <h3>Bilingual Confidence</h3>
+        <p>You may compete in English or French. If a question involves French place names (Gaspésie, Charlevoix, Nunavik), you're expected to know them. French geographic vocabulary helps even in English play.</p>
+      </div>
+      <div class="card teal-accent">
+        <h3>Watch Past Finals</h3>
+        <p>Past national final videos are on Can Geo Education's YouTube channel. Watching even 2–3 episodes teaches you the exact pacing, question style, and difficulty level better than any guide can.</p>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <h4>High-Frequency Trivia Topics to Review Daily</h4>
+      <div class="quiz-q">Province/territory capitals (all 13) — know them perfectly</div>
+      <div class="quiz-q">Canada's largest lakes by area and deepest lakes</div>
+      <div class="quiz-q">Longest/major rivers of Canada (and where they drain)</div>
+      <div class="quiz-q">Canada's national/provincial parks — location and what makes them special</div>
+      <div class="quiz-q">Indigenous nations — languages, territories, and cultural practices</div>
+      <div class="quiz-q">Mountain ranges and highest peaks by province</div>
+      <div class="quiz-q">World capitals of all major nations (especially Africa and South America)</div>
+      <div class="quiz-q">Canada's firsts: first national park, first FM, first prime minister, etc.</div>
+      <div class="quiz-q">Recent Canadian environmental events and current issues</div>
+      <div class="quiz-q">World geographic records: largest, longest, deepest, highest</div>
+    </div>
+  </div>
+
+  <!-- PRACTICE QUESTIONS -->
+  <div class="section" id="quiz">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <div class="section-icon">✏️</div>
+      <div class="section-title">Practice Questions — Test Yourself</div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">Physical Geography Practice</div>
+      <div class="deep-body">
+        <div class="quiz-q">Q1: What is the largest physiographic region of Canada?</div>
+        <div class="quiz-a">A: The Canadian Shield — covers roughly half of Canada's land area, centred on Hudson Bay.</div>
+
+        <div class="quiz-q">Q2: Which river is the longest entirely within Canada?</div>
+        <div class="quiz-a">A: The Mackenzie River system (4,241 km total length), draining into the Arctic Ocean from Great Slave Lake in NWT.</div>
+
+        <div class="quiz-q">Q3: What is Canada's highest mountain, and where is it located?</div>
+        <div class="quiz-a">A: Mount Logan (5,959 m) in the St. Elias Mountains, Yukon. It is the highest peak in Canada and the second-highest in North America.</div>
+
+        <div class="quiz-q">Q4: Name the Great Lake with the highest recorded tidal range nearby.</div>
+        <div class="quiz-a">A: The Great Lakes themselves have no significant tides. The world's highest tides are in the Bay of Fundy, Nova Scotia/New Brunswick — not associated with the Great Lakes.</div>
+
+        <div class="quiz-q">Q5: What geological process created most of Canada's lake basins?</div>
+        <div class="quiz-a">A: Glaciation — glaciers during the last Ice Age scoured basins and deposited moraines that dammed valleys, creating lakes when meltwater filled them.</div>
+
+        <div class="quiz-q">Q6: Which province contains the Athabasca Oil Sands, and why are they controversial?</div>
+        <div class="quiz-a">A: Alberta. They are controversial because extraction generates significant greenhouse gas emissions, creates massive tailings ponds, disturbs vast areas of boreal forest, and impacts Indigenous communities and traditional territories.</div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">Human Geography & Current Events Practice</div>
+      <div class="deep-body">
+        <div class="quiz-q">Q7: Which is Canada's newest territory, when was it created, and who are the majority of its residents?</div>
+        <div class="quiz-a">A: Nunavut, created April 1, 1999, from the eastern part of the Northwest Territories. The majority of residents are Inuit.</div>
+
+        <div class="quiz-q">Q8: What are Inuit Nunangat's four regions?</div>
+        <div class="quiz-a">A: Nunatsiavut (northern Labrador), Nunavik (northern Quebec), Nunavut (territory), and the Inuvialuit Settlement Region (NWT/Yukon Arctic coast).</div>
+
+        <div class="quiz-q">Q9: The Grand Banks cod moratorium occurred in what year, and what caused the collapse?</div>
+        <div class="quiz-a">A: 1992. Decades of over-fishing depleted the cod stocks beyond recovery; modern trawling technology allowed far greater catches than were sustainable.</div>
+
+        <div class="quiz-q">Q10: Canada has the world's longest coastline. Approximately how long is it?</div>
+        <div class="quiz-a">A: Approximately 202,080 km — the longest coastline of any country in the world.</div>
+
+        <div class="quiz-q">Q11: What is the Klondike Gold Rush, and in which decade did it occur?</div>
+        <div class="quiz-a">A: A gold rush that brought approximately 100,000 prospectors to the Yukon (primarily around Dawson City and Bonanza Creek) between 1896 and 1899.</div>
+
+        <div class="quiz-q">Q12: What does "Reconciliation" mean in the context of Canadian policy and the Truth and Reconciliation Commission?</div>
+        <div class="quiz-a">A: Reconciliation refers to the process of repairing the relationship between Indigenous and non-Indigenous Canadians, addressing the harms caused by residential schools, colonialism, and related policies. The TRC's 94 Calls to Action (2015) provide a roadmap for this work.</div>
+      </div>
+    </div>
+
+    <div class="deep">
+      <div class="deep-head">Biomes, Wildlife & Parks Practice</div>
+      <div class="deep-body">
+        <div class="quiz-q">Q13: What is the Spirit Bear, and where is it found?</div>
+        <div class="quiz-a">A: The Spirit Bear (Kermode bear) is a rare white-furred subspecies of the North American black bear. It is found only in the Great Bear Rainforest of BC's central and north coast, and is sacred to many coastal First Nations.</div>
+
+        <div class="quiz-q">Q14: Which national park contains the largest free-roaming herd of wild bison in North America?</div>
+        <div class="quiz-a">A: Wood Buffalo National Park (on the Alberta/NWT border). It is also the largest national park in Canada and a UNESCO World Heritage Site.</div>
+
+        <div class="quiz-q">Q15: What is permafrost, and why does its thaw matter?</div>
+        <div class="quiz-a">A: Permafrost is ground that remains frozen for two or more consecutive years. Its thaw due to climate change releases stored carbon (methane), destabilizes Arctic infrastructure (buildings, roads, runways), and alters drainage patterns. It accelerates climate change in a positive feedback loop.</div>
+
+        <div class="quiz-q">Q16: Name Canada's two most endangered large marine mammals.</div>
+        <div class="quiz-a">A: The North Atlantic right whale (approximately 340 remaining, threatened in the Gulf of St. Lawrence) and the Beluga whale (St. Lawrence population is small and endangered).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDY PLAN -->
+  <div class="section" id="plan">
+    <div class="section-header">
+      <div class="section-num">14</div>
+      <div class="section-icon">📅</div>
+      <div class="section-title">6-Week Countdown Study Plan</div>
+    </div>
+
+    <div class="week-plan">
+      <div class="week-label">Week 6<br>FOUNDATION</div>
+      <div class="week-content">
+        <ul>
+          <li>Master all 13 provinces/territories: capitals, major geographic features, key industries</li>
+          <li>Review the 7 physiographic regions with maps — be able to draw and label Canada's landform regions from memory</li>
+          <li>Begin daily GeoGuessr (Canada mode) — 30 min/day</li>
+          <li>Download and complete both Level 2 past question PDFs from the official challenge site</li>
+          <li>Watch 1 past national final video on Can Geo Education YouTube</li>
+        </ul>
+      </div>
+      <div class="week-label">Week 5<br>PHYSICAL</div>
+      <div class="week-content">
+        <ul>
+          <li>Deep-dive rivers, lakes, and mountains — make a flashcard set</li>
+          <li>Study glaciation and its effects on Canadian landscape</li>
+          <li>Learn climate zones in depth — which cities belong to which zone and why</li>
+          <li>Review national parks — know the top 10 and what makes each special</li>
+          <li>Start reading can geo magazine articles — 1 article per day minimum</li>
+        </ul>
+      </div>
+      <div class="week-label">Week 4<br>LIVING WORLD</div>
+      <div class="week-content">
+        <ul>
+          <li>Master Canada's biomes and ecozones — draw a biome map of Canada from memory</li>
+          <li>Study iconic and endangered wildlife — endangered status, range, threats</li>
+          <li>Learn 30×30 conservation targets and Canada's commitments</li>
+          <li>Study climate change impacts in Canada — Arctic, boreal, coastal</li>
+          <li>Begin fieldwork prep: go outside and practise sketch-mapping a local park or natural area</li>
+        </ul>
+      </div>
+      <div class="week-label">Week 3<br>INDIGENOUS</div>
+      <div class="week-content">
+        <ul>
+          <li>Study the Indigenous Peoples Atlas of Canada (indigenouspeoplesatlasofcanada.ca)</li>
+          <li>Know the three groups: First Nations, Inuit, Métis — histories, territories, current issues</li>
+          <li>Review Truth and Reconciliation Commission and 94 Calls to Action</li>
+          <li>Study boil water advisories and land rights issues from Can Geo magazine</li>
+          <li>Fieldwork practice: topographic map reading at 1:50,000 scale; compass bearing exercises</li>
+        </ul>
+      </div>
+      <div class="week-label">Week 2<br>HUMAN &amp; WORLD</div>
+      <div class="week-content">
+        <ul>
+          <li>Study world capitals, especially Africa, South America, and Southeast Asia</li>
+          <li>Review Canadian history — Confederation, key explorers, resource development</li>
+          <li>Study Canadian natural resources: energy (oil sands, hydro), mining (potash, diamonds, nickel), fisheries</li>
+          <li>Global environmental issues: Paris Agreement, IPCC findings, ocean acidification, Amazon deforestation</li>
+          <li>Full fieldwork simulation: take a half-day field trip with a topographic map, compass, and notebook; practise all skills</li>
+        </ul>
+      </div>
+      <div class="week-label">Week 1<br>FINALS PREP</div>
+      <div class="week-content">
+        <ul>
+          <li>Focus on current events: re-read recent Can Geo magazine issues (2024–2025)</li>
+          <li>Run mock trivia rounds with family — rapid-fire questions, timing under pressure</li>
+          <li>Review any weak areas identified during the previous 5 weeks</li>
+          <li>Practise written short-answer responses — geographic essay structure: claim, evidence, context, implication</li>
+          <li>Get sufficient sleep, eat well, and arrive confident — your preparation is solid</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div class="section" id="links">
+    <div class="section-header">
+      <div class="section-num">15</div>
+      <div class="section-icon">🔗</div>
+      <div class="section-title">Essential Resources</div>
+    </div>
+
+    <ul class="resource-list">
+      <li><span class="resource-icon">🏆</span><div><a href="https://challenge.canadiangeographic.ca/study-zone/past-questions/" target="_blank">Past Questions — Can Geo Challenge</a><span class="rdesc">Download Level 1 and Level 2 past PDFs with answer keys (2017–2019)</span></div></li>
+      <li><span class="resource-icon">📖</span><div><a href="https://indigenouspeoplesatlasofcanada.ca" target="_blank">Indigenous Peoples Atlas of Canada</a><span class="rdesc">The definitive RCGS resource on First Nations, Inuit, and Métis geography, history, and current issues</span></div></li>
+      <li><span class="resource-icon">🗺️</span><div><a href="https://cangeoeducation.ca/en/resources/" target="_blank">Can Geo Education Resources</a><span class="rdesc">Climate change infographics, lesson resources, and maps from Canadian Geographic Education</span></div></li>
+      <li><span class="resource-icon">📊</span><div><a href="https://www.statcan.gc.ca" target="_blank">Statistics Canada</a><span class="rdesc">Population data, census results, economic geography statistics — cite these in written answers</span></div></li>
+      <li><span class="resource-icon">🌿</span><div><a href="https://www.canada.ca/en/environment-climate-change.html" target="_blank">Environment and Climate Change Canada</a><span class="rdesc">Official climate reports, species at risk data, national park information</span></div></li>
+      <li><span class="resource-icon">🎮</span><div><a href="https://www.geoguessr.com" target="_blank">GeoGuessr</a><span class="rdesc">Set it to Canada mode — builds visual landscape recognition and provincial geography instincts</span></div></li>
+      <li><span class="resource-icon">🎮</span><div><a href="https://www.sporcle.com" target="_blank">Sporcle — Geography Quizzes</a><span class="rdesc">Canadian provinces, world capitals, rivers and mountains — timed quizzes build speed for live trivia</span></div></li>
+      <li><span class="resource-icon">▶️</span><div><a href="https://www.youtube.com/user/canadiangeographic" target="_blank">Can Geo Education YouTube Channel</a><span class="rdesc">Watch past national finals to understand question format, pacing, and difficulty level</span></div></li>
+      <li><span class="resource-icon">🗺️</span><div><a href="https://earth.google.com" target="_blank">Google Earth</a><span class="rdesc">Virtual tours of national parks, Arctic landscapes, river systems — exceptional visual learning tool</span></div></li>
+      <li><span class="resource-icon">📰</span><div><a href="https://canadiangeographic.ca" target="_blank">Canadian Geographic Magazine Online</a><span class="rdesc">Read recent articles — especially environment, Indigenous, Arctic, and wildlife topics</span></div></li>
+      <li><span class="resource-icon">🌐</span><div><a href="https://www.ourworldindata.org" target="_blank">Our World in Data</a><span class="rdesc">Global statistics on population, climate, resources — strong for written test supporting data</span></div></li>
+      <li><span class="resource-icon">📚</span><div><a href="https://www.cia.gov/the-world-factbook/" target="_blank">CIA World Factbook</a><span class="rdesc">Country profiles, capitals, geography facts — comprehensive global reference</span></div></li>
+    </ul>
+
+    <div class="alert green">
+      <strong>Contact the organizers:</strong> For questions about the 2025–26 Can Geo Challenge national final, email <strong>info@cangeoeducation.ca</strong> or reach Challenge Coordinator Eric Nadeau directly. They often share subject focus areas for the written test in advance.
+    </div>
+  </div>
+
+  <div style="text-align: center; padding: 2rem 0; color: #888780; font-family: Arial, sans-serif; font-size: 0.8rem; border-top: 1px solid #D3D1C7; margin-top: 2rem;">
+    Canadian Geographic Challenge Study Guide · Prepared April 2026 · Based on official challenge materials, Can Geo magazine 2024–2025, and RCGS resources<br>
+    <strong style="color: #CC2929;">Good luck at Nationals! 🍁</strong>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.deep-head').forEach(h => {
+    h.addEventListener('click', () => {
+      const body = h.nextElementSibling;
+      const isOpen = body.style.display !== 'none';
+      body.style.display = isOpen ? 'none' : 'block';
+      h.querySelector('.toggle-icon') && (h.querySelector('.toggle-icon').textContent = isOpen ? '▶' : '▼');
+    });
+  });
+  document.querySelectorAll('.deep-head').forEach(h => {
+    const icon = document.createElement('span');
+    icon.className = 'toggle-icon';
+    icon.textContent = '▼';
+    icon.style.cssText = 'font-size:11px; color:#888; margin-left:8px;';
+    h.appendChild(icon);
+  });
+</script>
+</body>
+</html>
