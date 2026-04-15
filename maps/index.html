@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MapDrill">
+<meta name="theme-color" content="#0d1b2a">
+<title>Map Drill – Geography Reference</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{
+  --bg:#0d1b2a;--s1:#112240;--s2:#1a3358;--border:#2a4a6e;
+  --accent:#00c8f0;--gold:#ffd700;--green:#34d975;--red:#ff453a;
+  --orange:#ff6b35;--yellow:#ffd60a;--purple:#bf5af2;
+  --text:#e8f0fa;--muted:#7a9ab8;--dim:#3a5572;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  /* Category colors */
+  --c-capitals:#00c8f0;
+  --c-rivers:#4fc3f7;
+  --c-mountains:#ff6b35;
+  --c-deserts:#ffd60a;
+  --c-lakes:#29b6f6;
+  --c-straits:#ab47bc;
+  --c-special:#34d975;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;height:-webkit-fill-available;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased;}
+#app{display:flex;flex-direction:column;height:100%;height:-webkit-fill-available;padding-top:var(--safe-top);}
+
+/* HEADER */
+#hdr{background:var(--s1);border-bottom:1px solid var(--border);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px;z-index:1000;}
+.logo{font-size:18px;font-weight:800;letter-spacing:1.5px;color:var(--accent);white-space:nowrap;}
+.logo span{color:var(--gold);}
+#search-wrap{flex:1;position:relative;}
+#search{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:7px 14px 7px 32px;font-size:14px;color:var(--text);font-family:inherit;outline:none;}
+#search::placeholder{color:var(--muted);}
+#search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;}
+#search-results{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--s1);border:1px solid var(--border);border-radius:12px;max-height:280px;overflow-y:auto;z-index:2000;display:none;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.sr-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sr-item:last-child{border-bottom:none;}
+.sr-item:active{background:var(--s2);}
+.sr-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.sr-name{font-size:13px;font-weight:600;}
+.sr-sub{font-size:11px;color:var(--muted);}
+
+/* FILTER BAR */
+#filters{background:var(--s1);border-bottom:1px solid var(--border);display:flex;gap:6px;padding:8px 10px;overflow-x:auto;flex-shrink:0;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+#filters::-webkit-scrollbar{display:none;}
+.fchip{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+.fchip:active{transform:scale(.95);}
+.fchip.on{color:#000 !important;}
+.fchip[data-cat="all"].on{background:var(--text);border-color:var(--text);color:#000;}
+.fchip[data-cat="capitals"].on{background:var(--c-capitals);border-color:var(--c-capitals);}
+.fchip[data-cat="rivers"].on{background:var(--c-rivers);border-color:var(--c-rivers);}
+.fchip[data-cat="mountains"].on{background:var(--c-mountains);border-color:var(--c-mountains);}
+.fchip[data-cat="deserts"].on{background:var(--c-deserts);border-color:var(--c-deserts);}
+.fchip[data-cat="lakes"].on{background:var(--c-lakes);border-color:var(--c-lakes);}
+.fchip[data-cat="straits"].on{background:var(--c-straits);border-color:var(--c-straits);}
+.fchip[data-cat="special"].on{background:var(--c-special);border-color:var(--c-special);}
+.fcount{font-size:10px;opacity:.8;}
+
+/* MAP */
+#map{flex:1;z-index:1;}
+
+/* Leaflet overrides */
+.leaflet-popup-content-wrapper{background:var(--s1);border:1.5px solid var(--border);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.6);color:var(--text);font-family:-apple-system,sans-serif;max-width:260px;}
+.leaflet-popup-tip{background:var(--s1);}
+.leaflet-popup-close-button{color:var(--muted) !important;font-size:18px !important;top:8px !important;right:10px !important;}
+.popup-name{font-size:16px;font-weight:800;margin-bottom:4px;line-height:1.2;}
+.popup-cat{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;display:inline-block;padding:2px 8px;border-radius:8px;color:#000;}
+.popup-note{font-size:13px;line-height:1.6;color:var(--muted);}
+.popup-sub{font-size:11px;color:var(--dim);margin-top:6px;font-family:'SF Mono',Menlo,monospace;}
+
+/* Custom markers */
+.cmarker{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;box-shadow:0 2px 8px rgba(0,0,0,.5);cursor:pointer;transition:transform .15s;}
+.cmarker.capitals{background:var(--c-capitals);}
+.cmarker.rivers{background:var(--c-rivers);}
+.cmarker.mountains{background:var(--c-mountains);}
+.cmarker.deserts{background:var(--c-deserts);color:#000;}
+.cmarker.lakes{background:var(--c-lakes);}
+.cmarker.straits{background:var(--c-straits);}
+.cmarker.special{background:var(--c-special);color:#000;}
+
+/* Label markers (showing name on map) */
+.lmarker{background:rgba(13,27,42,.85);color:var(--text);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap;border:1px solid var(--border);pointer-events:none;}
+
+/* COUNTER */
+#counter{position:absolute;bottom:calc(var(--safe-bottom) + 8px);right:10px;background:rgba(17,34,64,.9);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:12px;font-family:'SF Mono',Menlo,monospace;color:var(--accent);z-index:500;pointer-events:none;}
+
+/* LEGEND */
+#legend{position:absolute;bottom:calc(var(--safe-bottom) + 8px);left:10px;background:rgba(17,34,64,.9);border:1px solid var(--border);border-radius:10px;padding:8px 12px;z-index:500;display:none;}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);margin-bottom:4px;}
+.leg-item:last-child{margin-bottom:0;}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+</style>
+</head>
+<body>
+<script type="application/json" id="GEO_DATA">[{"n":"Cairo","lat":30.06,"lng":31.25,"cat":"capitals","sub":"AF","note":"Capital of Egypt. Most populous Arab country. On the Nile."},{"n":"Addis Ababa","lat":9.02,"lng":38.74,"cat":"capitals","sub":"AF","note":"Capital of Ethiopia. HQ of African Union. Most populous landlocked country."},{"n":"Nairobi","lat":-1.29,"lng":36.82,"cat":"capitals","sub":"AF","note":"Capital of Kenya. Only national park within a capital city."},{"n":"Lagos","lat":6.52,"lng":3.38,"cat":"capitals","sub":"AF","note":"Largest city of Nigeria (capital is Abuja \u2014 common trap)."},{"n":"Abuja","lat":9.07,"lng":7.4,"cat":"capitals","sub":"AF","note":"Capital of Nigeria. Most populous African country."},{"n":"Kinshasa","lat":-4.32,"lng":15.32,"cat":"capitals","sub":"AF","note":"Capital of DR Congo. Largest Francophone country by area."},{"n":"Johannesburg","lat":-26.2,"lng":28.04,"cat":"capitals","sub":"AF","note":"Largest city of South Africa (NOT capital \u2014 trap!). Province: Gauteng."},{"n":"Pretoria","lat":-25.75,"lng":28.22,"cat":"capitals","sub":"AF","note":"Executive capital of South Africa."},{"n":"Cape Town","lat":-33.92,"lng":18.42,"cat":"capitals","sub":"AF","note":"Legislative capital of South Africa. Cape of Good Hope nearby."},{"n":"Dar es Salaam","lat":-6.79,"lng":39.21,"cat":"capitals","sub":"AF","note":"Largest city Tanzania (capital is Dodoma \u2014 trap!). Indian Ocean coast."},{"n":"Dodoma","lat":-6.17,"lng":35.74,"cat":"capitals","sub":"AF","note":"Official capital of Tanzania. Serengeti and Kilimanjaro are in this country."},{"n":"Khartoum","lat":15.55,"lng":32.53,"cat":"capitals","sub":"AF","note":"Capital of Sudan. At confluence of Blue Nile and White Nile."},{"n":"Rabat","lat":34.02,"lng":-6.83,"cat":"capitals","sub":"AF","note":"Capital of Morocco (NOT Casablanca \u2014 trap!). Atlas Mountains to south."},{"n":"Tunis","lat":36.82,"lng":10.17,"cat":"capitals","sub":"AF","note":"Capital of Tunisia. Northernmost country in Africa."},{"n":"Tripoli","lat":32.9,"lng":13.18,"cat":"capitals","sub":"AF","note":"Capital of Libya. Large oil-rich country."},{"n":"Algiers","lat":36.74,"lng":3.06,"cat":"capitals","sub":"AF","note":"Capital of Algeria. Largest country in Africa."},{"n":"Accra","lat":5.55,"lng":-0.2,"cat":"capitals","sub":"AF","note":"Capital of Ghana. First sub-Saharan country independent (1957)."},{"n":"Dakar","lat":14.69,"lng":-17.44,"cat":"capitals","sub":"AF","note":"Capital of Senegal. Westernmost point of African mainland."},{"n":"Yamoussoukro","lat":6.82,"lng":-5.28,"cat":"capitals","sub":"AF","note":"Official capital of Ivory Coast (seat of government: Abidjan \u2014 trap!)."},{"n":"Harare","lat":-17.83,"lng":31.05,"cat":"capitals","sub":"AF","note":"Capital of Zimbabwe. Victoria Falls on western border with Zambia."},{"n":"Lusaka","lat":-15.41,"lng":28.28,"cat":"capitals","sub":"AF","note":"Capital of Zambia. Victoria Falls on eastern border with Zimbabwe."},{"n":"Luanda","lat":-8.84,"lng":13.23,"cat":"capitals","sub":"AF","note":"Capital of Angola. Oil-rich; Portuguese official language."},{"n":"Kampala","lat":0.32,"lng":32.58,"cat":"capitals","sub":"AF","note":"Capital of Uganda. Source of Nile is Lake Victoria on its border."},{"n":"Juba","lat":4.86,"lng":31.57,"cat":"capitals","sub":"AF","note":"Capital of South Sudan. Newest UN member (2011)."},{"n":"Mogadishu","lat":2.05,"lng":45.34,"cat":"capitals","sub":"AF","note":"Capital of Somalia. Horn of Africa. Longest coastline in mainland Africa."},{"n":"Antananarivo","lat":-18.91,"lng":47.54,"cat":"capitals","sub":"AF","note":"Capital of Madagascar. 4th largest island in the world."},{"n":"Beijing","lat":39.91,"lng":116.39,"cat":"capitals","sub":"AS","note":"Capital of China. Forbidden City, Tiananmen Square. Only city to host Summer and Winter Olympics."},{"n":"Tokyo","lat":35.68,"lng":139.69,"cat":"capitals","sub":"AS","note":"Capital of Japan. World's most populous metropolitan area."},{"n":"New Delhi","lat":28.61,"lng":77.21,"cat":"capitals","sub":"AS","note":"Capital of India (NOT Mumbai \u2014 trap!). Mumbai is largest city/port."},{"n":"Seoul","lat":37.57,"lng":126.98,"cat":"capitals","sub":"AS","note":"Capital of South Korea. Han River flows through it."},{"n":"Jakarta","lat":-6.21,"lng":106.85,"cat":"capitals","sub":"AS","note":"Capital of Indonesia (moving to Nusantara). On Java island."},{"n":"Tehran","lat":35.69,"lng":51.39,"cat":"capitals","sub":"AS","note":"Capital of Iran. Formerly Persia."},{"n":"Baghdad","lat":33.34,"lng":44.4,"cat":"capitals","sub":"AS","note":"Capital of Iraq. On the Tigris River. Tigris and Euphrates converge in southern Iraq."},{"n":"Riyadh","lat":24.69,"lng":46.72,"cat":"capitals","sub":"AS","note":"Capital of Saudi Arabia. Largest country in Middle East. No permanent rivers."},{"n":"Ankara","lat":39.93,"lng":32.85,"cat":"capitals","sub":"AS","note":"Capital of Turkey (NOT Istanbul \u2014 biggest trap in Asia!)."},{"n":"Istanbul","lat":41.01,"lng":28.95,"cat":"capitals","sub":"AS","note":"Largest city of Turkey. Straddles Europe and Asia via Bosphorus. Formerly Constantinople."},{"n":"Abu Dhabi","lat":24.47,"lng":54.37,"cat":"capitals","sub":"AS","note":"Capital of UAE (NOT Dubai \u2014 major trap!)."},{"n":"Dubai","lat":25.2,"lng":55.27,"cat":"capitals","sub":"AS","note":"Largest city of UAE (NOT the capital \u2014 Abu Dhabi is). Burj Khalifa."},{"n":"Islamabad","lat":33.72,"lng":73.06,"cat":"capitals","sub":"AS","note":"Capital of Pakistan. 5th most populous country. Karachi is largest city."},{"n":"Dhaka","lat":23.72,"lng":90.41,"cat":"capitals","sub":"AS","note":"Capital of Bangladesh. Most densely populated large country."},{"n":"Kathmandu","lat":27.71,"lng":85.31,"cat":"capitals","sub":"AS","note":"Capital of Nepal. Between India and China. Mount Everest."},{"n":"Astana","lat":51.18,"lng":71.45,"cat":"capitals","sub":"AS","note":"Capital of Kazakhstan (formerly Nur-Sultan). Almaty is largest city (snow leopard on coat of arms)."},{"n":"Ulaanbaatar","lat":47.9,"lng":106.91,"cat":"capitals","sub":"AS","note":"Capital of Mongolia. Between Russia and China. Gobi Desert to south."},{"n":"Tashkent","lat":41.3,"lng":69.24,"cat":"capitals","sub":"AS","note":"Capital of Uzbekistan. Most populous Central Asian country."},{"n":"Bangkok","lat":13.75,"lng":100.52,"cat":"capitals","sub":"AS","note":"Capital of Thailand. On Chao Phraya River. Only SE Asian country never colonized."},{"n":"Hanoi","lat":21.03,"lng":105.85,"cat":"capitals","sub":"AS","note":"Capital of Vietnam (north). Ho Chi Minh City is largest (south)."},{"n":"Phnom Penh","lat":11.56,"lng":104.92,"cat":"capitals","sub":"AS","note":"Capital of Cambodia. On Mekong River. Angkor Wat is to northwest."},{"n":"Naypyidaw","lat":19.76,"lng":96.08,"cat":"capitals","sub":"AS","note":"Capital of Myanmar (built 2005). Irrawaddy River flows through country."},{"n":"Kuala Lumpur","lat":3.14,"lng":101.69,"cat":"capitals","sub":"AS","note":"Capital of Malaysia (administrative seat: Putrajaya \u2014 trap!)."},{"n":"Singapore","lat":1.35,"lng":103.82,"cat":"capitals","sub":"AS","note":"City-state. One of world's busiest ports. Capital = entire country."},{"n":"Manila","lat":14.6,"lng":120.98,"cat":"capitals","sub":"AS","note":"Capital of Philippines. Archipelago of 7,000+ islands."},{"n":"Pyongyang","lat":39.02,"lng":125.75,"cat":"capitals","sub":"AS","note":"Capital of North Korea. Most isolated country."},{"n":"Vientiane","lat":17.97,"lng":102.6,"cat":"capitals","sub":"AS","note":"Capital of Laos. Only landlocked country in Southeast Asia."},{"n":"Colombo","lat":6.93,"lng":79.85,"cat":"capitals","sub":"AS","note":"Largest city of Sri Lanka (official capital: Sri Jayawardenepura Kotte \u2014 nearby)."},{"n":"Kabul","lat":34.53,"lng":69.17,"cat":"capitals","sub":"AS","note":"Capital of Afghanistan. Landlocked. Hindu Kush mountains."},{"n":"Amman","lat":31.95,"lng":35.93,"cat":"capitals","sub":"AS","note":"Capital of Jordan. Petra is in southern Jordan."},{"n":"Damascus","lat":33.51,"lng":36.29,"cat":"capitals","sub":"AS","note":"Capital of Syria. One of world's oldest continuously inhabited cities."},{"n":"Beirut","lat":33.89,"lng":35.5,"cat":"capitals","sub":"AS","note":"Capital of Lebanon. Cedar tree on its flag."},{"n":"Jerusalem","lat":31.78,"lng":35.22,"cat":"capitals","sub":"AS","note":"Capital of Israel (disputed internationally)."},{"n":"Doha","lat":25.29,"lng":51.53,"cat":"capitals","sub":"AS","note":"Capital of Qatar. Hosted 2022 FIFA World Cup."},{"n":"Muscat","lat":23.59,"lng":58.59,"cat":"capitals","sub":"AS","note":"Capital of Oman. Oldest continuously independent Arab state."},{"n":"Bishkek","lat":42.87,"lng":74.59,"cat":"capitals","sub":"AS","note":"Capital of Kyrgyzstan. Tian Shan mountains."},{"n":"Dushanbe","lat":38.56,"lng":68.77,"cat":"capitals","sub":"AS","note":"Capital of Tajikistan. Most mountainous Central Asian republic."},{"n":"Ashgabat","lat":37.95,"lng":58.38,"cat":"capitals","sub":"AS","note":"Capital of Turkmenistan. Most isolated Central Asian republic."},{"n":"Tbilisi","lat":41.69,"lng":44.83,"cat":"capitals","sub":"AS","note":"Capital of Georgia. In the Caucasus."},{"n":"Yerevan","lat":40.18,"lng":44.51,"cat":"capitals","sub":"AS","note":"Capital of Armenia. Oldest Christian nation. Landlocked Caucasus."},{"n":"Baku","lat":40.41,"lng":49.87,"cat":"capitals","sub":"AS","note":"Capital of Azerbaijan. On Caspian Sea."},{"n":"Thimphu","lat":27.47,"lng":89.64,"cat":"capitals","sub":"AS","note":"Capital of Bhutan. Only carbon-negative country."},{"n":"London","lat":51.51,"lng":-0.13,"cat":"capitals","sub":"EU","note":"Capital of UK and England. On Thames River."},{"n":"Paris","lat":48.86,"lng":2.35,"cat":"capitals","sub":"EU","note":"Capital of France. On Seine River."},{"n":"Berlin","lat":52.52,"lng":13.4,"cat":"capitals","sub":"EU","note":"Capital of Germany."},{"n":"Rome","lat":41.9,"lng":12.49,"cat":"capitals","sub":"EU","note":"Capital of Italy. On Tiber River."},{"n":"Madrid","lat":40.42,"lng":-3.7,"cat":"capitals","sub":"EU","note":"Capital of Spain."},{"n":"Moscow","lat":55.75,"lng":37.62,"cat":"capitals","sub":"EU","note":"Capital of Russia. Largest country in world."},{"n":"Athens","lat":37.98,"lng":23.73,"cat":"capitals","sub":"EU","note":"Capital of Greece."},{"n":"Vienna","lat":48.21,"lng":16.37,"cat":"capitals","sub":"EU","note":"Capital of Austria. On Danube River."},{"n":"Warsaw","lat":52.23,"lng":21.01,"cat":"capitals","sub":"EU","note":"Capital of Poland. On Vistula River."},{"n":"Brussels","lat":50.85,"lng":4.35,"cat":"capitals","sub":"EU","note":"Capital of Belgium. HQ of EU and NATO."},{"n":"Amsterdam","lat":52.37,"lng":4.9,"cat":"capitals","sub":"EU","note":"Capital of Netherlands. Famous for canals. Seat of government: The Hague."},{"n":"Kyiv","lat":50.45,"lng":30.52,"cat":"capitals","sub":"EU","note":"Capital of Ukraine. On Dnieper River. Largest country entirely in Europe."},{"n":"Stockholm","lat":59.33,"lng":18.07,"cat":"capitals","sub":"EU","note":"Capital of Sweden. Nobel Prize ceremonies (except Peace Prize) held here."},{"n":"Oslo","lat":59.91,"lng":10.75,"cat":"capitals","sub":"EU","note":"Capital of Norway. Nobel PEACE Prize awarded here."},{"n":"Copenhagen","lat":55.68,"lng":12.57,"cat":"capitals","sub":"EU","note":"Capital of Denmark. Oldest flag still in use (Dannebrog)."},{"n":"Helsinki","lat":60.17,"lng":24.94,"cat":"capitals","sub":"EU","note":"Capital of Finland. 187,888 lakes in the country."},{"n":"Reykjavik","lat":64.14,"lng":-21.94,"cat":"capitals","sub":"EU","note":"Capital of Iceland. Northernmost capital in the world."},{"n":"Bern","lat":46.95,"lng":7.45,"cat":"capitals","sub":"EU","note":"Capital of Switzerland. Largest non-EU Western European country."},{"n":"Lisbon","lat":38.72,"lng":-9.14,"cat":"capitals","sub":"EU","note":"Capital of Portugal. Westernmost capital in continental Europe."},{"n":"Prague","lat":50.08,"lng":14.44,"cat":"capitals","sub":"EU","note":"Capital of Czech Republic (Czechia). On Vltava River."},{"n":"Budapest","lat":47.5,"lng":19.04,"cat":"capitals","sub":"EU","note":"Capital of Hungary. On Danube River between Buda and Pest."},{"n":"Bucharest","lat":44.43,"lng":26.1,"cat":"capitals","sub":"EU","note":"Capital of Romania. Flag nearly identical to Chad \u2014 major trap."},{"n":"Sofia","lat":42.7,"lng":23.32,"cat":"capitals","sub":"EU","note":"Capital of Bulgaria."},{"n":"Belgrade","lat":44.8,"lng":20.46,"cat":"capitals","sub":"EU","note":"Capital of Serbia. On Danube River."},{"n":"Zagreb","lat":45.81,"lng":15.98,"cat":"capitals","sub":"EU","note":"Capital of Croatia. Adriatic coast country."},{"n":"Sarajevo","lat":43.85,"lng":18.36,"cat":"capitals","sub":"EU","note":"Capital of Bosnia & Herzegovina. Site of 1914 assassination."},{"n":"Podgorica","lat":42.44,"lng":19.26,"cat":"capitals","sub":"EU","note":"Capital of Montenegro."},{"n":"Tirana","lat":41.33,"lng":19.82,"cat":"capitals","sub":"EU","note":"Capital of Albania."},{"n":"Skopje","lat":41.99,"lng":21.43,"cat":"capitals","sub":"EU","note":"Capital of North Macedonia."},{"n":"Pristina","lat":42.67,"lng":21.17,"cat":"capitals","sub":"EU","note":"Capital of Kosovo. Map of Kosovo on its flag."},{"n":"Valletta","lat":35.9,"lng":14.51,"cat":"capitals","sub":"EU","note":"Capital of Malta. Mediterranean island south of Sicily."},{"n":"Minsk","lat":53.9,"lng":27.57,"cat":"capitals","sub":"EU","note":"Capital of Belarus. Last dictatorship in Europe."},{"n":"Vilnius","lat":54.69,"lng":25.28,"cat":"capitals","sub":"EU","note":"Capital of Lithuania. Baltic state."},{"n":"Riga","lat":56.95,"lng":24.11,"cat":"capitals","sub":"EU","note":"Capital of Latvia. Baltic state."},{"n":"Tallinn","lat":59.44,"lng":24.75,"cat":"capitals","sub":"EU","note":"Capital of Estonia. Baltic state."},{"n":"Andorra la Vella","lat":42.51,"lng":1.52,"cat":"capitals","sub":"EU","note":"Capital of Andorra. Highest capital in Europe. In Pyrenees between France and Spain."},{"n":"Ottawa","lat":45.42,"lng":-75.7,"cat":"capitals","sub":"NA","note":"Capital of Canada. On Ottawa River, Ontario/Quebec border."},{"n":"Washington DC","lat":38.89,"lng":-77.04,"cat":"capitals","sub":"NA","note":"Capital of USA. On Potomac River. Wall Street is in New York City."},{"n":"Mexico City","lat":19.43,"lng":-99.13,"cat":"capitals","sub":"NA","note":"Capital of Mexico. One of world's largest cities. Eagle on cactus eating snake on flag."},{"n":"Havana","lat":23.13,"lng":-82.38,"cat":"capitals","sub":"NA","note":"Capital of Cuba. Largest Caribbean island."},{"n":"Kingston","lat":17.99,"lng":-76.79,"cat":"capitals","sub":"NA","note":"Capital of Jamaica. South of Cuba."},{"n":"Port-au-Prince","lat":18.54,"lng":-72.34,"cat":"capitals","sub":"NA","note":"Capital of Haiti. Western Hispaniola. First Black republic."},{"n":"Santo Domingo","lat":18.48,"lng":-69.9,"cat":"capitals","sub":"NA","note":"Capital of Dominican Republic. Eastern Hispaniola."},{"n":"Nassau","lat":25.06,"lng":-77.34,"cat":"capitals","sub":"NA","note":"Capital of Bahamas. North of Cuba."},{"n":"Bridgetown","lat":13.1,"lng":-59.62,"cat":"capitals","sub":"NA","note":"Capital of Barbados. Easternmost Caribbean island. Atlantic Ocean, near Caribbean."},{"n":"Port of Spain","lat":10.65,"lng":-61.52,"cat":"capitals","sub":"NA","note":"Capital of Trinidad and Tobago. Near Venezuela."},{"n":"San Jos\u00e9","lat":9.93,"lng":-84.09,"cat":"capitals","sub":"NA","note":"Capital of Costa Rica. No army since 1948."},{"n":"Panama City","lat":8.99,"lng":-79.52,"cat":"capitals","sub":"NA","note":"Capital of Panama. Panama Canal connects Pacific to Caribbean."},{"n":"Guatemala City","lat":14.64,"lng":-90.51,"cat":"capitals","sub":"NA","note":"Capital of Guatemala. Southernmost Mexico border."},{"n":"Tegucigalpa","lat":14.1,"lng":-87.22,"cat":"capitals","sub":"NA","note":"Capital of Honduras. Bay Islands in Caribbean. Mayan site Cop\u00e1n."},{"n":"Managua","lat":12.13,"lng":-86.29,"cat":"capitals","sub":"NA","note":"Capital of Nicaragua. Largest Central American country. Lake Nicaragua."},{"n":"Brasilia","lat":-15.78,"lng":-47.93,"cat":"capitals","sub":"SA","note":"Capital of Brazil (NOT Rio de Janeiro \u2014 major trap!). Built 1960."},{"n":"Buenos Aires","lat":-34.6,"lng":-58.38,"cat":"capitals","sub":"SA","note":"Capital of Argentina. On R\u00edo de la Plata. Andes on west side."},{"n":"Lima","lat":-12.05,"lng":-77.04,"cat":"capitals","sub":"SA","note":"Capital of Peru. On Pacific coast. Andes and Amazon."},{"n":"Bogot\u00e1","lat":4.71,"lng":-74.07,"cat":"capitals","sub":"SA","note":"Capital of Colombia. Northern Andes. Two coasts (Caribbean and Pacific)."},{"n":"Santiago","lat":-33.46,"lng":-70.65,"cat":"capitals","sub":"SA","note":"Capital of Chile. Long thin country on Pacific. Andes to east."},{"n":"Caracas","lat":10.48,"lng":-66.88,"cat":"capitals","sub":"SA","note":"Capital of Venezuela. Orinoco River. Angel Falls."},{"n":"Quito","lat":-0.23,"lng":-78.52,"cat":"capitals","sub":"SA","note":"Capital of Ecuador. Gal\u00e1pagos Islands belong to it."},{"n":"Asunci\u00f3n","lat":-25.28,"lng":-57.64,"cat":"capitals","sub":"SA","note":"Capital of Paraguay. Landlocked. Bordered by Brazil, Argentina, Bolivia."},{"n":"La Paz","lat":-16.5,"lng":-68.15,"cat":"capitals","sub":"SA","note":"Administrative capital of Bolivia (constitutional capital: Sucre). Highest capital in world."},{"n":"Montevideo","lat":-34.9,"lng":-56.19,"cat":"capitals","sub":"SA","note":"Capital of Uruguay. Between Brazil and Argentina."},{"n":"Georgetown","lat":6.8,"lng":-58.16,"cat":"capitals","sub":"SA","note":"Capital of Guyana. Only English-speaking South American country."},{"n":"Paramaribo","lat":5.87,"lng":-55.17,"cat":"capitals","sub":"SA","note":"Capital of Suriname. Smallest South American country."},{"n":"Canberra","lat":-35.28,"lng":149.13,"cat":"capitals","sub":"OC","note":"Capital of Australia (NOT Sydney \u2014 biggest Oceania trap!)."},{"n":"Sydney","lat":-33.87,"lng":151.21,"cat":"capitals","sub":"OC","note":"Largest city Australia (NOT capital \u2014 Canberra is). In New South Wales."},{"n":"Wellington","lat":-41.29,"lng":174.78,"cat":"capitals","sub":"OC","note":"Capital of New Zealand. On North Island."},{"n":"Suva","lat":-18.14,"lng":178.44,"cat":"capitals","sub":"OC","note":"Capital of Fiji. Melanesia."},{"n":"Apia","lat":-13.83,"lng":-171.77,"cat":"capitals","sub":"OC","note":"Capital of Samoa. Polynesian country."},{"n":"Port Moresby","lat":-9.44,"lng":147.18,"cat":"capitals","sub":"OC","note":"Capital of Papua New Guinea."},{"n":"Nile River","lat":25.0,"lng":32.5,"cat":"rivers","sub":"AF","note":"Longest river in Africa. Flows NORTH through Sudan and Egypt to Mediterranean. Source: Lake Victoria."},{"n":"Congo River","lat":-2.0,"lng":16.0,"cat":"rivers","sub":"AF","note":"Flows west through DRC to Atlantic. 2nd largest by volume."},{"n":"Niger River","lat":14.0,"lng":3.0,"cat":"rivers","sub":"AF","note":"Flows through Guinea, Mali, Niger, Nigeria to Gulf of Guinea. Namesake of 2 countries."},{"n":"Zambezi River","lat":-17.0,"lng":30.0,"cat":"rivers","sub":"AF","note":"Flows east to Mozambique. Victoria Falls is on it (Zimbabwe/Zambia border)."},{"n":"Blue Nile Source","lat":12.0,"lng":37.5,"cat":"rivers","sub":"AF","note":"Blue Nile originates at Lake Tana, Ethiopia. Joins White Nile at Khartoum, Sudan."},{"n":"Yangtze River","lat":31.2,"lng":111.0,"cat":"rivers","sub":"AS","note":"Longest river in China. Three Gorges Dam is on it. Flows east to Shanghai."},{"n":"Yellow River (Huang He)","lat":36.0,"lng":104.0,"cat":"rivers","sub":"AS","note":"Northern China. Flows to Yellow Sea. Called 'China's sorrow' for flooding."},{"n":"Mekong River","lat":16.0,"lng":102.0,"cat":"rivers","sub":"AS","note":"Flows through 6 countries: China, Myanmar, Laos, Thailand, Cambodia, Vietnam."},{"n":"Indus River","lat":28.0,"lng":68.0,"cat":"rivers","sub":"AS","note":"Flows from Tibet through Pakistan to Arabian Sea. Cradle of Indus Valley Civilization."},{"n":"Ganges River","lat":25.5,"lng":83.0,"cat":"rivers","sub":"AS","note":"Flows across northern India to Bay of Bengal. Sacred Hindu river."},{"n":"Tigris River","lat":34.0,"lng":43.5,"cat":"rivers","sub":"AS","note":"Flows through Turkey and Iraq. Converges with Euphrates in southern Iraq (Shatt al-Arab)."},{"n":"Euphrates River","lat":34.0,"lng":39.5,"cat":"rivers","sub":"AS","note":"Flows through Turkey, Syria, Iraq. Converges with Tigris in southern Iraq."},{"n":"Han River (Seoul)","lat":37.5,"lng":126.9,"cat":"rivers","sub":"AS","note":"Flows through Seoul, South Korea. Site of economic 'miracle on the Han River'."},{"n":"Irrawaddy River","lat":21.0,"lng":95.5,"cat":"rivers","sub":"AS","note":"Main river of Myanmar. Flows south to Andaman Sea."},{"n":"Chao Phraya River","lat":13.8,"lng":100.5,"cat":"rivers","sub":"AS","note":"Flows through Bangkok, Thailand."},{"n":"Volga River","lat":54.0,"lng":47.0,"cat":"rivers","sub":"EU","note":"Longest river in Europe. Flows entirely in Russia south to Caspian Sea."},{"n":"Danube River","lat":47.0,"lng":19.0,"cat":"rivers","sub":"EU","note":"2nd longest in Europe. Flows east through 10 countries to Black Sea. Flows through Vienna, Budapest, Belgrade."},{"n":"Rhine River","lat":50.0,"lng":7.5,"cat":"rivers","sub":"EU","note":"Flows north through Germany and Netherlands to North Sea."},{"n":"Seine River","lat":48.9,"lng":2.3,"cat":"rivers","sub":"EU","note":"Flows through Paris to English Channel."},{"n":"Thames River","lat":51.5,"lng":-0.1,"cat":"rivers","sub":"EU","note":"Flows through London to North Sea."},{"n":"Rh\u00f4ne River","lat":45.0,"lng":5.0,"cat":"rivers","sub":"EU","note":"Originates in Swiss Alps. Flows through Lyon, France, to Mediterranean near Marseille."},{"n":"Amazon River","lat":-3.0,"lng":-60.0,"cat":"rivers","sub":"SA","note":"Greatest volume of any river. Flows east across Brazil. Surrounded by Amazon Rainforest."},{"n":"Mississippi River","lat":35.0,"lng":-90.0,"cat":"rivers","sub":"NA","note":"Flows south from Minnesota to Gulf of Mexico. Missouri is LONGER (trap!)."},{"n":"Missouri River","lat":43.0,"lng":-101.0,"cat":"rivers","sub":"NA","note":"Longest river in USA. Flows east from Montana to join Mississippi near St. Louis."},{"n":"Colorado River","lat":36.5,"lng":-112.0,"cat":"rivers","sub":"NA","note":"Flows through Grand Canyon, Arizona. Creates Lake Mead (Hoover Dam). Flows to Gulf of California."},{"n":"Orinoco River","lat":6.5,"lng":-65.0,"cat":"rivers","sub":"SA","note":"Primary river of Venezuela. Angel Falls is in this country."},{"n":"Paran\u00e1 River","lat":-24.0,"lng":-55.0,"cat":"rivers","sub":"SA","note":"Flows south through Brazil/Paraguay/Argentina. Itaip\u00fa Dam (world's 2nd largest) on Paraguay/Brazil border."},{"n":"Willamette River","lat":45.5,"lng":-122.7,"cat":"rivers","sub":"NA","note":"Portland (largest city of Oregon) is near its mouth where it joins the Columbia River."},{"n":"St. Lawrence River","lat":46.5,"lng":-72.0,"cat":"rivers","sub":"NA","note":"Flows from Great Lakes to Atlantic. Montreal and Quebec City are on it."},{"n":"Zambezi/Victoria Falls","lat":-17.92,"lng":25.85,"cat":"rivers","sub":"AF","note":"Victoria Falls \u2014 on Zambezi River, Zimbabwe/Zambia border. 'Mosi-oa-Tunya' (smoke that thunders)."},{"n":"Mount Everest","lat":27.99,"lng":86.93,"cat":"mountains","sub":"AS","note":"World's highest peak: 8,849m. On Nepal/China (Tibet) border. In the Himalayas."},{"n":"K2","lat":35.88,"lng":76.51,"cat":"mountains","sub":"AS","note":"World's 2nd highest: 8,611m. Pakistan/China border. In Karakoram Range. Deadliest major peak."},{"n":"Mont Blanc","lat":45.83,"lng":6.86,"cat":"mountains","sub":"EU","note":"Highest in Alps: 4,808m. On France-Italy border. Highest point in Western Europe."},{"n":"Aconcagua","lat":-32.65,"lng":-70.01,"cat":"mountains","sub":"SA","note":"Highest in Andes: 6,961m. In Argentina. Highest peak in Western and Southern Hemispheres."},{"n":"Denali (Mt McKinley)","lat":63.07,"lng":-151.0,"cat":"mountains","sub":"NA","note":"Highest in North America: 6,190m. In Alaska. Denali Star railway nearby."},{"n":"Kilimanjaro","lat":-3.07,"lng":37.35,"cat":"mountains","sub":"AF","note":"Highest in Africa: 5,895m. In Tanzania. Northeastern Tanzania, near Kenya border."},{"n":"Mount Elbrus","lat":43.35,"lng":42.44,"cat":"mountains","sub":"EU","note":"Highest in Europe (if Caucasus included): 5,642m. In Russia. Higher than Mont Blanc."},{"n":"Himalayas","lat":28.5,"lng":84.0,"cat":"mountains","sub":"AS","note":"World's highest range. Spans India, Nepal, Bhutan, Tibet/China. Contains Everest, K2, Kangchenjunga, Lhotse."},{"n":"Karakoram Range","lat":36.0,"lng":76.5,"cat":"mountains","sub":"AS","note":"Pakistan/China. Contains K2. Connected to Himalayas."},{"n":"Hindu Kush","lat":35.0,"lng":69.0,"cat":"mountains","sub":"AS","note":"Afghanistan/Pakistan. 'Killer of Hindus'. Connects Himalayas to Karakoram."},{"n":"Tian Shan","lat":42.0,"lng":78.0,"cat":"mountains","sub":"AS","note":"Central Asia (Kyrgyzstan/Kazakhstan/China). 'Heavenly Mountains'."},{"n":"Ural Mountains","lat":60.0,"lng":59.0,"cat":"mountains","sub":"EU","note":"Russia. Traditional boundary between Europe and Asia."},{"n":"Caucasus Mountains","lat":42.5,"lng":44.0,"cat":"mountains","sub":"AS","note":"Between Black Sea and Caspian Sea. Georgia, Armenia, Azerbaijan. Mount Elbrus is highest point."},{"n":"Atlas Mountains","lat":32.0,"lng":-4.0,"cat":"mountains","sub":"AF","note":"Morocco, Algeria, Tunisia. Highest peak: Toubkal (Morocco). Separates Mediterranean coast from Sahara."},{"n":"Andes Mountains","lat":-20.0,"lng":-68.0,"cat":"mountains","sub":"SA","note":"World's longest continental range: 7,000km. Runs along entire western coast of South America."},{"n":"Rocky Mountains","lat":45.0,"lng":-113.0,"cat":"mountains","sub":"NA","note":"Western North America. Canada to New Mexico."},{"n":"Appalachians","lat":37.0,"lng":-81.0,"cat":"mountains","sub":"NA","note":"Eastern USA. Alabama to Maine. Older and more eroded than Rockies."},{"n":"Alps","lat":46.5,"lng":9.5,"cat":"mountains","sub":"EU","note":"France, Switzerland, Austria, Italy, Slovenia. Mont Blanc is highest. Matterhorn, Jungfrau also here."},{"n":"Pyrenees","lat":42.7,"lng":0.5,"cat":"mountains","sub":"EU","note":"Between France and Spain. Andorra is entirely within. Separates Iberian Peninsula."},{"n":"Carpathians","lat":49.0,"lng":22.0,"cat":"mountains","sub":"EU","note":"Slovakia, Poland, Ukraine, Romania. Arc shape through Eastern Europe."},{"n":"Sahara Desert","lat":23.0,"lng":12.0,"cat":"deserts","sub":"AF","note":"Largest hot desert. Covers northern third of Africa. 9.2 million sq km."},{"n":"Arabian Desert","lat":23.0,"lng":45.0,"cat":"deserts","sub":"AS","note":"Arabian Peninsula. Saudi Arabia, Yemen, Oman, UAE."},{"n":"Gobi Desert","lat":42.0,"lng":105.0,"cat":"deserts","sub":"AS","note":"Northern China and Mongolia. Cold desert. Ancient Silk Road route."},{"n":"Kalahari Desert","lat":-24.0,"lng":21.0,"cat":"deserts","sub":"AF","note":"Southern Africa: Botswana, South Africa, Namibia. Semi-arid."},{"n":"Namib Desert","lat":-24.0,"lng":15.5,"cat":"deserts","sub":"AF","note":"Coastal Namibia. Oldest desert in world (~55 million years). Towering sand dunes."},{"n":"Atacama Desert","lat":-24.0,"lng":-69.5,"cat":"deserts","sub":"SA","note":"Northern Chile. Driest non-polar desert on Earth. Some areas have never recorded rain."},{"n":"Taklamakan Desert","lat":39.0,"lng":83.0,"cat":"deserts","sub":"AS","note":"Northwest China (Xinjiang). Cold desert. Name means 'place of ruins'."},{"n":"Patagonian Desert","lat":-44.0,"lng":-68.0,"cat":"deserts","sub":"SA","note":"Southern Argentina and Chile. Largest desert in South America."},{"n":"Mojave Desert","lat":35.5,"lng":-116.0,"cat":"deserts","sub":"NA","note":"California/Nevada. Death Valley (lowest point N.America, hottest temp recorded) is here."},{"n":"Sonoran Desert","lat":31.5,"lng":-111.0,"cat":"deserts","sub":"NA","note":"Arizona/Mexico. Yuma is here. Giant saguaro cacti."},{"n":"Thar Desert","lat":27.0,"lng":70.0,"cat":"deserts","sub":"AS","note":"India/Pakistan. Also called Great Indian Desert."},{"n":"Great Victoria Desert","lat":-29.0,"lng":127.0,"cat":"deserts","sub":"OC","note":"Australia. Largest desert in Australia."},{"n":"Caspian Sea","lat":41.5,"lng":51.0,"cat":"lakes","sub":"AS","note":"Largest lake in world (salt water). Borders Russia, Kazakhstan, Turkmenistan, Iran, Azerbaijan."},{"n":"Lake Superior","lat":47.5,"lng":-87.0,"cat":"lakes","sub":"NA","note":"Largest of Great Lakes by area. Shared Ontario/US border."},{"n":"Lake Victoria","lat":-1.0,"lng":33.0,"cat":"lakes","sub":"AF","note":"Largest lake in Africa. Shared by Kenya, Tanzania, Uganda. Source of White Nile."},{"n":"Lake Huron","lat":45.0,"lng":-82.5,"cat":"lakes","sub":"NA","note":"Second largest Great Lake."},{"n":"Lake Michigan","lat":43.5,"lng":-87.0,"cat":"lakes","sub":"NA","note":"Only Great Lake entirely within USA."},{"n":"Lake Baikal","lat":53.5,"lng":108.0,"cat":"lakes","sub":"AS","note":"Deepest lake in world (1,642m). Russia. Holds 20% of world's surface fresh water."},{"n":"Lake Tanganyika","lat":-6.5,"lng":29.5,"cat":"lakes","sub":"AF","note":"Deepest in Africa, 2nd deepest in world. Tanzania/DRC/Zambia/Burundi."},{"n":"Lake Malawi","lat":-12.0,"lng":34.5,"cat":"lakes","sub":"AF","note":"Southern Africa. Malawi/Tanzania/Mozambique."},{"n":"Lake Chad","lat":13.5,"lng":14.0,"cat":"lakes","sub":"AF","note":"Dramatically shrinking. Borders Niger, Chad, Nigeria, Cameroon."},{"n":"Lake Titicaca","lat":-15.8,"lng":-69.3,"cat":"lakes","sub":"SA","note":"Highest navigable lake in world (3,812m). On Peru/Bolivia border."},{"n":"Dead Sea","lat":31.5,"lng":35.5,"cat":"lakes","sub":"AS","note":"Lowest body of water on Earth (-430m). Israel/Jordan border."},{"n":"Aral Sea","lat":45.5,"lng":60.0,"cat":"lakes","sub":"AS","note":"Kazakhstan/Uzbekistan. Once one of world's largest lakes \u2014 now mostly dry due to irrigation."},{"n":"Lake Erie","lat":42.2,"lng":-81.2,"cat":"lakes","sub":"NA","note":"Shallowest and southernmost Great Lake. Niagara Falls is on Lake Erie-Ontario connection."},{"n":"Lake Ontario","lat":43.7,"lng":-77.8,"cat":"lakes","sub":"NA","note":"Smallest Great Lake by area. Borders Ontario (Canada) and New York (USA)."},{"n":"Great Bear Lake","lat":66.0,"lng":-120.0,"cat":"lakes","sub":"NA","note":"Largest lake entirely in Canada. Northwest Territories."},{"n":"Strait of Gibraltar","lat":35.97,"lng":-5.35,"cat":"straits","sub":"EU","note":"Between Morocco and Spain. Atlantic to Mediterranean. British Overseas Territory of Gibraltar."},{"n":"Strait of Hormuz","lat":26.6,"lng":56.3,"cat":"straits","sub":"AS","note":"Between Oman/UAE and Iran. Persian Gulf to Arabian Sea. ~20% of world's oil passes through."},{"n":"Strait of Malacca","lat":3.0,"lng":101.0,"cat":"straits","sub":"AS","note":"Between Malaysia/Singapore and Sumatra. Busiest shipping lane in world."},{"n":"Bosphorus Strait","lat":41.1,"lng":29.0,"cat":"straits","sub":"EU","note":"Through Istanbul, Turkey. Connects Black Sea to Sea of Marmara. Europe/Asia boundary."},{"n":"Drake Passage","lat":-58.0,"lng":-65.0,"cat":"straits","sub":"SA","note":"Between Cape Horn (South America) and South Shetland Islands (Antarctica). Roughest seas."},{"n":"Bering Strait","lat":65.8,"lng":-168.5,"cat":"straits","sub":"AS","note":"Between Alaska (USA) and Russia. North Pacific to Arctic Ocean. Land bridge during ice ages."},{"n":"English Channel","lat":50.5,"lng":1.5,"cat":"straits","sub":"EU","note":"Between UK and France. Dover to Calais is narrowest point (34km)."},{"n":"Strait of Magellan","lat":-53.5,"lng":-70.9,"cat":"straits","sub":"SA","note":"Through southern Chile. Alternative to Drake Passage. Named after Ferdinand Magellan."},{"n":"Mozambique Channel","lat":-18.0,"lng":41.0,"cat":"straits","sub":"AF","note":"Between Madagascar and mainland Africa (Mozambique)."},{"n":"Torres Strait","lat":-10.5,"lng":142.0,"cat":"straits","sub":"OC","note":"Between Australia and Papua New Guinea."},{"n":"Dardanelles","lat":40.2,"lng":26.4,"cat":"straits","sub":"EU","note":"Turkey. Sea of Marmara to Aegean Sea. Together with Bosphorus controls access to Black Sea."},{"n":"Three Gorges Dam","lat":30.82,"lng":111.0,"cat":"special","sub":"AS","note":"On Yangtze River, Hubei Province, China. World's largest power station. Displaced 1+ million people."},{"n":"Hoover Dam","lat":36.01,"lng":-114.74,"cat":"special","sub":"NA","note":"On Colorado River, Nevada/Arizona border. Creates Lake Mead (largest US reservoir)."},{"n":"Panama Canal","lat":9.08,"lng":-79.68,"cat":"special","sub":"NA","note":"Connects Pacific and Atlantic oceans. Runs NW-SE (not E-W). 80km long."},{"n":"Suez Canal","lat":30.5,"lng":32.35,"cat":"special","sub":"AF","note":"Connects Mediterranean to Red Sea through Egypt. 193km long. No locks needed."},{"n":"Serengeti","lat":-2.33,"lng":34.83,"cat":"special","sub":"AF","note":"Grassland in Tanzania. World's largest lion population. Famous wildebeest migration."},{"n":"Angel Falls","lat":5.97,"lng":-62.53,"cat":"special","sub":"SA","note":"World's highest uninterrupted waterfall (979m). In Venezuela. In Canaima National Park."},{"n":"Gal\u00e1pagos Islands","lat":-0.53,"lng":-90.43,"cat":"special","sub":"SA","note":"Belongs to Ecuador. ~900km west of mainland. Darwin's evolution research site."},{"n":"Victoria Falls","lat":-17.92,"lng":25.85,"cat":"special","sub":"AF","note":"On Zambezi River, Zimbabwe/Zambia border. 'Mosi-oa-Tunya' (smoke that thunders). World's largest waterfall by width."},{"n":"Grand Canyon","lat":36.1,"lng":-112.11,"cat":"special","sub":"NA","note":"Arizona, USA. Carved by Colorado River. 446km long, up to 1,857m deep."},{"n":"Mount Kilimanjaro","lat":-3.07,"lng":37.35,"cat":"special","sub":"AF","note":"Highest peak in Africa (5,895m). In Tanzania, near Kenya border."},{"n":"Strait of Hormuz","lat":26.6,"lng":56.3,"cat":"special","sub":"AS","note":"Key oil chokepoint. ~20% of global oil supply passes through."},{"n":"Dead Sea","lat":31.5,"lng":35.5,"cat":"special","sub":"AS","note":"Lowest point on Earth's surface (-430m). Israel/Jordan. So salty you float."},{"n":"Lake Titicaca","lat":-15.8,"lng":-69.3,"cat":"special","sub":"SA","note":"Highest navigable lake (3,812m). Peru/Bolivia border."},{"n":"Sahara Desert","lat":23.0,"lng":12.0,"cat":"special","sub":"AF","note":"Largest hot desert. 9.2 million sq km. Covers northern Africa."},{"n":"Amazon Rainforest","lat":-3.5,"lng":-62.0,"cat":"special","sub":"SA","note":"World's largest rainforest. 5.5 million sq km. Mostly in Brazil."},{"n":"Atacama Desert","lat":-24.0,"lng":-69.5,"cat":"special","sub":"SA","note":"Driest non-polar desert. Some parts of northern Chile have never recorded rainfall."},{"n":"Gulf of Guinea","lat":3.0,"lng":3.0,"cat":"special","sub":"AF","note":"Prime meridian (0\u00b0) and equator intersect here. West Africa. Bight of Benin, Bight of Bonny."},{"n":"Great Barrier Reef","lat":-18.3,"lng":147.7,"cat":"special","sub":"OC","note":"World's largest coral reef system. Off Queensland coast, Australia. 2,300km long."},{"n":"Humboldt Current","lat":-12.0,"lng":-79.0,"cat":"special","sub":"SA","note":"Cold ocean current flowing north along Peru/Chile coast. Also called Peru Current."},{"n":"CN Tower","lat":43.64,"lng":-79.39,"cat":"special","sub":"NA","note":"In Toronto, Ontario (largest province by population). Was world's tallest free-standing structure 1976-2007."},{"n":"Christ the Redeemer","lat":-22.95,"lng":-43.21,"cat":"special","sub":"SA","note":"Art Deco statue atop Corcovado mountain in Rio de Janeiro, Brazil. One of New Seven Wonders."},{"n":"Wall Street","lat":40.71,"lng":-74.01,"cat":"special","sub":"NA","note":"Lower Manhattan, New York City. Location of New York Stock Exchange. Global financial symbol."},{"n":"Uluru (Ayers Rock)","lat":-25.34,"lng":131.04,"cat":"special","sub":"OC","note":"Sacred sandstone monolith in central Australia. Northern Territory. Aboriginal sacred site."}]</script>
+
+<div id="app">
+  <div id="hdr">
+    <div class="logo">MAP<span>DRILL</span></div>
+    <div id="search-wrap">
+      <span id="search-icon">🔍</span>
+      <input id="search" type="search" placeholder="Search any feature…" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div id="search-results"></div>
+    </div>
+  </div>
+
+  <div id="filters">
+    <button class="fchip on" data-cat="all">🌍 All <span class="fcount" id="cnt-all">248</span></button>
+    <button class="fchip" data-cat="capitals">🏛 Capitals <span class="fcount" id="cnt-capitals"></span></button>
+    <button class="fchip" data-cat="rivers">🌊 Rivers <span class="fcount" id="cnt-rivers"></span></button>
+    <button class="fchip" data-cat="mountains">⛰ Mountains <span class="fcount" id="cnt-mountains"></span></button>
+    <button class="fchip" data-cat="deserts">🏜 Deserts <span class="fcount" id="cnt-deserts"></span></button>
+    <button class="fchip" data-cat="lakes">💧 Lakes <span class="fcount" id="cnt-lakes"></span></button>
+    <button class="fchip" data-cat="straits">🚢 Straits <span class="fcount" id="cnt-straits"></span></button>
+    <button class="fchip" data-cat="special">⭐ Special <span class="fcount" id="cnt-special"></span></button>
+  </div>
+
+  <div id="map"></div>
+  <div id="counter">Showing <span id="shown">0</span> features</div>
+</div>
+
+<script>
+const DATA = JSON.parse(document.getElementById('GEO_DATA').textContent);
+
+// Category config
+const CATS = {
+  capitals: {color:'#00c8f0', icon:'🏛', label:'Capital'},
+  rivers:   {color:'#4fc3f7', icon:'🌊', label:'River'},
+  mountains:{color:'#ff6b35', icon:'⛰',  label:'Mountain'},
+  deserts:  {color:'#ffd60a', icon:'🏜', label:'Desert'},
+  lakes:    {color:'#29b6f6', icon:'💧', label:'Lake'},
+  straits:  {color:'#ab47bc', icon:'🚢', label:'Strait'},
+  special:  {color:'#34d975', icon:'⭐', label:'Special'},
+};
+
+const SUB_LABELS = {
+  AF:'Africa',AS:'Asia',EU:'Europe',NA:'N.America',SA:'S.America',OC:'Oceania'
+};
+
+// Count by category
+const counts = {};
+DATA.forEach(f=>{counts[f.cat]=(counts[f.cat]||0)+1;});
+Object.entries(counts).forEach(([cat,n])=>{
+  const el = document.getElementById('cnt-'+cat);
+  if(el) el.textContent = n;
+});
+document.getElementById('cnt-all').textContent = DATA.length;
+
+// Init map
+const map = L.map('map', {
+  center: [20, 15],
+  zoom: 2,
+  minZoom: 2,
+  maxZoom: 8,
+  zoomControl: true,
+  attributionControl: false,
+});
+
+// CartoDB Dark Matter tiles — no API key required
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap © CARTO',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+// Attribution (small)
+L.control.attribution({prefix:false}).addTo(map);
+
+// Build markers
+let markers = [];
+let layerGroup = L.layerGroup().addTo(map);
+let activeCat = 'all';
+
+function createIcon(cat){
+  const cfg = CATS[cat] || {color:'#fff', icon:'•'};
+  const html = `<div class="cmarker ${cat}">${cfg.icon}</div>`;
+  return L.divIcon({html, className:'', iconSize:[22,22], iconAnchor:[11,11], popupAnchor:[0,-12]});
+}
+
+function createPopup(f){
+  const cfg = CATS[f.cat] || {color:'#fff', label:f.cat};
+  const subLabel = SUB_LABELS[f.sub] || f.sub || '';
+  return `
+    <div class="popup-name">${f.n}</div>
+    <span class="popup-cat" style="background:${cfg.color}">${cfg.label}</span>
+    <div class="popup-note">${f.note}</div>
+    ${subLabel ? `<div class="popup-sub">${subLabel}</div>` : ''}
+  `;
+}
+
+function buildMarkers(){
+  layerGroup.clearLayers();
+  markers = [];
+  const filtered = activeCat === 'all' ? DATA : DATA.filter(f=>f.cat===activeCat);
+  
+  filtered.forEach(f=>{
+    const m = L.marker([f.lat, f.lng], {icon: createIcon(f.cat)});
+    m.bindPopup(createPopup(f), {maxWidth:260, className:''});
+    m.feature_data = f;
+    layerGroup.addLayer(m);
+    markers.push(m);
+  });
+  
+  document.getElementById('shown').textContent = filtered.length;
+}
+
+// Filter chips
+document.querySelectorAll('.fchip').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.fchip').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    activeCat = btn.dataset.cat;
+    buildMarkers();
+  });
+});
+
+// Search
+const searchEl = document.getElementById('search');
+const resultsEl = document.getElementById('search-results');
+
+function renderResults(q){
+  if(!q || q.length < 2){resultsEl.style.display='none';return;}
+  const lower = q.toLowerCase();
+  const hits = DATA.filter(f=>
+    f.n.toLowerCase().includes(lower) ||
+    f.note.toLowerCase().includes(lower)
+  ).slice(0,12);
+  
+  if(!hits.length){resultsEl.style.display='none';return;}
+  
+  resultsEl.innerHTML = hits.map(f=>{
+    const cfg = CATS[f.cat]||{color:'#fff'};
+    return `<div class="sr-item" data-lat="${f.lat}" data-lng="${f.lng}" data-name="${f.n}">
+      <div class="sr-dot" style="background:${cfg.color}"></div>
+      <div>
+        <div class="sr-name">${f.n}</div>
+        <div class="sr-sub">${SUB_LABELS[f.sub]||''} · ${cfg.label||f.cat}</div>
+      </div>
+    </div>`;
+  }).join('');
+  resultsEl.style.display = 'block';
+  
+  resultsEl.querySelectorAll('.sr-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      const lat = parseFloat(item.dataset.lat);
+      const lng = parseFloat(item.dataset.lng);
+      const name = item.dataset.name;
+      map.setView([lat,lng], 5, {animate:true});
+      // Find and open popup
+      setTimeout(()=>{
+        markers.forEach(m=>{
+          if(m.feature_data && m.feature_data.n === name) m.openPopup();
+        });
+      }, 400);
+      searchEl.value = '';
+      resultsEl.style.display = 'none';
+    });
+  });
+}
+
+searchEl.addEventListener('input', e=>renderResults(e.target.value));
+searchEl.addEventListener('focus', e=>renderResults(e.target.value));
+document.addEventListener('click', e=>{
+  if(!e.target.closest('#search-wrap')) resultsEl.style.display='none';
+});
+
+// Prevent map zoom on double-tap in search
+searchEl.addEventListener('touchend', e=>e.stopPropagation());
+
+// Init
+buildMarkers();
+
+// Fit world
+map.setView([20, 15], 2);
+</script>
+</body>
+</html>
