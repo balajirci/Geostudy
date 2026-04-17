@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CityMap">
+<meta name="theme-color" content="#0d1b2a">
+<title>City Map – 278 Cities for Map Exam</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{
+  --bg:#0d1b2a;--s1:#0f1e30;--s2:#162840;--border:#1e3a55;
+  --accent:#00c8f0;--gold:#ffd700;--green:#34d975;--red:#ff453a;
+  --orange:#ff6b35;--yellow:#ffd60a;
+  --text:#e8f0fa;--muted:#7090b0;--dim:#2a4060;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  /* Priority colors */
+  --p1:#00c8f0;  /* Must know */
+  --p2:#34d975;  /* Should know */
+  --p3:#ffd60a;  /* Good to know */
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;height:-webkit-fill-available;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased;}
+#app{display:flex;flex-direction:column;height:100%;height:-webkit-fill-available;padding-top:var(--safe-top);}
+
+/* HEADER */
+#hdr{background:var(--s1);border-bottom:1px solid var(--border);padding:8px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;z-index:1000;}
+.logo{font-size:17px;font-weight:800;letter-spacing:1px;color:var(--accent);white-space:nowrap;}
+.logo span{color:var(--gold);}
+#sw{flex:1;position:relative;}
+#si{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:7px 14px 7px 32px;font-size:14px;color:var(--text);font-family:inherit;outline:none;-webkit-appearance:none;}
+#si::placeholder{color:var(--muted);}
+#sicon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;}
+#sres{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--s1);border:1px solid var(--border);border-radius:12px;max-height:260px;overflow-y:auto;z-index:3000;display:none;box-shadow:0 8px 24px rgba(0,0,0,.6);}
+.si-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.si-item:last-child{border-bottom:none;}
+.si-item:active{background:var(--s2);}
+.sid{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.sin{font-size:13px;font-weight:700;}
+.sic{font-size:11px;color:var(--muted);}
+
+/* FILTER ROW */
+#filters{background:var(--s1);border-bottom:1px solid var(--border);padding:6px 10px;display:flex;gap:5px;overflow-x:auto;flex-shrink:0;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:center;}
+#filters::-webkit-scrollbar{display:none;}
+.fc{flex-shrink:0;padding:5px 10px;border-radius:16px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.fc:active{transform:scale(.95);}
+.fc.on{color:#000;}
+.fc[data-f="all"].on{background:var(--text);border-color:var(--text);}
+.fc[data-f="p1"].on{background:var(--p1);border-color:var(--p1);}
+.fc[data-f="p2"].on{background:var(--p2);border-color:var(--p2);}
+.fc[data-f="p3"].on{background:var(--p3);border-color:var(--p3);}
+.fc[data-f="AF"].on{background:#ff6b35;border-color:#ff6b35;}
+.fc[data-f="AS"].on{background:#ab47bc;border-color:#ab47bc;}
+.fc[data-f="EU"].on{background:#42a5f5;border-color:#42a5f5;}
+.fc[data-f="NA"].on{background:#66bb6a;border-color:#66bb6a;}
+.fc[data-f="SA"].on{background:#26c6da;border-color:#26c6da;}
+.fc[data-f="OC"].on{background:#ffa726;border-color:#ffa726;}
+.fsep{color:var(--dim);font-size:14px;flex-shrink:0;}
+
+/* MAP */
+#map{flex:1;z-index:1;}
+
+/* LEAFLET POPUP */
+.leaflet-popup-content-wrapper{background:var(--s1);border:1.5px solid var(--border);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.7);color:var(--text);font-family:-apple-system,sans-serif;max-width:270px;}
+.leaflet-popup-tip{background:var(--s1);}
+.leaflet-popup-close-button{color:var(--muted) !important;font-size:18px !important;top:8px !important;right:10px !important;}
+.phead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
+.pname{font-size:17px;font-weight:800;line-height:1.2;}
+.pbadge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:8px;color:#000;white-space:nowrap;margin-top:3px;}
+.pbadge.p1{background:var(--p1);}
+.pbadge.p2{background:var(--p2);}
+.pbadge.p3{background:var(--p3);}
+.pcountry{font-size:12px;color:var(--accent);font-weight:700;margin-bottom:5px;}
+.pregion{font-size:11px;color:var(--muted);margin-bottom:7px;font-family:'SF Mono',Menlo,monospace;}
+.pnote{font-size:13px;line-height:1.6;color:var(--text);}
+.ptrap{font-size:12px;color:var(--red);margin-top:6px;font-weight:600;}
+
+/* Custom markers */
+.cm{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.5);box-shadow:0 1px 6px rgba(0,0,0,.6);cursor:pointer;}
+.cm.p1{background:var(--p1);}
+.cm.p2{background:var(--p2);}
+.cm.p3{background:var(--p3);}
+/* Region variants - slightly different tones */
+.cm.AF{opacity:.95;}
+.cm.EU{opacity:.95;}
+
+/* BOTTOM INFO BAR */
+#infobar{position:absolute;bottom:calc(var(--safe-bottom) + 8px);left:50%;transform:translateX(-50%);background:rgba(13,27,42,.92);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:12px;font-family:'SF Mono',Menlo,monospace;color:var(--accent);z-index:500;pointer-events:none;white-space:nowrap;}
+
+/* LEGEND */
+#leg{position:absolute;top:10px;right:10px;background:rgba(13,27,42,.92);border:1px solid var(--border);border-radius:10px;padding:10px 12px;z-index:500;}
+.li{display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:5px;}
+.li:last-child{margin-bottom:0;}
+.ld{width:11px;height:11px;border-radius:50%;}
+</style>
+</head>
+<body>
+<script type="application/json" id="CD">[{"n":"Cairo","lat":30.06,"lng":31.25,"r":"North Africa","p":1,"c":"Egypt","note":"NE corner of Africa, Nile Delta, Mediterranean coast"},{"n":"Alexandria","lat":31.2,"lng":29.92,"r":"North Africa","p":2,"c":"Egypt","note":"Mediterranean coast of Egypt, west of Nile Delta"},{"n":"Tripoli","lat":32.9,"lng":13.18,"r":"North Africa","p":1,"c":"Libya","note":"North coast of Libya, Mediterranean"},{"n":"Tunis","lat":36.82,"lng":10.17,"r":"North Africa","p":1,"c":"Tunisia","note":"Northernmost African country, NE Tunisia"},{"n":"Algiers","lat":36.74,"lng":3.06,"r":"North Africa","p":1,"c":"Algeria","note":"North coast of Algeria, Mediterranean"},{"n":"Rabat","lat":34.02,"lng":-6.83,"r":"North Africa","p":1,"c":"Morocco","note":"Atlantic coast of Morocco, NOT Casablanca"},{"n":"Casablanca","lat":33.59,"lng":-7.62,"r":"North Africa","p":2,"c":"Morocco","note":"Largest city Morocco, Atlantic coast south of Rabat"},{"n":"Marrakesh","lat":31.63,"lng":-8.0,"r":"North Africa","p":3,"c":"Morocco","note":"South-central Morocco, at foot of Atlas Mountains"},{"n":"Khartoum","lat":15.55,"lng":32.53,"r":"Northeast Africa","p":1,"c":"Sudan","note":"Confluence of Blue and White Nile, NE Sudan"},{"n":"Addis Ababa","lat":9.02,"lng":38.74,"r":"Northeast Africa","p":1,"c":"Ethiopia","note":"Central Ethiopia, highland plateau, HQ African Union"},{"n":"Asmara","lat":15.34,"lng":38.93,"r":"Northeast Africa","p":2,"c":"Eritrea","note":"Highland plateau, Eritrea, Red Sea region"},{"n":"Djibouti","lat":11.59,"lng":43.15,"r":"Northeast Africa","p":2,"c":"Djibouti","note":"Tiny country at mouth of Red Sea/Gulf of Aden"},{"n":"Mogadishu","lat":2.05,"lng":45.34,"r":"East Africa","p":1,"c":"Somalia","note":"Indian Ocean coast, Horn of Africa, Somalia"},{"n":"Nairobi","lat":-1.29,"lng":36.82,"r":"East Africa","p":1,"c":"Kenya","note":"Central Kenya, 1,795m elevation, only nat. park in a capital"},{"n":"Mombasa","lat":-4.05,"lng":39.67,"r":"East Africa","p":2,"c":"Kenya","note":"Kenyan Indian Ocean coast, south of Nairobi"},{"n":"Kampala","lat":0.32,"lng":32.58,"r":"East Africa","p":1,"c":"Uganda","note":"Shore of Lake Victoria, Uganda"},{"n":"Dar es Salaam","lat":-6.79,"lng":39.21,"r":"East Africa","p":2,"c":"Tanzania","note":"Largest city Tanzania (NOT capital), Indian Ocean coast"},{"n":"Dodoma","lat":-6.17,"lng":35.74,"r":"East Africa","p":2,"c":"Tanzania","note":"Official capital Tanzania, central inland"},{"n":"Zanzibar","lat":-6.16,"lng":39.19,"r":"East Africa","p":3,"c":"Tanzania","note":"Island off Tanzania coast, spice island"},{"n":"Kigali","lat":-1.94,"lng":30.06,"r":"Central Africa","p":1,"c":"Rwanda","note":"Central Rwanda, one of Africa's most densely populated countries"},{"n":"Bujumbura","lat":-3.39,"lng":29.36,"r":"Central Africa","p":2,"c":"Burundi","note":"On Lake Tanganyika shore, Burundi (former capital)"},{"n":"Juba","lat":4.86,"lng":31.57,"r":"East Africa","p":1,"c":"South Sudan","note":"South Sudan, youngest nation (2011), on White Nile"},{"n":"Lagos","lat":6.52,"lng":3.38,"r":"West Africa","p":1,"c":"Nigeria","note":"SW Nigeria, Gulf of Guinea coast, most populous African city"},{"n":"Abuja","lat":9.07,"lng":7.4,"r":"West Africa","p":1,"c":"Nigeria","note":"Capital Nigeria (NOT Lagos \u2014 trap!), central Nigeria"},{"n":"Accra","lat":5.55,"lng":-0.2,"r":"West Africa","p":1,"c":"Ghana","note":"South coast Ghana, Gulf of Guinea, near prime meridian"},{"n":"Dakar","lat":14.69,"lng":-17.44,"r":"West Africa","p":1,"c":"Senegal","note":"Cape Verde Peninsula, westernmost point of African mainland"},{"n":"Abidjan","lat":5.35,"lng":-4.0,"r":"West Africa","p":2,"c":"Ivory Coast","note":"Economic capital Ivory Coast (official capital: Yamoussoukro)"},{"n":"Bamako","lat":12.65,"lng":-8.0,"r":"West Africa","p":1,"c":"Mali","note":"On Niger River, Mali, landlocked West Africa"},{"n":"Conakry","lat":9.54,"lng":-13.68,"r":"West Africa","p":2,"c":"Guinea","note":"Atlantic coast Guinea, West Africa"},{"n":"Freetown","lat":8.49,"lng":-13.23,"r":"West Africa","p":2,"c":"Sierra Leone","note":"Atlantic coast, Sierra Leone"},{"n":"Monrovia","lat":6.3,"lng":-10.8,"r":"West Africa","p":2,"c":"Liberia","note":"Atlantic coast Liberia, founded by freed American slaves"},{"n":"Ouagadougou","lat":12.37,"lng":-1.53,"r":"West Africa","p":2,"c":"Burkina Faso","note":"Landlocked Burkina Faso, central West Africa"},{"n":"Niamey","lat":13.51,"lng":2.12,"r":"West Africa","p":2,"c":"Niger","note":"On Niger River, landlocked Niger"},{"n":"Lom\u00e9","lat":6.14,"lng":1.22,"r":"West Africa","p":2,"c":"Togo","note":"Thin coastal strip, Togo, Gulf of Guinea"},{"n":"Cotonou","lat":6.37,"lng":2.42,"r":"West Africa","p":2,"c":"Benin","note":"Main city Benin (seat of gov, NOT official capital Porto-Novo)"},{"n":"Yaound\u00e9","lat":3.87,"lng":11.52,"r":"Central Africa","p":1,"c":"Cameroon","note":"Capital Cameroon, inland south-central"},{"n":"Douala","lat":4.05,"lng":9.7,"r":"Central Africa","p":2,"c":"Cameroon","note":"Largest city Cameroon, Gulf of Guinea port"},{"n":"Kinshasa","lat":-4.32,"lng":15.32,"r":"Central Africa","p":1,"c":"DR Congo","note":"On Congo River, DRC, largest Francophone country"},{"n":"Brazzaville","lat":-4.27,"lng":15.28,"r":"Central Africa","p":2,"c":"Rep. of Congo","note":"Directly across Congo River from Kinshasa"},{"n":"Luanda","lat":-8.84,"lng":13.23,"r":"Southern Africa","p":1,"c":"Angola","note":"Atlantic coast, SW Africa, oil-rich"},{"n":"Lusaka","lat":-15.41,"lng":28.28,"r":"Southern Africa","p":1,"c":"Zambia","note":"Central-south Zambia, landlocked, Victoria Falls nearby"},{"n":"Harare","lat":-17.83,"lng":31.05,"r":"Southern Africa","p":1,"c":"Zimbabwe","note":"North-central Zimbabwe, Victoria Falls to NW"},{"n":"Bulawayo","lat":-20.15,"lng":28.58,"r":"Southern Africa","p":3,"c":"Zimbabwe","note":"SW Zimbabwe, 2nd largest city"},{"n":"Lilongwe","lat":-13.97,"lng":33.79,"r":"Southern Africa","p":2,"c":"Malawi","note":"Central Malawi, landlocked, beside Lake Malawi"},{"n":"Maputo","lat":-25.97,"lng":32.59,"r":"Southern Africa","p":2,"c":"Mozambique","note":"SE Mozambique, Indian Ocean coast, southern tip"},{"n":"Antananarivo","lat":-18.91,"lng":47.54,"r":"Southern Africa","p":1,"c":"Madagascar","note":"Central highlands Madagascar, 4th largest island"},{"n":"Johannesburg","lat":-26.2,"lng":28.04,"r":"Southern Africa","p":1,"c":"South Africa","note":"Gauteng, South Africa \u2014 NOT a capital (trap!)"},{"n":"Cape Town","lat":-33.92,"lng":18.42,"r":"Southern Africa","p":1,"c":"South Africa","note":"SW tip South Africa, legislative capital, Table Mountain"},{"n":"Durban","lat":-29.86,"lng":31.02,"r":"Southern Africa","p":2,"c":"South Africa","note":"KwaZulu-Natal, Indian Ocean coast, South Africa"},{"n":"Pretoria","lat":-25.75,"lng":28.22,"r":"Southern Africa","p":1,"c":"South Africa","note":"Gauteng, executive capital South Africa, near Johannesburg"},{"n":"Windhoek","lat":-22.56,"lng":17.08,"r":"Southern Africa","p":2,"c":"Namibia","note":"Central Namibia, landlocked, Namib Desert to west"},{"n":"Gaborone","lat":-24.65,"lng":25.91,"r":"Southern Africa","p":2,"c":"Botswana","note":"SE Botswana, near South Africa border"},{"n":"Mbabane","lat":-26.32,"lng":31.13,"r":"Southern Africa","p":3,"c":"Eswatini","note":"Capital Eswatini, landlocked inside South Africa"},{"n":"Maseru","lat":-29.32,"lng":27.48,"r":"Southern Africa","p":3,"c":"Lesotho","note":"Capital Lesotho, entirely surrounded by South Africa"},{"n":"Nairobi","lat":-1.29,"lng":36.82,"r":"East Africa","p":1,"c":"Kenya","note":"Central Kenya highlands"},{"n":"Beijing","lat":39.91,"lng":116.39,"r":"East Asia","p":1,"c":"China","note":"NE China, capital, Forbidden City, Great Wall to north"},{"n":"Shanghai","lat":31.23,"lng":121.47,"r":"East Asia","p":1,"c":"China","note":"East coast China, Yangtze River mouth, largest city"},{"n":"Guangzhou","lat":23.13,"lng":113.26,"r":"East Asia","p":2,"c":"China","note":"South China, Pearl River Delta, near Hong Kong"},{"n":"Hong Kong","lat":22.28,"lng":114.16,"r":"East Asia","p":1,"c":"China SAR","note":"South China coast, east of Pearl River Delta, SAR"},{"n":"Shenzhen","lat":22.54,"lng":114.06,"r":"East Asia","p":2,"c":"China","note":"South China, directly north of Hong Kong"},{"n":"Chongqing","lat":29.56,"lng":106.55,"r":"East Asia","p":2,"c":"China","note":"Central-SW China, on Yangtze River, massive city"},{"n":"Wuhan","lat":30.59,"lng":114.31,"r":"East Asia","p":2,"c":"China","note":"Central China, Hubei Province, Three Gorges Dam upstream"},{"n":"Xi'an","lat":34.27,"lng":108.95,"r":"East Asia","p":2,"c":"China","note":"Central China, ancient capital, Terracotta Army nearby"},{"n":"Chengdu","lat":30.66,"lng":104.07,"r":"East Asia","p":2,"c":"China","note":"SW China, Sichuan Province, panda research base"},{"n":"Lhasa","lat":29.65,"lng":91.14,"r":"East Asia","p":2,"c":"Tibet/China","note":"Tibet Autonomous Region, Potala Palace, 3,656m elevation"},{"n":"Ulaanbaatar","lat":47.9,"lng":106.91,"r":"East Asia","p":1,"c":"Mongolia","note":"Central Mongolia, between Russia and China, Gobi to south"},{"n":"Tokyo","lat":35.68,"lng":139.69,"r":"East Asia","p":1,"c":"Japan","note":"Honshu island, eastern coast, world's most populous metro"},{"n":"Osaka","lat":34.69,"lng":135.5,"r":"East Asia","p":2,"c":"Japan","note":"Honshu, western Japan, Kansai region"},{"n":"Kyoto","lat":35.01,"lng":135.77,"r":"East Asia","p":2,"c":"Japan","note":"Honshu, near Osaka, former imperial capital"},{"n":"Hiroshima","lat":34.39,"lng":132.45,"r":"East Asia","p":2,"c":"Japan","note":"SW Honshu, site of first atomic bomb 1945"},{"n":"Nagasaki","lat":32.75,"lng":129.88,"r":"East Asia","p":2,"c":"Japan","note":"Kyushu island, SW Japan, second atomic bomb 1945"},{"n":"Sapporo","lat":43.06,"lng":141.35,"r":"East Asia","p":2,"c":"Japan","note":"Hokkaido island, northern Japan, winter sports"},{"n":"Seoul","lat":37.57,"lng":126.98,"r":"East Asia","p":1,"c":"South Korea","note":"NW South Korea, Han River, near DMZ border"},{"n":"Busan","lat":35.1,"lng":129.04,"r":"East Asia","p":2,"c":"South Korea","note":"SE South Korea, major port, Korea Strait"},{"n":"Pyongyang","lat":39.02,"lng":125.75,"r":"East Asia","p":1,"c":"North Korea","note":"Western North Korea, near Yellow Sea"},{"n":"Taipei","lat":25.04,"lng":121.56,"r":"East Asia","p":1,"c":"Taiwan","note":"Northern Taiwan, strait separates from mainland China"},{"n":"Macau","lat":22.2,"lng":113.54,"r":"East Asia","p":2,"c":"China SAR","note":"South China, west of Pearl River Delta, former Portuguese colony"},{"n":"Bangkok","lat":13.75,"lng":100.52,"r":"SE Asia","p":1,"c":"Thailand","note":"Central Thailand, Chao Phraya River, Gulf of Thailand"},{"n":"Yangon","lat":16.87,"lng":96.19,"r":"SE Asia","p":2,"c":"Myanmar","note":"S Myanmar, Irrawaddy Delta (capital is Naypyidaw, inland)"},{"n":"Naypyidaw","lat":19.76,"lng":96.08,"r":"SE Asia","p":2,"c":"Myanmar","note":"Central Myanmar, purpose-built capital (2005)"},{"n":"Vientiane","lat":17.97,"lng":102.6,"r":"SE Asia","p":1,"c":"Laos","note":"On Mekong River, Laos, border with Thailand"},{"n":"Phnom Penh","lat":11.56,"lng":104.92,"r":"SE Asia","p":1,"c":"Cambodia","note":"Southern Cambodia, confluence Mekong and Tonl\u00e9 Sap"},{"n":"Ho Chi Minh City","lat":10.82,"lng":106.63,"r":"SE Asia","p":2,"c":"Vietnam","note":"Southern Vietnam, Mekong Delta region, formerly Saigon"},{"n":"Hanoi","lat":21.03,"lng":105.85,"r":"SE Asia","p":1,"c":"Vietnam","note":"Northern Vietnam, Red River Delta, near China border"},{"n":"Kuala Lumpur","lat":3.14,"lng":101.69,"r":"SE Asia","p":1,"c":"Malaysia","note":"West Malaysia, Malay Peninsula, Petronas Towers"},{"n":"Singapore","lat":1.35,"lng":103.82,"r":"SE Asia","p":1,"c":"Singapore","note":"Southern tip Malay Peninsula, island city-state, Strait of Malacca"},{"n":"Jakarta","lat":-6.21,"lng":106.85,"r":"SE Asia","p":1,"c":"Indonesia","note":"Java island, NW coast, capital (moving to Nusantara, Borneo)"},{"n":"Surabaya","lat":-7.25,"lng":112.75,"r":"SE Asia","p":2,"c":"Indonesia","note":"East Java, 2nd largest Indonesian city"},{"n":"Bali","lat":-8.34,"lng":115.09,"r":"SE Asia","p":2,"c":"Indonesia","note":"Island east of Java, major tourist destination"},{"n":"Manila","lat":14.6,"lng":120.98,"r":"SE Asia","p":1,"c":"Philippines","note":"Luzon island, Manila Bay, west coast"},{"n":"Cebu","lat":10.32,"lng":123.9,"r":"SE Asia","p":3,"c":"Philippines","note":"Cebu island, central Philippines, Visayas"},{"n":"New Delhi","lat":28.61,"lng":77.21,"r":"South Asia","p":1,"c":"India","note":"Northern India, capital (NOT Mumbai), near Yamuna River"},{"n":"Mumbai","lat":19.08,"lng":72.88,"r":"South Asia","p":1,"c":"India","note":"West coast India, Arabian Sea, largest port city (Bombay)"},{"n":"Kolkata","lat":22.57,"lng":88.36,"r":"South Asia","p":2,"c":"India","note":"NE India, Ganges Delta, Bengal region (Calcutta)"},{"n":"Chennai","lat":13.08,"lng":80.27,"r":"South Asia","p":2,"c":"India","note":"SE India, Bay of Bengal, Tamil Nadu (Madras)"},{"n":"Bengaluru","lat":12.97,"lng":77.59,"r":"South Asia","p":2,"c":"India","note":"South India, Deccan Plateau, tech hub (Bangalore)"},{"n":"Hyderabad","lat":17.38,"lng":78.48,"r":"South Asia","p":2,"c":"India","note":"Central-south India, Telangana state"},{"n":"Ahmedabad","lat":23.02,"lng":72.57,"r":"South Asia","p":3,"c":"India","note":"NW India, Gujarat, largest city near Gujarat coast"},{"n":"Islamabad","lat":33.72,"lng":73.06,"r":"South Asia","p":1,"c":"Pakistan","note":"NE Pakistan, near Rawalpindi, capital (Karachi is largest)"},{"n":"Karachi","lat":24.86,"lng":67.01,"r":"South Asia","p":1,"c":"Pakistan","note":"SE Pakistan, Arabian Sea coast, largest city"},{"n":"Lahore","lat":31.55,"lng":74.34,"r":"South Asia","p":2,"c":"Pakistan","note":"NE Pakistan, Punjab Province, near India border"},{"n":"Dhaka","lat":23.72,"lng":90.41,"r":"South Asia","p":1,"c":"Bangladesh","note":"Central Bangladesh, Buriganga River, most densely populated large country"},{"n":"Chittagong","lat":22.33,"lng":91.83,"r":"South Asia","p":2,"c":"Bangladesh","note":"SE Bangladesh, Bay of Bengal, major port"},{"n":"Kathmandu","lat":27.71,"lng":85.31,"r":"South Asia","p":1,"c":"Nepal","note":"Central Nepal valley, between India and Tibet/China"},{"n":"Colombo","lat":6.93,"lng":79.85,"r":"South Asia","p":1,"c":"Sri Lanka","note":"West coast Sri Lanka, largest city (official capital is Sri Jayawardenepura Kotte)"},{"n":"Kabul","lat":34.53,"lng":69.17,"r":"South Asia","p":1,"c":"Afghanistan","note":"NE Afghanistan, Hindu Kush, landlocked"},{"n":"Astana","lat":51.18,"lng":71.45,"r":"Central Asia","p":1,"c":"Kazakhstan","note":"N-central Kazakhstan, purpose-built capital, formerly Nur-Sultan"},{"n":"Almaty","lat":43.25,"lng":76.95,"r":"Central Asia","p":1,"c":"Kazakhstan","note":"SE Kazakhstan, former capital, snow leopard on coat of arms"},{"n":"Tashkent","lat":41.3,"lng":69.24,"r":"Central Asia","p":1,"c":"Uzbekistan","note":"NE Uzbekistan, most populous Central Asian city"},{"n":"Samarkand","lat":39.65,"lng":66.96,"r":"Central Asia","p":2,"c":"Uzbekistan","note":"S Uzbekistan, ancient Silk Road city"},{"n":"Bishkek","lat":42.87,"lng":74.59,"r":"Central Asia","p":1,"c":"Kyrgyzstan","note":"N Kyrgyzstan, Tian Shan foothills"},{"n":"Dushanbe","lat":38.56,"lng":68.77,"r":"Central Asia","p":1,"c":"Tajikistan","note":"W Tajikistan, most mountainous Central Asian republic"},{"n":"Ashgabat","lat":37.95,"lng":58.38,"r":"Central Asia","p":1,"c":"Turkmenistan","note":"S Turkmenistan, near Iran border, most isolated"},{"n":"Tehran","lat":35.69,"lng":51.39,"r":"Middle East","p":1,"c":"Iran","note":"N Iran, near Alborz Mountains, formerly Persia"},{"n":"Baghdad","lat":33.34,"lng":44.4,"r":"Middle East","p":1,"c":"Iraq","note":"Central Iraq, Tigris River, Tigris+Euphrates converge to south"},{"n":"Basra","lat":30.51,"lng":47.81,"r":"Middle East","p":2,"c":"Iraq","note":"S Iraq, near where Tigris and Euphrates converge (Shatt al-Arab)"},{"n":"Riyadh","lat":24.69,"lng":46.72,"r":"Middle East","p":1,"c":"Saudi Arabia","note":"Central Arabian Peninsula, Rub al-Khali desert nearby"},{"n":"Jeddah","lat":21.52,"lng":39.22,"r":"Middle East","p":2,"c":"Saudi Arabia","note":"Red Sea coast Saudi Arabia, near Mecca"},{"n":"Mecca","lat":21.39,"lng":39.86,"r":"Middle East","p":2,"c":"Saudi Arabia","note":"W Saudi Arabia, holiest city of Islam"},{"n":"Medina","lat":24.47,"lng":39.61,"r":"Middle East","p":3,"c":"Saudi Arabia","note":"W Saudi Arabia, 2nd holiest city of Islam"},{"n":"Dubai","lat":25.2,"lng":55.27,"r":"Middle East","p":1,"c":"UAE","note":"Persian Gulf coast, UAE, NOT capital (Abu Dhabi is)"},{"n":"Abu Dhabi","lat":24.47,"lng":54.37,"r":"Middle East","p":1,"c":"UAE","note":"Persian Gulf, capital UAE (Dubai is larger \u2014 trap!)"},{"n":"Doha","lat":25.29,"lng":51.53,"r":"Middle East","p":1,"c":"Qatar","note":"E Qatar, Persian Gulf coast, 2022 FIFA World Cup"},{"n":"Kuwait City","lat":29.37,"lng":47.98,"r":"Middle East","p":1,"c":"Kuwait","note":"NE Kuwait, Persian Gulf, oil-rich"},{"n":"Manama","lat":26.22,"lng":50.59,"r":"Middle East","p":2,"c":"Bahrain","note":"Bahrain island, Persian Gulf, smallest Arab country"},{"n":"Muscat","lat":23.59,"lng":58.59,"r":"Middle East","p":1,"c":"Oman","note":"NE Oman, Gulf of Oman, Arabian Sea"},{"n":"Sanaa","lat":15.37,"lng":44.19,"r":"Middle East","p":1,"c":"Yemen","note":"W Yemen, highlands, poorest Arab country"},{"n":"Ankara","lat":39.93,"lng":32.85,"r":"Middle East","p":1,"c":"Turkey","note":"Central Anatolia, capital Turkey (NOT Istanbul \u2014 biggest trap!)"},{"n":"Istanbul","lat":41.01,"lng":28.95,"r":"Middle East","p":1,"c":"Turkey","note":"Straddles Bosphorus, Europe AND Asia, formerly Constantinople"},{"n":"Amman","lat":31.95,"lng":35.93,"r":"Middle East","p":1,"c":"Jordan","note":"NW Jordan, near Dead Sea and Israel border, Petra to south"},{"n":"Damascus","lat":33.51,"lng":36.29,"r":"Middle East","p":1,"c":"Syria","note":"SW Syria, one of oldest continuously inhabited cities"},{"n":"Beirut","lat":33.89,"lng":35.5,"r":"Middle East","p":1,"c":"Lebanon","note":"W Lebanon, Mediterranean coast, 'Paris of the Middle East'"},{"n":"Jerusalem","lat":31.78,"lng":35.22,"r":"Middle East","p":1,"c":"Israel","note":"Central Israel/West Bank, disputed capital, holy to 3 religions"},{"n":"Tel Aviv","lat":32.07,"lng":34.79,"r":"Middle East","p":2,"c":"Israel","note":"Mediterranean coast Israel, largest city, financial centre"},{"n":"Tbilisi","lat":41.69,"lng":44.83,"r":"Caucasus","p":1,"c":"Georgia","note":"E Georgia, Kura River, Caucasus region"},{"n":"Yerevan","lat":40.18,"lng":44.51,"r":"Caucasus","p":1,"c":"Armenia","note":"W Armenia, near Mount Ararat (in Turkey), landlocked"},{"n":"Baku","lat":40.41,"lng":49.87,"r":"Caucasus","p":1,"c":"Azerbaijan","note":"E Azerbaijan, Caspian Sea coast, oil-rich"},{"n":"London","lat":51.51,"lng":-0.13,"r":"Western Europe","p":1,"c":"UK","note":"Thames River, SE England"},{"n":"Paris","lat":48.86,"lng":2.35,"r":"Western Europe","p":1,"c":"France","note":"Seine River, north-central France"},{"n":"Berlin","lat":52.52,"lng":13.4,"r":"Central Europe","p":1,"c":"Germany","note":"NE Germany, Spree River"},{"n":"Munich","lat":48.14,"lng":11.58,"r":"Central Europe","p":2,"c":"Germany","note":"SE Germany, Bavaria, near Alps, Oktoberfest"},{"n":"Hamburg","lat":53.55,"lng":9.99,"r":"Central Europe","p":2,"c":"Germany","note":"N Germany, Elbe River mouth, major port"},{"n":"Frankfurt","lat":50.11,"lng":8.68,"r":"Central Europe","p":2,"c":"Germany","note":"Central Germany, Main River, financial centre"},{"n":"Cologne","lat":50.94,"lng":6.96,"r":"Central Europe","p":3,"c":"Germany","note":"W Germany, Rhine River, famous cathedral"},{"n":"Rome","lat":41.9,"lng":12.49,"r":"Southern Europe","p":1,"c":"Italy","note":"Central Italy, Tiber River, eternal city"},{"n":"Milan","lat":45.47,"lng":9.19,"r":"Southern Europe","p":2,"c":"Italy","note":"N Italy, Po Plain, fashion capital"},{"n":"Naples","lat":40.85,"lng":14.27,"r":"Southern Europe","p":2,"c":"Italy","note":"SW Italy, Bay of Naples, near Vesuvius"},{"n":"Venice","lat":45.44,"lng":12.33,"r":"Southern Europe","p":2,"c":"Italy","note":"NE Italy, Adriatic lagoon, built on 118 islands"},{"n":"Florence","lat":43.77,"lng":11.25,"r":"Southern Europe","p":2,"c":"Italy","note":"Central Italy (Tuscany), Arno River, Renaissance art"},{"n":"Madrid","lat":40.42,"lng":-3.7,"r":"Southern Europe","p":1,"c":"Spain","note":"Central Spain, highest capital in EU"},{"n":"Barcelona","lat":41.39,"lng":2.16,"r":"Southern Europe","p":2,"c":"Spain","note":"NE Spain, Catalonia, Mediterranean coast"},{"n":"Seville","lat":37.39,"lng":-5.99,"r":"Southern Europe","p":2,"c":"Spain","note":"SW Spain, Andalusia, Guadalquivir River"},{"n":"Pamplona","lat":42.82,"lng":-1.64,"r":"Southern Europe","p":2,"c":"Spain","note":"N Spain, Navarre, Running of the Bulls"},{"n":"Lisbon","lat":38.72,"lng":-9.14,"r":"Southern Europe","p":1,"c":"Portugal","note":"W Portugal, Tagus River mouth, Atlantic coast"},{"n":"Porto","lat":41.15,"lng":-8.61,"r":"Southern Europe","p":2,"c":"Portugal","note":"NW Portugal, Douro River mouth, port wine"},{"n":"Athens","lat":37.98,"lng":23.73,"r":"Southern Europe","p":1,"c":"Greece","note":"SE Greece, Aegean coast, Acropolis and Parthenon"},{"n":"Thessaloniki","lat":40.64,"lng":22.94,"r":"Southern Europe","p":2,"c":"Greece","note":"N Greece, Thermic Gulf, 2nd largest Greek city"},{"n":"Brussels","lat":50.85,"lng":4.35,"r":"Western Europe","p":1,"c":"Belgium","note":"Central Belgium, HQ of EU and NATO"},{"n":"Amsterdam","lat":52.37,"lng":4.9,"r":"Western Europe","p":1,"c":"Netherlands","note":"W Netherlands, capital, famous canals (seat of govt: The Hague)"},{"n":"The Hague","lat":52.08,"lng":4.31,"r":"Western Europe","p":2,"c":"Netherlands","note":"W Netherlands, seat of government and International Court of Justice"},{"n":"Rotterdam","lat":51.92,"lng":4.48,"r":"Western Europe","p":2,"c":"Netherlands","note":"SW Netherlands, Rhine mouth, busiest port in Europe"},{"n":"Zurich","lat":47.38,"lng":8.54,"r":"Western Europe","p":2,"c":"Switzerland","note":"N Switzerland, largest Swiss city (capital is Bern)"},{"n":"Bern","lat":46.95,"lng":7.45,"r":"Western Europe","p":1,"c":"Switzerland","note":"Central Switzerland, capital (NOT Zurich \u2014 trap!)"},{"n":"Geneva","lat":46.2,"lng":6.15,"r":"Western Europe","p":2,"c":"Switzerland","note":"SW Switzerland, Lake Geneva, UN European HQ"},{"n":"Vienna","lat":48.21,"lng":16.37,"r":"Central Europe","p":1,"c":"Austria","note":"NE Austria, Danube River"},{"n":"Salzburg","lat":47.8,"lng":13.04,"r":"Central Europe","p":3,"c":"Austria","note":"N Austria, near German border, Mozart's birthplace"},{"n":"Prague","lat":50.08,"lng":14.44,"r":"Central Europe","p":1,"c":"Czech Republic","note":"NW Czech Republic, Vltava River"},{"n":"Warsaw","lat":52.23,"lng":21.01,"r":"Central Europe","p":1,"c":"Poland","note":"Central Poland, Vistula River"},{"n":"Krakow","lat":50.06,"lng":19.94,"r":"Central Europe","p":2,"c":"Poland","note":"S Poland, Vistula River, former capital, near Auschwitz"},{"n":"Budapest","lat":47.5,"lng":19.04,"r":"Central Europe","p":1,"c":"Hungary","note":"N Hungary, Danube River between Buda (W) and Pest (E)"},{"n":"Bratislava","lat":48.15,"lng":17.11,"r":"Central Europe","p":1,"c":"Slovakia","note":"SW Slovakia, Danube River, near Vienna"},{"n":"Ljubljana","lat":46.05,"lng":14.51,"r":"Central Europe","p":1,"c":"Slovenia","note":"Central Slovenia, Sava River, near Italy/Austria"},{"n":"Zagreb","lat":45.81,"lng":15.98,"r":"Balkans","p":1,"c":"Croatia","note":"N Croatia, Sava River"},{"n":"Dubrovnik","lat":42.65,"lng":18.09,"r":"Balkans","p":2,"c":"Croatia","note":"S Croatia, Adriatic coast, walled medieval city"},{"n":"Sarajevo","lat":43.85,"lng":18.36,"r":"Balkans","p":1,"c":"Bosnia","note":"Central Bosnia, Miljacka River, 1914 assassination site"},{"n":"Belgrade","lat":44.8,"lng":20.46,"r":"Balkans","p":1,"c":"Serbia","note":"N Serbia, confluence Sava and Danube rivers"},{"n":"Podgorica","lat":42.44,"lng":19.26,"r":"Balkans","p":1,"c":"Montenegro","note":"Central Montenegro, Mora\u010da River"},{"n":"Tirana","lat":41.33,"lng":19.82,"r":"Balkans","p":1,"c":"Albania","note":"W Albania, Adriatic coast nearby"},{"n":"Skopje","lat":41.99,"lng":21.43,"r":"Balkans","p":1,"c":"N Macedonia","note":"N North Macedonia, Vardar River"},{"n":"Sofia","lat":42.7,"lng":23.32,"r":"Balkans","p":1,"c":"Bulgaria","note":"W Bulgaria, near Serbian border"},{"n":"Bucharest","lat":44.43,"lng":26.1,"r":"Balkans","p":1,"c":"Romania","note":"S Romania, Danube Plain, flag almost identical to Chad"},{"n":"Kyiv","lat":50.45,"lng":30.52,"r":"Eastern Europe","p":1,"c":"Ukraine","note":"N Ukraine, Dnieper River, largest country entirely in Europe"},{"n":"Kharkiv","lat":49.99,"lng":36.23,"r":"Eastern Europe","p":2,"c":"Ukraine","note":"NE Ukraine, near Russia border, 2nd largest Ukrainian city"},{"n":"Odessa","lat":46.48,"lng":30.73,"r":"Eastern Europe","p":2,"c":"Ukraine","note":"S Ukraine, Black Sea coast"},{"n":"Moscow","lat":55.75,"lng":37.62,"r":"Eastern Europe","p":1,"c":"Russia","note":"W Russia, Moscow River, capital of largest country"},{"n":"St. Petersburg","lat":59.95,"lng":30.32,"r":"Eastern Europe","p":2,"c":"Russia","note":"NW Russia, Gulf of Finland, former capital (Petrograd/Leningrad)"},{"n":"Minsk","lat":53.9,"lng":27.57,"r":"Eastern Europe","p":1,"c":"Belarus","note":"Central Belarus, Svislach River"},{"n":"Vilnius","lat":54.69,"lng":25.28,"r":"Eastern Europe","p":1,"c":"Lithuania","note":"SE Lithuania, Neris River, Baltic state"},{"n":"Riga","lat":56.95,"lng":24.11,"r":"Eastern Europe","p":1,"c":"Latvia","note":"Gulf of Riga, Daugava River, Baltic state"},{"n":"Tallinn","lat":59.44,"lng":24.75,"r":"Eastern Europe","p":1,"c":"Estonia","note":"N Estonia, Gulf of Finland, Baltic state"},{"n":"Helsinki","lat":60.17,"lng":24.94,"r":"Northern Europe","p":1,"c":"Finland","note":"S Finland, Gulf of Finland, across from Tallinn"},{"n":"Stockholm","lat":59.33,"lng":18.07,"r":"Northern Europe","p":1,"c":"Sweden","note":"SE Sweden, between Lake M\u00e4laren and Baltic Sea, Nobel Prizes"},{"n":"Oslo","lat":59.91,"lng":10.75,"r":"Northern Europe","p":1,"c":"Norway","note":"SE Norway, Oslo Fjord, Nobel Peace Prize awarded here"},{"n":"Copenhagen","lat":55.68,"lng":12.57,"r":"Northern Europe","p":1,"c":"Denmark","note":"E Denmark, \u00d8resund Strait, connected to Malm\u00f6 by bridge"},{"n":"Reykjavik","lat":64.14,"lng":-21.94,"r":"Northern Europe","p":1,"c":"Iceland","note":"SW Iceland, northernmost capital in world"},{"n":"Edinburgh","lat":55.95,"lng":-3.19,"r":"British Isles","p":2,"c":"Scotland","note":"SE Scotland, Castle Rock, national capital of Scotland"},{"n":"Manchester","lat":53.48,"lng":-2.24,"r":"British Isles","p":2,"c":"England","note":"NW England, 3rd largest city, Industrial Revolution hub"},{"n":"Dublin","lat":53.33,"lng":-6.25,"r":"British Isles","p":1,"c":"Ireland","note":"E Ireland, Liffey River, Trinity College"},{"n":"Nicosia","lat":35.17,"lng":33.37,"r":"Southern Europe","p":2,"c":"Cyprus","note":"Cyprus island, only divided capital city in the world"},{"n":"Valletta","lat":35.9,"lng":14.51,"r":"Southern Europe","p":2,"c":"Malta","note":"Malta island, Mediterranean south of Sicily"},{"n":"Andorra la Vella","lat":42.51,"lng":1.52,"r":"Southern Europe","p":2,"c":"Andorra","note":"Pyrenees, highest capital in Europe, between France and Spain"},{"n":"Pristina","lat":42.67,"lng":21.17,"r":"Balkans","p":2,"c":"Kosovo","note":"Central Kosovo, newest European country (2008)"},{"n":"Ottawa","lat":45.42,"lng":-75.7,"r":"Canada","p":1,"c":"Canada","note":"Ontario/Quebec border, Ottawa River, national capital"},{"n":"Toronto","lat":43.65,"lng":-79.38,"r":"Canada","p":1,"c":"Canada","note":"Lake Ontario, Ontario province capital, CN Tower"},{"n":"Montreal","lat":45.5,"lng":-73.57,"r":"Canada","p":1,"c":"Canada","note":"St. Lawrence River island, largest city Quebec, bilingual"},{"n":"Quebec City","lat":46.81,"lng":-71.21,"r":"Canada","p":2,"c":"Canada","note":"St. Lawrence River, capital Quebec province, only walled city N of Mexico"},{"n":"Vancouver","lat":49.25,"lng":-123.12,"r":"Canada","p":1,"c":"Canada","note":"SW British Columbia, Pacific coast, near US border"},{"n":"Calgary","lat":51.05,"lng":-114.07,"r":"Canada","p":2,"c":"Canada","note":"S Alberta, Rocky Mountain foothills, Stampede"},{"n":"Edmonton","lat":53.55,"lng":-113.49,"r":"Canada","p":2,"c":"Canada","note":"Central Alberta, provincial capital, North Saskatchewan River"},{"n":"Winnipeg","lat":49.9,"lng":-97.14,"r":"Canada","p":2,"c":"Canada","note":"S Manitoba, Red and Assiniboine rivers, geographic centre of Canada"},{"n":"Halifax","lat":44.65,"lng":-63.57,"r":"Canada","p":2,"c":"Canada","note":"NS province capital, Atlantic coast, major East Coast port"},{"n":"St. John's","lat":47.56,"lng":-52.71,"r":"Canada","p":2,"c":"Canada","note":"E Newfoundland, easternmost major city in N America"},{"n":"Victoria","lat":48.43,"lng":-123.37,"r":"Canada","p":2,"c":"Canada","note":"S Vancouver Island, BC capital (NOT Vancouver \u2014 trap!)"},{"n":"Whitehorse","lat":60.72,"lng":-135.06,"r":"Canada","p":3,"c":"Canada","note":"Yukon capital, Yukon River"},{"n":"Yellowknife","lat":62.45,"lng":-114.37,"r":"Canada","p":3,"c":"Canada","note":"NWT capital, Great Slave Lake"},{"n":"Iqaluit","lat":63.75,"lng":-68.52,"r":"Canada","p":3,"c":"Canada","note":"Nunavut capital, Baffin Island, Frobisher Bay"},{"n":"Washington DC","lat":38.89,"lng":-77.04,"r":"USA","p":1,"c":"USA","note":"E coast USA, Potomac River, Maryland/Virginia border"},{"n":"New York City","lat":40.71,"lng":-74.01,"r":"USA","p":1,"c":"USA","note":"SE New York, Hudson River mouth, Wall Street, UN HQ"},{"n":"Los Angeles","lat":34.05,"lng":-118.24,"r":"USA","p":1,"c":"USA","note":"S California, Pacific coast, largest city in California"},{"n":"Chicago","lat":41.88,"lng":-87.63,"r":"USA","p":1,"c":"USA","note":"NE Illinois, Lake Michigan, 3rd largest US city"},{"n":"Houston","lat":29.76,"lng":-95.37,"r":"USA","p":2,"c":"USA","note":"SE Texas, Gulf of Mexico nearby, NASA"},{"n":"Miami","lat":25.77,"lng":-80.19,"r":"USA","p":2,"c":"USA","note":"SE Florida tip, Atlantic coast, near Caribbean"},{"n":"Seattle","lat":47.61,"lng":-122.33,"r":"USA","p":2,"c":"USA","note":"NW Washington state, Puget Sound, Pacific NW"},{"n":"San Francisco","lat":37.77,"lng":-122.42,"r":"USA","p":2,"c":"USA","note":"N California, San Francisco Bay, Golden Gate Bridge"},{"n":"New Orleans","lat":29.95,"lng":-90.07,"r":"USA","p":2,"c":"USA","note":"SE Louisiana, Mississippi River mouth, Gulf of Mexico"},{"n":"Denver","lat":39.74,"lng":-104.98,"r":"USA","p":2,"c":"USA","note":"N Colorado, Rocky Mountain foothills, 'Mile High City'"},{"n":"Phoenix","lat":33.45,"lng":-112.07,"r":"USA","p":2,"c":"USA","note":"Central Arizona, Sonoran Desert, near Grand Canyon"},{"n":"Portland","lat":45.52,"lng":-122.68,"r":"USA","p":2,"c":"USA","note":"NW Oregon, near Willamette-Columbia confluence (Gold Set fact)"},{"n":"Anchorage","lat":61.22,"lng":-149.9,"r":"USA","p":2,"c":"USA","note":"S Alaska, Cook Inlet, largest Alaska city (capital is Juneau)"},{"n":"Honolulu","lat":21.31,"lng":-157.86,"r":"USA","p":2,"c":"USA","note":"Oahu island, Hawaii, Pearl Harbor nearby"},{"n":"Mexico City","lat":19.43,"lng":-99.13,"r":"Mexico","p":1,"c":"Mexico","note":"Central Mexico, high plateau, one of world's largest cities"},{"n":"Guadalajara","lat":20.67,"lng":-103.35,"r":"Mexico","p":2,"c":"Mexico","note":"W Mexico, 2nd largest Mexican city"},{"n":"Monterrey","lat":25.67,"lng":-100.31,"r":"Mexico","p":2,"c":"Mexico","note":"NE Mexico, industrial centre, near US border"},{"n":"Havana","lat":23.13,"lng":-82.38,"r":"Caribbean","p":1,"c":"Cuba","note":"NW Cuba, Florida Strait, largest Caribbean city"},{"n":"Santo Domingo","lat":18.48,"lng":-69.9,"r":"Caribbean","p":1,"c":"Dominican Rep.","note":"S Hispaniola, Caribbean Sea, oldest European city in Americas"},{"n":"Port-au-Prince","lat":18.54,"lng":-72.34,"r":"Caribbean","p":1,"c":"Haiti","note":"W Hispaniola, Gulf of Gon\u00e2ve, first Black republic"},{"n":"San Juan","lat":18.46,"lng":-66.11,"r":"Caribbean","p":2,"c":"Puerto Rico","note":"N Puerto Rico, Atlantic coast, US territory"},{"n":"Kingston","lat":17.99,"lng":-76.79,"r":"Caribbean","p":1,"c":"Jamaica","note":"SE Jamaica, Blue Mountains backdrop"},{"n":"Bridgetown","lat":13.1,"lng":-59.62,"r":"Caribbean","p":1,"c":"Barbados","note":"SW Barbados, easternmost Caribbean island, Atlantic Ocean"},{"n":"Port of Spain","lat":10.65,"lng":-61.52,"r":"Caribbean","p":2,"c":"Trinidad and Tobago","note":"NW Trinidad, near Venezuela coast"},{"n":"Panama City","lat":8.99,"lng":-79.52,"r":"Central America","p":1,"c":"Panama","note":"Pacific end of Panama Canal"},{"n":"Guatemala City","lat":14.64,"lng":-90.51,"r":"Central America","p":1,"c":"Guatemala","note":"Central Guatemala, highland valley"},{"n":"Tegucigalpa","lat":14.1,"lng":-87.22,"r":"Central America","p":1,"c":"Honduras","note":"Central Honduras, landlocked valley"},{"n":"San Jos\u00e9","lat":9.93,"lng":-84.09,"r":"Central America","p":1,"c":"Costa Rica","note":"Central plateau Costa Rica, no army since 1948"},{"n":"Bogot\u00e1","lat":4.71,"lng":-74.07,"r":"South America","p":1,"c":"Colombia","note":"Colombian Andes, 2,600m elevation, northern South America"},{"n":"Lima","lat":-12.05,"lng":-77.04,"r":"South America","p":1,"c":"Peru","note":"Central Pacific coast Peru, near Humboldt Current"},{"n":"Buenos Aires","lat":-34.6,"lng":-58.38,"r":"South America","p":1,"c":"Argentina","note":"SE Argentina, R\u00edo de la Plata estuary, Andes to west"},{"n":"Santiago","lat":-33.46,"lng":-70.65,"r":"South America","p":1,"c":"Chile","note":"Central Chile, Andes to east, Pacific to west"},{"n":"Brasilia","lat":-15.78,"lng":-47.93,"r":"South America","p":1,"c":"Brazil","note":"Central Brazil, purpose-built capital 1960 (NOT Rio de Janeiro!)"},{"n":"Rio de Janeiro","lat":-22.91,"lng":-43.18,"r":"South America","p":1,"c":"Brazil","note":"SE Brazil, Atlantic coast, Sugarloaf, Christ the Redeemer"},{"n":"S\u00e3o Paulo","lat":-23.55,"lng":-46.63,"r":"South America","p":1,"c":"Brazil","note":"SE Brazil, inland from Rio, largest city in South America"},{"n":"Caracas","lat":10.48,"lng":-66.88,"r":"South America","p":1,"c":"Venezuela","note":"N Venezuela, near Caribbean coast, Orinoco River flows south"},{"n":"Quito","lat":-0.23,"lng":-78.52,"r":"South America","p":1,"c":"Ecuador","note":"Central Andes Ecuador, near equator (0\u00b0), Gal\u00e1pagos belongs here"},{"n":"Asunci\u00f3n","lat":-25.28,"lng":-57.64,"r":"South America","p":1,"c":"Paraguay","note":"SW Paraguay, Paraguay River, landlocked (Brazil/Argentina/Bolivia)"},{"n":"Montevideo","lat":-34.9,"lng":-56.19,"r":"South America","p":1,"c":"Uruguay","note":"S Uruguay, R\u00edo de la Plata, Atlantic coast"},{"n":"La Paz","lat":-16.5,"lng":-68.15,"r":"South America","p":1,"c":"Bolivia","note":"W Bolivia, Andes, highest administrative capital in world"},{"n":"Manaus","lat":-3.1,"lng":-60.02,"r":"South America","p":2,"c":"Brazil","note":"Central Amazon, confluence Negro and Solim\u00f5es rivers"},{"n":"Georgetown","lat":6.8,"lng":-58.16,"r":"South America","p":2,"c":"Guyana","note":"N Guyana, Atlantic coast, only English-speaking S American country"},{"n":"Canberra","lat":-35.28,"lng":149.13,"r":"Australia","p":1,"c":"Australia","note":"ACT, between Sydney and Melbourne, capital (NOT Sydney \u2014 trap!)"},{"n":"Sydney","lat":-33.87,"lng":151.21,"r":"Australia","p":1,"c":"Australia","note":"SE NSW coast, Opera House, largest city (NOT capital)"},{"n":"Melbourne","lat":-37.81,"lng":144.96,"r":"Australia","p":1,"c":"Australia","note":"SE Victoria, Port Phillip Bay, 2nd largest city"},{"n":"Brisbane","lat":-27.47,"lng":153.03,"r":"Australia","p":2,"c":"Australia","note":"SE Queensland, Brisbane River, near Gold Coast"},{"n":"Perth","lat":-31.95,"lng":115.86,"r":"Australia","p":2,"c":"Australia","note":"SW Western Australia, Indian Ocean, most isolated major city"},{"n":"Adelaide","lat":-34.93,"lng":138.6,"r":"Australia","p":2,"c":"Australia","note":"S South Australia, Gulf St Vincent"},{"n":"Darwin","lat":-12.46,"lng":130.84,"r":"Australia","p":2,"c":"Australia","note":"N Northern Territory, tropical, near Timor Sea"},{"n":"Hobart","lat":-42.88,"lng":147.33,"r":"Australia","p":2,"c":"Australia","note":"S Tasmania island, Derwent River, southernmost Australian capital"},{"n":"Auckland","lat":-36.86,"lng":174.76,"r":"New Zealand","p":1,"c":"New Zealand","note":"North Island NZ, largest city (NOT capital \u2014 Wellington is)"},{"n":"Wellington","lat":-41.29,"lng":174.78,"r":"New Zealand","p":1,"c":"New Zealand","note":"S North Island NZ, Cook Strait, capital (NOT Auckland \u2014 trap!)"},{"n":"Christchurch","lat":-43.53,"lng":172.64,"r":"New Zealand","p":2,"c":"New Zealand","note":"E South Island NZ, Canterbury Plains, near Southern Alps"},{"n":"Port Moresby","lat":-9.44,"lng":147.18,"r":"Pacific","p":1,"c":"Papua New Guinea","note":"SE Papua New Guinea, Coral Sea, Gulf of Papua"},{"n":"Suva","lat":-18.14,"lng":178.44,"r":"Pacific","p":1,"c":"Fiji","note":"SE Viti Levu island, Fiji, Melanesia"},{"n":"Apia","lat":-13.83,"lng":-171.77,"r":"Pacific","p":1,"c":"Samoa","note":"N Upolu island, Samoa, Polynesia (Gold Set fact)"},{"n":"Nuku'alofa","lat":-21.14,"lng":-175.22,"r":"Pacific","p":2,"c":"Tonga","note":"Tongatapu island, Tonga, Polynesia"},{"n":"Honiara","lat":-9.43,"lng":160.06,"r":"Pacific","p":2,"c":"Solomon Islands","note":"Guadalcanal island, Solomon Islands, Melanesia"},{"n":"Port Vila","lat":-17.73,"lng":168.32,"r":"Pacific","p":2,"c":"Vanuatu","note":"\u00c9fat\u00e9 island, Vanuatu, Melanesia"},{"n":"Tarawa","lat":1.33,"lng":173.0,"r":"Pacific","p":2,"c":"Kiribati","note":"Gilbert Islands group, Kiribati, Micronesia, straddles equator"},{"n":"Funafuti","lat":-8.52,"lng":179.2,"r":"Pacific","p":3,"c":"Tuvalu","note":"Funafuti Atoll, Tuvalu, most threatened by sea level rise"},{"n":"Dili","lat":-8.56,"lng":125.58,"r":"Pacific","p":2,"c":"Timor-Leste","note":"N Timor island, East Timor, youngest Asian country (2002)"}]</script>
+
+<div id="app">
+  <div id="hdr">
+    <div class="logo">CITY<span>MAP</span></div>
+    <div id="sw">
+      <span id="sicon">🔍</span>
+      <input id="si" type="search" placeholder="Search city, country, or note…" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div id="sres"></div>
+    </div>
+  </div>
+
+  <div id="filters">
+    <button class="fc on" data-f="all">🌍 All (278)</button>
+    <span class="fsep">|</span>
+    <button class="fc" data-f="p1" title="Must know — highest exam priority">🔵 Must Know</button>
+    <button class="fc" data-f="p2" title="Should know">🟢 Should Know</button>
+    <button class="fc" data-f="p3" title="Good to know">🟡 Good to Know</button>
+    <span class="fsep">|</span>
+    <button class="fc" data-f="AF">🌍 Africa</button>
+    <button class="fc" data-f="AS">🌏 Asia</button>
+    <button class="fc" data-f="EU">🇪🇺 Europe</button>
+    <button class="fc" data-f="NA">🌎 N.America</button>
+    <button class="fc" data-f="SA">🌎 S.America</button>
+    <button class="fc" data-f="OC">🏝 Oceania</button>
+  </div>
+
+  <div id="map"></div>
+  <div id="infobar">Showing <span id="shown">278</span> of 278 cities</div>
+</div>
+
+<!-- LEGEND -->
+<div id="leg">
+  <div class="li"><div class="ld" style="background:var(--p1)"></div><span style="color:var(--text);font-size:11px">Must Know</span></div>
+  <div class="li"><div class="ld" style="background:var(--p2)"></div><span style="color:var(--text);font-size:11px">Should Know</span></div>
+  <div class="li"><div class="ld" style="background:var(--p3)"></div><span style="color:var(--text);font-size:11px">Good to Know</span></div>
+</div>
+
+<script>
+const CITIES = JSON.parse(document.getElementById('CD').textContent);
+
+// Continent lookup from region string
+function cont(r){
+  const s = r.toLowerCase();
+  if(s.includes('africa')||s==='central africa'||s==='west africa'||s==='east africa'||s==='north africa'||s==='southern africa'||s==='northeast africa') return 'AF';
+  if(s.includes('asia')||s==='middle east'||s==='caucasus'||s==='south asia'||s==='central asia'||s==='se asia'||s==='east asia') return 'AS';
+  if(s.includes('europe')||s==='balkans'||s==='british isles'||s==='northern europe'||s==='western europe'||s==='central europe'||s==='southern europe'||s==='eastern europe') return 'EU';
+  if(s==='canada'||s==='usa'||s==='mexico'||s==='caribbean'||s==='central america') return 'NA';
+  if(s==='south america') return 'SA';
+  if(s==='australia'||s==='new zealand'||s==='pacific') return 'OC';
+  return 'XX';
+}
+
+// Trap cities (capital ≠ largest city)
+const TRAPS = new Set(['Sydney','Lagos','Casablanca','Dar es Salaam','Johannesburg','Auckland','Dubai','Istanbul','Karachi','Mumbai','Colombo','Yangon','Abidjan','São Paulo','Rio de Janeiro','Kinshasa']);
+
+const PNAMES = {1:'Must Know',2:'Should Know',3:'Good to Know'};
+const PCOLS = {1:'#00c8f0',2:'#34d975',3:'#ffd60a'};
+
+// Init map
+const map = L.map('map',{center:[20,10],zoom:2,minZoom:2,maxZoom:9,zoomControl:true,attributionControl:false});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+  attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19
+}).addTo(map);
+L.control.attribution({prefix:'© OpenStreetMap contributors'}).addTo(map);
+
+let layerGroup = L.layerGroup().addTo(map);
+let markers = [];
+let activeFilter = 'all';
+
+function makeIcon(city){
+  const col = PCOLS[city.p]||'#fff';
+  return L.divIcon({
+    html:`<div class="cm p${city.p}"></div>`,
+    className:'',iconSize:[16,16],iconAnchor:[8,8],popupAnchor:[0,-10]
+  });
+}
+
+function makePopup(city){
+  const isTrap = TRAPS.has(city.n);
+  const trapNote = isTrap ? `<div class="ptrap">⚠ Common trap — check if this is actually the CAPITAL</div>` : '';
+  return `
+    <div class="phead">
+      <div class="pname">${city.n}</div>
+      <span class="pbadge p${city.p}">${PNAMES[city.p]}</span>
+    </div>
+    <div class="pcountry">${city.c}</div>
+    <div class="pregion">${city.r}</div>
+    <div class="pnote">${city.note}</div>
+    ${trapNote}
+  `;
+}
+
+function buildMarkers(){
+  layerGroup.clearLayers();
+  markers = [];
+  
+  let filtered;
+  if(activeFilter==='all') filtered = CITIES;
+  else if(activeFilter==='p1'||activeFilter==='p2'||activeFilter==='p3'){
+    const p = parseInt(activeFilter[1]);
+    filtered = CITIES.filter(c=>c.p===p);
+  } else {
+    // Continent filter
+    filtered = CITIES.filter(c=>cont(c.r)===activeFilter);
+  }
+  
+  filtered.forEach(city=>{
+    const m = L.marker([city.lat,city.lng],{icon:makeIcon(city)});
+    m.bindPopup(makePopup(city),{maxWidth:270});
+    m.cityData = city;
+    layerGroup.addLayer(m);
+    markers.push(m);
+  });
+  
+  document.getElementById('shown').textContent = filtered.length;
+}
+
+// Filter chips
+document.querySelectorAll('.fc').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.fc').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    activeFilter = btn.dataset.f;
+    buildMarkers();
+  });
+});
+
+// Search
+const si = document.getElementById('si');
+const sres = document.getElementById('sres');
+
+function doSearch(q){
+  if(!q||q.length<2){sres.style.display='none';return;}
+  const l = q.toLowerCase();
+  const hits = CITIES.filter(c=>
+    c.n.toLowerCase().includes(l)||
+    c.c.toLowerCase().includes(l)||
+    c.r.toLowerCase().includes(l)||
+    c.note.toLowerCase().includes(l)
+  ).slice(0,15);
+  if(!hits.length){sres.style.display='none';return;}
+  sres.innerHTML = hits.map(c=>`
+    <div class="si-item" data-lat="${c.lat}" data-lng="${c.lng}" data-name="${c.n}">
+      <div class="sid" style="background:${PCOLS[c.p]}"></div>
+      <div>
+        <div class="sin">${c.n}</div>
+        <div class="sic">${c.c} · ${c.r}</div>
+      </div>
+    </div>`).join('');
+  sres.style.display='block';
+  sres.querySelectorAll('.si-item').forEach(item=>{
+    item.addEventListener('click',()=>{
+      const lat=parseFloat(item.dataset.lat);
+      const lng=parseFloat(item.dataset.lng);
+      const name=item.dataset.name;
+      map.setView([lat,lng],6,{animate:true});
+      setTimeout(()=>{
+        markers.forEach(m=>{if(m.cityData&&m.cityData.n===name) m.openPopup();});
+      },400);
+      si.value=''; sres.style.display='none';
+    });
+  });
+}
+
+si.addEventListener('input',e=>doSearch(e.target.value));
+si.addEventListener('focus',e=>doSearch(e.target.value));
+document.addEventListener('click',e=>{if(!e.target.closest('#sw')) sres.style.display='none';});
+si.addEventListener('touchend',e=>e.stopPropagation());
+
+// Zoom to continent on filter
+const CONT_VIEWS = {
+  AF:{c:[-2,22],z:3}, AS:{c:[30,90],z:3}, EU:{c:[52,15],z:4},
+  NA:{c:[45,-95],z:3}, SA:{c:[-15,-55],z:3}, OC:{c:[-25,140],z:3},
+};
+
+document.querySelectorAll('.fc[data-f]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const f = btn.dataset.f;
+    if(CONT_VIEWS[f]){
+      map.setView(CONT_VIEWS[f].c, CONT_VIEWS[f].z, {animate:true});
+    }
+  });
+});
+
+buildMarkers();
+</script>
+</body>
+</html>
