@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geography Bee Trainer</title>
+    <style>
+        /* CSS VARIABLE DEFINITIONS 
+           This resolves the unstyled text, missing backgrounds, and broken borders.
+        */
+        :root {
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --color-background-primary: #ffffff;
+            --color-background-secondary: #f6f8fa;
+            --color-background-success: #dafbe1;
+            --color-background-danger: #ffebe9;
+            --color-background-info: #ddf4ff;
+            --color-text-primary: #1f2328;
+            --color-text-secondary: #57606a;
+            --color-text-tertiary: #8c959f;
+            --color-text-success: #1a7f37;
+            --color-text-danger: #cf222e;
+            --color-text-info: #0969da;
+            --color-border-primary: #0969da;
+            --color-border-secondary: #d0d7de;
+            --color-border-tertiary: #e1e4e8;
+            --color-border-success: #2da44e;
+            --color-border-danger: #cf222e;
+            --border-radius-md: 6px;
+            --border-radius-lg: 12px;
+        }
+
+        /* Seamless dark mode integration based on system settings */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background-primary: #0d1117;
+                --color-background-secondary: #161b22;
+                --color-background-success: #132316;
+                --color-background-danger: #2c1514;
+                --color-background-info: #0c1b30;
+                --color-text-primary: #e6edf3;
+                --color-text-secondary: #8b949e;
+                --color-text-tertiary: #484f58;
+                --color-text-success: #3fb950;
+                --color-text-danger: #f85149;
+                --color-text-info: #58a6ff;
+                --color-border-primary: #58a6ff;
+                --color-border-secondary: #30363d;
+                --color-border-tertiary: #21262d;
+                --color-border-success: #238636;
+                --color-border-danger: #da3633;
+            }
+        }
+
+        /* Base Reset & Application Styles */
+        *{box-sizing:border-box;margin:0;padding:0}
+        body { 
+            background-color: var(--color-background-primary); 
+            color: var(--color-text-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.3s ease; 
+        }
+        .app{max-width:740px;margin:0 auto;padding:1.5rem 1rem;}
+        .top{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+        .logo{font-size:16px;font-weight:600;letter-spacing:-0.2px}
+        .tag{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+        .modes{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+        .mbtn{font-size:12px;padding:6px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-secondary);font-weight:500;transition:all 0.15s ease}
+        .mbtn:hover{background:var(--color-background-secondary)}
+        .mbtn.on{background:var(--color-background-info);color:var(--color-text-info);border-color:transparent}
+        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.25rem}
+        .stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.75rem;text-align:center;border:0.5px solid var(--color-border-tertiary)}
+        .sv{font-size:22px;font-weight:600;line-height:1}
+        .sl{font-size:10px;color:var(--color-text-secondary);margin-top:4px;text-transform:uppercase;letter-spacing:0.3px}
+        .card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:1rem;box-shadow:0 4px 12px rgba(0,0,0,0.03)}
+        .ch{padding:.875rem 1rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:12px}
+        .flag-badge{width:44px;height:30px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;letter-spacing:.5px;border:0.5px solid var(--color-border-tertiary);flex-shrink:0;overflow:hidden}
+        .cn{font-size:16px;font-weight:600}
+        .coff{font-size:11px;color:var(--color-text-tertiary)}
+        .rbadge{margin-left:auto;font-size:11px;padding:2px 8px;border-radius:20px;background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary);white-space:nowrap;flex-shrink:0}
+        .levels{padding:1rem}
+        .lblock{margin-bottom:.75rem;border-radius:var(--border-radius-md);overflow:hidden;border:0.5px solid transparent}
+        .lhdr{padding:.6rem .75rem;font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+        .ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+        .lbody{padding:.75rem 1rem;display:none;border-top:0.5px solid rgba(128,128,128,.15)}
+        .lbody.open{display:block}
+        .lblock.l1{border-color:rgba(226,75,74,.35)}
+        .lblock.l1 .lhdr{background:#FCEBEB;color:#A32D2D}
+        .lblock.l1 .ldot{background:#E24B4A}
+        .lblock.l1 .lbody{background:#FCEBEB;color:#5c1e1e}
+        .lblock.l2{border-color:rgba(186,117,23,.35)}
+        .lblock.l2 .lhdr{background:#FAEEDA;color:#854F0B}
+        .lblock.l2 .ldot{background:#BA7517}
+        .lblock.l2 .lbody{background:#FAEEDA;color:#573305}
+        .lblock.l3{border-color:rgba(99,153,34,.35)}
+        .lblock.l3 .lhdr{background:#EAF3DE;color:#3B6D11}
+        .lblock.l3 .ldot{background:#639922}
+        .lblock.l3 .lbody{background:#EAF3DE;color:#24440b}
+        @media(prefers-color-scheme:dark){
+            .lblock.l1 .lhdr,.lblock.l1 .lbody{background:#501313;color:#F7C1C1}
+            .lblock.l2 .lhdr,.lblock.l2 .lbody{background:#412402;color:#FAC775}
+            .lblock.l3 .lhdr,.lblock.l3 .lbody{background:#173404;color:#C0DD97}
+        }
+        .ci{font-size:13px;line-height:1.6;padding:3px 0}
+        .cactions{padding:.875rem 1rem;border-top:0.5px solid var(--color-border-tertiary);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+        .btn{padding:8px 16px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);transition:all 0.1s ease}
+        .btn:hover{background:var(--color-background-secondary)}
+        .btn-g{border-color:var(--color-border-success);color:var(--color-text-success)}
+        .btn-g:hover{background:var(--color-background-success)}
+        .btn-r{border-color:var(--color-border-danger);color:var(--color-text-danger)}
+        .btn-r:hover{background:var(--color-background-danger)}
+        .btn-b{background:var(--color-background-info);color:var(--color-text-info);border-color:transparent}
+        .btn-b:hover{opacity:0.9}
+        .pbar{height:4px;background:var(--color-background-secondary);border-radius:2px;margin-bottom:1rem;overflow:hidden}
+        .pfill{height:100%;background:var(--color-background-info);border-radius:2px;transition:width .3s}
+        .ctrls{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+        .ctrls select{padding:6px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:12px;cursor:pointer}
+        .sbar{display:flex;gap:8px;margin-bottom:1rem}
+        .sbar input{flex:1;padding:8px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);font-size:13px;color:var(--color-text-primary);outline:none;transition:border-color 0.15s}
+        .sbar input:focus{border-color:var(--color-border-primary)}
+        .sbar select{padding:8px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);font-size:13px;color:var(--color-text-primary);cursor:pointer}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+        .tile{padding:.875rem;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);cursor:pointer;background:var(--color-background-primary);transition:all .15s ease}
+        .tile:hover{border-color:var(--color-border-primary);box-shadow:0 4px 12px rgba(0,0,0,0.05);transform:translateY(-1px)}
+        .tile.mastered{border-color:var(--color-border-success)!important;background:var(--color-background-success)!important}
+        .tile.needs-work{border-color:var(--color-border-danger)!important;background:var(--color-background-danger)!important}
+        .tflag{width:38px;height:24px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;letter-spacing:.3px;margin-bottom:6px;border:0.5px solid var(--color-border-tertiary)}
+        .tname{font-size:13px;font-weight:600;line-height:1.3;margin-top:4px}
+        .treg{font-size:10px;color:var(--color-text-tertiary);margin-top:2px}
+        .qbox{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1rem;box-shadow:0 4px 12px rgba(0,0,0,0.03)}
+        .qq{font-size:14px;line-height:1.6;margin-bottom:1rem}
+        .qopts{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem}
+        .qopt{padding:10px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);text-align:left;font-size:13px;cursor:pointer;color:var(--color-text-primary);font-weight:500;transition:all 0.1s ease}
+        .qopt:hover{background:var(--color-background-secondary)}
+        .qopt.correct{background:var(--color-background-success);color:var(--color-text-success);border-color:transparent;font-weight:600}
+        .qopt.wrong{background:var(--color-background-danger);color:var(--color-text-danger);border-color:transparent;font-weight:600}
+        .qfb{font-size:13px;padding:.875rem;border-radius:var(--border-radius-md);margin-bottom:1rem;display:none;line-height:1.5}
+        .qfb.show{display:block}
+        .qfb.ok{background:var(--color-background-success);color:var(--color-text-success)}
+        .qfb.bad{background:var(--color-background-danger);color:var(--color-text-danger)}
+        .qtype-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+        .qpill{font-size:11px;padding:4px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);cursor:pointer;background:transparent;color:var(--color-text-secondary);font-weight:500}
+        .qpill.on{background:var(--color-background-info);color:var(--color-text-info);border-color:transparent}
+        .empty{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
+        .inforow{display:flex;gap:6px;flex-wrap:wrap;margin-top:.75rem}
+        .infopill{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);font-weight:500}
+    </style>
+</head>
+<body>
+
+<div class="app">
+<div class="top">
+  <span class="logo">Geography Bee Trainer</span>
+  <span class="tag" id="ctag">195 countries</span>
+  <div class="modes">
+    <button class="mbtn on" onclick="setMode('browse')" id="m-browse">Browse</button>
+    <button class="mbtn" onclick="setMode('flash')" id="m-flash">Flashcards</button>
+    <button class="mbtn" onclick="setMode('quiz')" id="m-quiz">Quiz</button>
+    <button class="mbtn" onclick="setMode('prog')" id="m-prog">Progress</button>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="sv" id="s1">0</div><div class="sl">studied</div></div>
+  <div class="stat"><div class="sv" id="s2">0</div><div class="sl">mastered</div></div>
+  <div class="stat"><div class="sv" id="s3">—</div><div class="sl">quiz score</div></div>
+  <div class="stat"><div class="sv" id="s4">0</div><div class="sl">streak</div></div>
+</div>
+
+<div id="browse-view">
+  <div class="sbar">
+    <input type="text" placeholder="Search country or capital..." oninput="doSearch(this.value)" id="si">
+    <select onchange="fReg=this.value;renderGrid()" id="frs">
+      <option value="">All regions</option>
+      <option>Africa</option><option>Asia</option><option>Europe</option>
+      <option>North America</option><option>South America</option>
+      <option>Oceania</option><option>Middle East</option><option>Caribbean</option>
+    </select>
+    <select onchange="fSt=this.value;renderGrid()">
+      <option value="">All</option>
+      <option value="mastered">Mastered</option>
+      <option value="needs-work">Needs work</option>
+      <option value="new">Not studied</option>
+    </select>
+  </div>
+  <div id="card-area"></div>
+  <div class="grid" id="cgrid"></div>
+</div>
+
+<div id="flash-view" style="display:none">
+  <div class="ctrls">
+    <select onchange="fcReg=this.value" id="fcrs">
+      <option value="">All regions</option>
+      <option>Africa</option><option>Asia</option><option>Europe</option>
+      <option>North America</option><option>South America</option>
+      <option>Oceania</option><option>Middle East</option><option>Caribbean</option>
+    </select>
+    <select onchange="fcOrd=this.value" id="fco">
+      <option value="random">Random</option>
+      <option value="needs">Needs work first</option>
+      <option value="alpha">A–Z</option>
+    </select>
+    <button class="btn btn-b" onclick="startFC()">Start</button>
+  </div>
+  <div class="pbar"><div class="pfill" id="fcp"></div></div>
+  <div id="fc-area"></div>
+</div>
+
+<div id="quiz-view" style="display:none">
+  <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px">Question categories:</div>
+  <div class="qtype-pills" id="qtpills"></div>
+  <div class="ctrls">
+    <select id="qreg">
+      <option value="">All regions</option>
+      <option>Africa</option><option>Asia</option><option>Europe</option>
+      <option>North America</option><option>South America</option>
+      <option>Oceania</option><option>Middle East</option><option>Caribbean</option>
+    </select>
+    <select id="qdiff">
+      <option value="mixed">Mixed difficulty</option>
+      <option value="easy">Easy only (Level 3)</option>
+      <option value="hard">Hard only (Level 1)</option>
+    </select>
+    <select id="qcount">
+      <option value="10">10 questions</option>
+      <option value="15" selected>15 questions</option>
+      <option value="20">20 questions</option>
+      <option value="30">30 questions</option>
+    </select>
+    <button class="btn btn-b" onclick="startQuiz()">Start quiz</button>
+  </div>
+  <div id="quiz-area"></div>
+</div>
+
+<div id="prog-view" style="display:none">
+  <div id="prog-detail"></div>
+</div>
+</div>
+
+<script>
+const REGIONS = {
+  'AF':'Africa','AS':'Asia','EU':'Europe','NA':'North America',
+  'SA':'South America','OC':'Oceania','ME':'Middle East','CA':'Caribbean'
+};
+
+function fc(colors,text){
+  const [bg,tx] = colors;
+  return `<div class="flag-badge" style="background:${bg};color:${tx}">${text}</div>`;
+}
+
+const DB = [
+{n:"Afghanistan",on:"Islamic Republic of Afghanistan",reg:"Asia",cap:"Kabul",cities:["Kabul","Kandahar","Herat","Mazar-i-Sharif"],langs:["Pashto","Dari"],dem:"Afghan",cur:"Afghan Afghani",gov:"Islamic Emirate",
+ flag:{c:["#1a5c1a","#fff"],t:"BLK-GRN"},
+ l1:["Landlocked; borders Pakistan, Iran, Turkmenistan, Uzbekistan, Tajikistan, China","The Hindu Kush mountains dominate, with Tirich Mir visible from eastern borders","Wakhan Corridor is a narrow strip of territory touching China","Source of Helmand and Amu Darya rivers","Formerly ruled by Taliban 1996-2001, regained power 2021"],
+ l2:["Bamiyan Buddhas (destroyed 2001) were UNESCO-listed cultural icons","Flag: black, red, green vertical stripes with national emblem","National symbol: golden eagle","Exports: opium (illegal, largest producer), carpets, dried fruits, gemstones"],
+ l3:["Capital: Kabul","Official languages: Pashto and Dari (Persian)","Demonym: Afghan","Currency: Afghan Afghani"]},
+
+{n:"Albania",on:"Republic of Albania",reg:"Europe",cap:"Tirana",cities:["Tirana","Durrës","Vlorë","Shkodër"],langs:["Albanian"],dem:"Albanian",cur:"Albanian Lek",gov:"Parliamentary republic",
+ flag:{c:["#e41e20","#000"],t:"ALB"},
+ l1:["Located in southeastern Europe on the Adriatic and Ionian coasts","Borders Montenegro, Kosovo, North Macedonia, and Greece","The Albanian Alps (Prokletije) rise in the north","Lake Ohrid and Lake Shkodër are major lakes shared with neighbors"],
+ l2:["Butrint archaeological site — UNESCO WHS","Flag: red with black double-headed eagle — one of oldest heraldic symbols in Europe","National hero: Gjergj Kastrioti (Skanderbeg), who resisted the Ottoman Empire","Major exports: chromium, copper, oil, electricity"],
+ l3:["Capital: Tirana","Official language: Albanian","Demonym: Albanian","Currency: Albanian Lek (ALL)"]},
+
+{n:"Algeria",on:"People's Democratic Republic of Algeria",reg:"Africa",cap:"Algiers",cities:["Algiers","Oran","Constantine","Annaba"],langs:["Arabic","Tamazight"],dem:"Algerian",cur:"Algerian Dinar",gov:"Presidential republic",
+ flag:{c:["#006233","#fff"],t:"DZA"},
+ l1:["Largest country in Africa and Arab world","Over 80% Sahara Desert; Atlas Mountains in the north","Borders Morocco, Western Sahara, Mauritania, Mali, Niger, Libya, Tunisia","Highest peak: Mount Tahat (3,003 m) in the Ahaggar Mountains"],
+ l2:["Tassili n'Ajjer (ancient rock art) and M'Zab Valley — UNESCO WHS","Flag: green/white vertical halves with red crescent and star","Gained independence from France in 1962 after brutal 8-year war","Major exporter of oil and natural gas"],
+ l3:["Capital: Algiers","Official languages: Arabic and Tamazight","Demonym: Algerian","Currency: Algerian Dinar (DZD)"]},
+
+{n:"Andorra",on:"Principality of Andorra",reg:"Europe",cap:"Andorra la Vella",cities:["Andorra la Vella","Escaldes-Engordany"],langs:["Catalan"],dem:"Andorran",cur:"Euro",gov:"Parliamentary co-principality",
+ flag:{c:["#003DA5","#FEDF00"],t:"AND"},
+ l1:["Microstate in the Pyrenees between France and Spain — no other borders","One of Europe's highest countries by average elevation (~2,000 m)","No airport; access via roads from France or Spain","Co-principality led jointly by French President and Spanish Bishop of Urgell"],
+ l2:["No UNESCO WHS; known for ski resorts and duty-free shopping","Flag: blue, yellow, red vertical stripes with coat of arms","National anthem has no words — only music","Major revenue: tourism, banking, duty-free retail"],
+ l3:["Capital: Andorra la Vella (highest capital in Europe at 1,023 m)","Official language: Catalan","Demonym: Andorran","Currency: Euro (not EU member)"]},
+
+{n:"Angola",on:"Republic of Angola",reg:"Africa",cap:"Luanda",cities:["Luanda","Huambo","Lobito","Benguela"],langs:["Portuguese"],dem:"Angolan",cur:"Angolan Kwanza",gov:"Presidential republic",
+ flag:{c:["#c00","#000"],t:"AGO"},
+ l1:["Located in southwestern Africa on Atlantic coast","Borders DRC, Republic of Congo, Zambia, Namibia","Cabinda is an exclave north of the Congo River separated from the mainland","The Congo River forms part of the northern border"],
+ l2:["Old fortified town of Mbanza Kongo — UNESCO WHS","Flag: red over black horizontal bands with yellow machete, gear, and star","Former Portuguese colony; independence 1975","World's 7th largest diamond producer; major exporter of oil"],
+ l3:["Capital: Luanda","Official language: Portuguese","Demonym: Angolan","Currency: Angolan Kwanza (AOA)"]},
+
+{n:"Argentina",on:"Argentine Republic",reg:"South America",cap:"Buenos Aires",cities:["Buenos Aires","Córdoba","Rosario","Mendoza","Tucumán"],langs:["Spanish"],dem:"Argentine",cur:"Argentine Peso",gov:"Federal presidential republic",
+ flag:{c:["#74acdf","#fff"],t:"ARG"},
+ l1:["Second largest country in South America; 8th largest in world","Shares longest mountain border (Andes with Chile)","Contains Patagonia, Tierra del Fuego, and Iguazu Falls","La Plata estuary is the world's widest river estuary"],
+ l2:["Perito Moreno Glacier and Iguazú National Park — UNESCO WHS","Flag: blue-white-blue horizontal stripes with Sun of May","Major exporter: soybeans, beef, sunflower oil, wine (Mendoza)","National instrument: bandoneón (tango music)"],
+ l3:["Capital: Buenos Aires","Official language: Spanish","Demonym: Argentine/Argentinian","Currency: Argentine Peso (ARS)"]},
+
+{n:"Armenia",on:"Republic of Armenia",reg:"Asia",cap:"Yerevan",cities:["Yerevan","Gyumri","Vanadzor"],langs:["Armenian"],dem:"Armenian",cur:"Armenian Dram",gov:"Parliamentary republic",
+ flag:{c:["#D90012","#0033A0"],t:"ARM"},
+ l1:["Landlocked in South Caucasus; borders Turkey, Georgia, Azerbaijan, Iran","Mount Ararat (now in Turkey) is the national symbol visible from Yerevan","Lake Sevan is one of world's largest high-altitude lakes (1,900 m)","Has disputed Nagorno-Karabakh territory with Azerbaijan"],
+ l2:["Monasteries of Haghpat and Sanahin — UNESCO WHS","Flag: red, blue, orange horizontal stripes","First nation to adopt Christianity as state religion (301 AD)","Major exports: copper, gold, diamonds, aluminum"],
+ l3:["Capital: Yerevan","Official language: Armenian","Demonym: Armenian","Currency: Armenian Dram (AMD)"]},
+
+{n:"Australia",on:"Commonwealth of Australia",reg:"Oceania",cap:"Canberra",cities:["Sydney","Melbourne","Brisbane","Perth","Adelaide"],langs:["English"],dem:"Australian",cur:"Australian Dollar",gov:"Federal parliamentary constitutional monarchy",
+ flag:{c:["#00008B","#fff"],t:"AUS"},
+ l1:["Only country that is also a continent — world's smallest continent","Great Barrier Reef (2,300 km) lies off Queensland coast","The Great Dividing Range runs along the eastern coast","Uluru (Ayers Rock) is a sacred sandstone monolith in the Northern Territory"],
+ l2:["Kakadu NP, Great Barrier Reef, Sydney Opera House — UNESCO WHS","Flag: Blue Ensign with Union Jack, Commonwealth Star, and Southern Cross","National animals: red kangaroo and emu on coat of arms","Major exporter: iron ore, coal, LNG, wool, wheat"],
+ l3:["Capital: Canberra (NOT Sydney — common trick question)","Official language: English (de facto)","Demonym: Australian","Currency: Australian Dollar (AUD)"]},
+
+{n:"Austria",on:"Republic of Austria",reg:"Europe",cap:"Vienna",cities:["Vienna","Graz","Linz","Salzburg","Innsbruck"],langs:["German"],dem:"Austrian",cur:"Euro",gov:"Federal parliamentary republic",
+ flag:{c:["#ED2939","#fff"],t:"AUT"},
+ l1:["Landlocked in Central Europe; Eastern Alps dominate the west and south","Borders Germany, Czech Republic, Slovakia, Hungary, Slovenia, Italy, Switzerland, Liechtenstein","The Danube River flows through Vienna","Highest peak: Großglockner (3,798 m) in the Hohe Tauern"],
+ l2:["Historic Vienna and palace of Schönbrunn — UNESCO WHS","Flag: red-white-red horizontal bands — one of world's oldest flags (~1230 AD)","Capital of Habsburg/Austro-Hungarian Empire until 1918","Major exporter: machinery, vehicles, paper, chemicals"],
+ l3:["Capital: Vienna","Official language: German","Demonym: Austrian","Currency: Euro (EUR)"]},
+
+{n:"Azerbaijan",on:"Republic of Azerbaijan",reg:"Asia",cap:"Baku",cities:["Baku","Ganja","Sumqayit"],langs:["Azerbaijani"],dem:"Azerbaijani",cur:"Azerbaijani Manat",gov:"Presidential republic",
+ flag:{c:["#0092BC","#E8292B"],t:"AZE"},
+ l1:["Located in South Caucasus on Caspian Sea — largest enclosed body of water","Borders Russia, Georgia, Armenia, Iran; Nakhchivan is an exclave","The Kura and Aras rivers are the major waterways","Has disputed Nagorno-Karabakh territory with Armenia"],
+ l2:["Walled city of Baku with Shirvanshah's Palace — UNESCO WHS","Flag: blue, red, green horizontal stripes with white crescent and 8-pointed star","Petroleum industry dates to 1840s; one of world's first oil producers","Major exporter: oil, gas, cotton, chemicals"],
+ l3:["Capital: Baku","Official language: Azerbaijani","Demonym: Azerbaijani","Currency: Azerbaijani Manat (AZN)"]},
+
+{n:"Bahamas",on:"Commonwealth of The Bahamas",reg:"Caribbean",cap:"Nassau",cities:["Nassau","Freeport","West End"],langs:["English"],dem:"Bahamian",cur:"Bahamian Dollar",gov:"Parliamentary constitutional monarchy",
+ flag:{c:["#00778B","#FFC72C"],t:"BHS"},
+ l1:["Archipelago of 700 islands north of Cuba; 30 are inhabited","The first land Christopher Columbus reached in 1492 (San Salvador Island)","No rivers; freshwater from rain and limestone aquifers","Located in Atlantic Ocean and Caribbean Sea"],
+ l2:["Flag: aquamarine with yellow stripe and black triangle","Known for pink-sand beaches and diving","Major revenue: tourism and financial services (offshore banking)","Hurricane prone — regularly impacted by Atlantic hurricanes"],
+ l3:["Capital: Nassau","Official language: English","Demonym: Bahamian","Currency: Bahamian Dollar (BSD)"]},
+
+{n:"Bahrain",on:"Kingdom of Bahrain",reg:"Middle East",cap:"Manama",cities:["Manama","Riffa","Muharraq"],langs:["Arabic"],dem:"Bahraini",cur:"Bahraini Dinar",gov:"Constitutional monarchy",
+ flag:{c:["#CE1126","#fff"],t:"BHR"},
+ l1:["Archipelago of 33 islands in the Persian Gulf; no land borders","Connected to Saudi Arabia via the King Fahd Causeway (25 km bridge)","Smallest country in the Middle East","First Gulf state to discover oil (1932)"],
+ l2:["Qal'at al-Bahrain (ancient harbor) — UNESCO WHS","Flag: red with white serrated band (five points for Five Pillars of Islam)","First Gulf state with elected parliament (2002)","Major exporter: petroleum, aluminum (ALBA is one of world's largest smelters)"],
+ l3:["Capital: Manama","Official language: Arabic","Demonym: Bahraini","Currency: Bahraini Dinar (BHD) — highest-valued currency in world"]},
+
+{n:"Bangladesh",on:"People's Republic of Bangladesh",reg:"Asia",cap:"Dhaka",cities:["Dhaka","Chittagong","Sylhet","Rajshahi","Khulna"],langs:["Bengali"],dem:"Bangladeshi",cur:"Bangladeshi Taka",gov:"Parliamentary republic",
+ flag:{c:["#006A4E","#F42A41"],t:"BGD"},
+ l1:["One of world's most densely populated countries (1,100+ people/km²)","Surrounded almost entirely by India, with short Myanmar border","Ganges-Brahmaputra delta — world's largest river delta","Sundarbans is world's largest mangrove forest (shared with India)"],
+ l2:["The Sundarbans — UNESCO WHS","Flag: red disc on green background — simplest symbolic national flag","Gained independence from Pakistan in 1971 War of Liberation","World's 2nd largest exporter of ready-made garments after China"],
+ l3:["Capital: Dhaka","Official language: Bengali (Bangla)","Demonym: Bangladeshi","Currency: Bangladeshi Taka (BDT)"]},
+
+{n:"Barbados",on:"Barbados",reg:"Caribbean",cap:"Bridgetown",cities:["Bridgetown","Speightstown","Oistins"],langs:["English"],dem:"Barbadian (Bajan)",cur:"Barbadian Dollar",gov:"Parliamentary republic",
+ flag:{c:["#00267F","#FFC726"],t:"BRB"},
+ l1:["Easternmost island in the Caribbean, in the Atlantic Ocean","Relatively flat coral island; no mountains like other Caribbean islands","Borders no other country; surrounded by Atlantic Ocean","Not technically in the Caribbean Sea — more Atlantic Ocean"],
+ l2:["Historic Bridgetown and its Garrison — UNESCO WHS","Flag: blue-gold-blue vertical stripes with black trident head (Broken Trident)","Became a republic in 2021 (removed Queen as head of state)","Home of Rihanna; major exports: sugar, rum, tourism"],
+ l3:["Capital: Bridgetown","Official language: English","Demonym: Barbadian (informally 'Bajan')","Currency: Barbadian Dollar (BBD)"]},
+
+{n:"Belarus",on:"Republic of Belarus",reg:"Europe",cap:"Minsk",cities:["Minsk","Gomel","Mogilev","Vitebsk"],langs:["Belarusian","Russian"],dem:"Belarusian",cur:"Belarusian Ruble",gov:"Presidential republic",
+ flag:{c:["#CF101A","#009A44"],t:"BLR"},
+ l1:["Landlocked in Eastern Europe; borders Russia, Ukraine, Poland, Lithuania, Latvia","The Pripyat Marshes (Polesia) — Europe's largest wetland — lie in the south","The Chernobyl fallout zone from 1986 affected the south of Belarus","The Neman and Pripyat rivers drain the flat terrain"],
+ l2:["Mir Castle Complex and Nesvizh Castle — UNESCO WHS","Flag: red over green horizontal bands with traditional ornamental white-red stripe on left","Last dictatorship in Europe (Lukashenko since 1994)","Major exporter: potash fertilizers (world's top 3 producer), machinery, oil products"],
+ l3:["Capital: Minsk","Official languages: Belarusian and Russian","Demonym: Belarusian","Currency: Belarusian Ruble (BYR)"]},
+
+{n:"Belgium",on:"Kingdom of Belgium",reg:"Europe",cap:"Brussels",cities:["Brussels","Antwerp","Ghent","Charleroi","Liège"],langs:["Dutch","French","German"],dem:"Belgian",cur:"Euro",gov:"Federal parliamentary constitutional monarchy",
+ flag:{c:["#000","#FAE042"],t:"BEL"},
+ l1:["Small densely-populated country in Western Europe","Borders France, Luxembourg, Germany, Netherlands, and the North Sea","No significant mountains; Ardennes plateau is the highest area","Meuse and Scheldt rivers flow through Belgium"],
+ l2:["Flemish Béguinages and Historic Centre of Bruges — UNESCO WHS","Flag: three vertical bands — black, yellow, red","Brussels is de facto capital of the EU (hosts EU Commission, Council)","Major exporter: chemicals, machinery, diamonds (Antwerp diamond center)"],
+ l3:["Capital: Brussels","Official languages: Dutch (Flemish), French, German","Demonym: Belgian","Currency: Euro (EUR)"]},
+
+{n:"Belize",on:"Belize",reg:"North America",cap:"Belmopan",cities:["Belize City","Belmopan","Orange Walk","San Ignacio"],langs:["English"],dem:"Belizean",cur:"Belize Dollar",gov:"Parliamentary constitutional monarchy",
+ flag:{c:["#003F87","#fff"],t:"BLZ"},
+ l1:["Only English-speaking country in Central America","Borders Mexico and Guatemala; Caribbean Sea to the east","The Belize Barrier Reef is the second largest in the world (after Australia's)","The Maya Mountains form a spine through the interior"],
+ l2:["Belize Barrier Reef Reserve System — UNESCO WHS","Flag: blue with red stripes top and bottom, white disc with coat of arms (most colors of any flag)","Belize City was the capital until Hurricane Hattie (1961); capital moved inland to Belmopan","Major exports: sugar, citrus, bananas, marine products, crude oil"],
+ l3:["Capital: Belmopan (NOT Belize City)","Official language: English","Demonym: Belizean","Currency: Belize Dollar (BZD)"]},
+
+{n:"Benin",on:"Republic of Benin",reg:"Africa",cap:"Porto-Novo",cities:["Cotonou","Porto-Novo","Parakou","Abomey"],langs:["French"],dem:"Beninese",cur:"West African CFA Franc",gov:"Presidential republic",
+ flag:{c:["#008751","#FCD116"],t:"BEN"},
+ l1:["Located in West Africa; formerly known as Dahomey (until 1975)","Borders Togo, Burkina Faso, Niger, and Nigeria","The Bight of Benin forms the southern coast on the Gulf of Guinea","Part of the historical Slave Coast — major role in transatlantic slave trade"],
+ l2:["Royal Palaces of Abomey — UNESCO WHS (former capital of the Dahomey Kingdom)","Flag: green vertical band on left, yellow over red horizontal bands","Former name: Dahomey (changed 1975 to Benin after the Bight of Benin)","Major exporter: cotton, cashews, shea butter"],
+ l3:["Capital: Porto-Novo (seat of government in Cotonou)","Official language: French","Demonym: Beninese","Currency: West African CFA Franc (XOF)"]},
+
+{n:"Bhutan",on:"Kingdom of Bhutan",reg:"Asia",cap:"Thimphu",cities:["Thimphu","Phuntsholing","Paro"],langs:["Dzongkha"],dem:"Bhutanese",cur:"Bhutanese Ngultrum",gov:"Constitutional monarchy",
+ flag:{c:["#FF8000","#E63B3B"],t:"BTN"},
+ l1:["Landlocked in eastern Himalayas between India and China (Tibet)","Gangkhar Puensum (7,570 m) is the world's highest unclimbed mountain","The country measures Gross National Happiness instead of GDP","No traffic lights in the capital; one of most isolated nations until 1970s"],
+ l2:["No UNESCO WHS; Tiger's Nest Monastery (Paro Taktsang) is iconic","Flag: orange over red diagonal halves with white dragon (Thunder Dragon — Druk)","Known as the Land of the Thunder Dragon (Druk Yul)","Major exports: hydropower (sold to India), cardamom, timber"],
+ l3:["Capital: Thimphu","Official language: Dzongkha","Demonym: Bhutanese","Currency: Bhutanese Ngultrum (BTN, pegged to Indian Rupee)"]},
+
+{n:"Bolivia",on:"Plurinational State of Bolivia",reg:"South America",cap:"Sucre",cities:["Santa Cruz","La Paz","Cochabamba","Sucre"],langs:["Spanish","Quechua","Aymara"],dem:"Bolivian",cur:"Boliviano",gov:"Presidential republic",
+ flag:{c:["#D52B1E","#F9E300"],t:"BOL"},
+ l1:["Landlocked; lost Pacific coast to Chile in War of the Pacific (1879-84)","Lake Titicaca — highest navigable lake (3,812 m), shared with Peru","Salar de Uyuni is the world's largest salt flat (10,582 km²)","Two capitals: Sucre (constitutional) and La Paz (seat of government)"],
+ l2:["Tiwanaku archaeological site — UNESCO WHS","Flag: red, yellow, green horizontal stripes with coat of arms","World's largest producer of lithium; also tin, zinc, silver, natural gas","National drink: singani (grape brandy)"],
+ l3:["Constitutional capital: Sucre; Seat of government: La Paz","Official languages: Spanish, Quechua, Aymara (+ 34 others)","Demonym: Bolivian","Currency: Boliviano (BOB)"]},
+
+{n:"Bosnia and Herzegovina",on:"Bosnia and Herzegovina",reg:"Europe",cap:"Sarajevo",cities:["Sarajevo","Banja Luka","Mostar","Tuzla"],langs:["Bosnian","Croatian","Serbian"],dem:"Bosnian/Herzegovinian",cur:"Convertible Mark",gov:"Federal republic",
+ flag:{c:["#002395","#FCCA00"],t:"BIH"},
+ l1:["Located in southeastern Europe on the Balkan Peninsula","Has a 20 km coastline on the Adriatic Sea at Neum — smallest in region","Borders Croatia, Serbia, and Montenegro","Sarajevo hosted 1984 Winter Olympics; besieged 1992-95 in Yugoslav Wars"],
+ l2:["Old Bridge area of Mostar (Stari Most) — UNESCO WHS","Flag: blue with yellow triangle and white stars","Emerged from breakup of Yugoslavia; Dayton Agreement (1995) ended civil war","Major exports: metals, wood products, textiles"],
+ l3:["Capital: Sarajevo","Official languages: Bosnian, Croatian, Serbian","Demonym: Bosnian/Herzegovinian","Currency: Convertible Mark (BAM)"]},
+
+{n:"Botswana",on:"Republic of Botswana",reg:"Africa",cap:"Gaborone",cities:["Gaborone","Francistown","Molepolole"],langs:["English","Setswana"],dem:"Motswana (pl: Batswana)",cur:"Botswana Pula",gov:"Presidential republic",
+ flag:{c:["#75AADB","#fff"],t:"BWA"},
+ l1:["Landlocked in southern Africa; one of Africa's most stable democracies","The Okavango Delta is the world's largest inland delta — a UNESCO WHS","The Kalahari Desert covers much of the west and center","Borders South Africa, Namibia, Zimbabwe, and Zambia (quadripoint with Zimbabwe)"],
+ l2:["Okavango Delta — UNESCO WHS","Flag: light blue with black stripe bordered by white — one of simplest national flags","One of world's fastest-growing economies (1966-2000) due to diamonds","World's largest diamond producer by value (Orapa mine)"],
+ l3:["Capital: Gaborone","Official languages: English and Setswana","Demonym: Motswana (singular)/Batswana (plural)","Currency: Botswana Pula (BWP)"]},
+
+{n:"Brazil",on:"Federative Republic of Brazil",reg:"South America",cap:"Brasília",cities:["São Paulo","Rio de Janeiro","Brasília","Salvador","Fortaleza"],langs:["Portuguese"],dem:"Brazilian",cur:"Brazilian Real",gov:"Federal presidential republic",
+ flag:{c:["#009c3b","#FEDD00"],t:"BRA"},
+ l1:["Largest country in South America and 5th largest in world","Amazon River (world's largest by volume) and Amazon Rainforest (world's largest tropical)","Borders every South American country except Chile and Ecuador","Iguazu Falls on border with Argentina is wider than Niagara"],
+ l2:["Iguaçu NP, Pantanal, Rio de Janeiro (Sugarloaf, Christ Redeemer) — UNESCO WHS","Flag: green with yellow diamond, blue globe, and 'Ordem e Progresso' banner","World's largest exporter: coffee, soybeans, beef, orange juice","National dance: samba; Carnival in Rio is world's largest festival"],
+ l3:["Capital: Brasília (purpose-built in 1960)","Official language: Portuguese (only Portuguese-speaking in South America)","Demonym: Brazilian","Currency: Brazilian Real (BRL)"]},
+
+{n:"Brunei",on:"Nation of Brunei, Abode of Peace",reg:"Asia",cap:"Bandar Seri Begawan",cities:["Bandar Seri Begawan","Kuala Belait","Seria"],langs:["Malay"],dem:"Bruneian",cur:"Brunei Dollar",gov:"Absolute monarchy (Sultanate)",
+ flag:{c:["#F7E017","#000"],t:"BRN"},
+ l1:["Located on the island of Borneo; surrounded by Malaysia on all land borders","Divided into two parts by the Malaysian state of Sarawak","No land borders with Indonesia despite being on Borneo","The Brunei River flows through the capital"],
+ l2:["No UNESCO WHS","Flag: yellow with white and black diagonal stripes and red coat of arms","Sultan Hassanal Bolkiah — one of world's wealthiest individuals and longest-reigning monarchs","Major exporter: crude oil and LNG; almost no income tax due to oil wealth"],
+ l3:["Capital: Bandar Seri Begawan","Official language: Malay","Demonym: Bruneian","Currency: Brunei Dollar (BND)"]},
+
+{n:"Bulgaria",on:"Republic of Bulgaria",reg:"Europe",cap:"Sofia",cities:["Sofia","Plovdiv","Varna","Burgas"],langs:["Bulgarian"],dem:"Bulgarian",cur:"Bulgarian Lev",gov:"Parliamentary republic",
+ flag:{c:["#fff","#00966E"],t:"BGR"},
+ l1:["Located on the Balkan Peninsula in southeastern Europe","Borders Romania, Serbia, North Macedonia, Greece, Turkey; Black Sea coast","The Danube River forms most of the northern border with Romania","Highest peak: Musala (2,925 m) in the Rila Mountains"],
+ l2:["Rila Monastery and Nessebar old town — UNESCO WHS","Flag: white, green, red horizontal stripes","Cyrillic alphabet was developed by Bulgarian monks Saints Cyril and Methodius (9th century)","Major exporter: metals, chemicals, machinery, clothing"],
+ l3:["Capital: Sofia","Official language: Bulgarian (uses Cyrillic script)","Demonym: Bulgarian","Currency: Bulgarian Lev (BGN)"]},
+
+{n:"Burkina Faso",on:"Burkina Faso",reg:"Africa",cap:"Ouagadougou",cities:["Ouagadougou","Bobo-Dioulasso","Koudougou"],langs:["French"],dem:"Burkinabé",cur:"West African CFA Franc",gov:"Military junta",
+ flag:{c:["#EF2B2D","#009A00"],t:"BFA"},
+ l1:["Landlocked in West Africa; formerly known as Upper Volta (until 1984)","Borders Mali, Niger, Benin, Togo, Ghana, Côte d'Ivoire","The Nakambé (White Volta) and Mouhoun (Black Volta) rivers drain the plateau","Semi-arid Sahel climate; severely affected by desertification"],
+ l2:["No UNESCO WHS","Flag: red over green horizontal bands with yellow star in center","Name means 'Land of Incorruptible People' in Mooré and Dioula","Major exporter: gold, cotton"],
+ l3:["Capital: Ouagadougou","Official language: French","Demonym: Burkinabé","Currency: West African CFA Franc (XOF)"]},
+
+{n:"Burundi",on:"Republic of Burundi",reg:"Africa",cap:"Gitega",cities:["Bujumbura","Gitega","Muyinga"],langs:["Kirundi","French","English"],dem:"Burundian",cur:"Burundian Franc",gov:"Presidential republic",
+ flag:{c:["#CE1126","#1EB53A"],t:"BDI"},
+ l1:["One of the world's smallest and poorest countries; landlocked in Central Africa","Borders Rwanda, Tanzania, and DRC; Lake Tanganyika on the west","Sits in the western arm of the East African Rift Valley","Source of the Nile — the Ruvyironza River in Burundi is the southernmost source"],
+ l2:["No UNESCO WHS","Flag: red diagonal cross on white, with three green-bordered red stars in white center","Capital moved from Bujumbura to Gitega in 2019","Major exporter: coffee, tea, sugar, cotton"],
+ l3:["Capital: Gitega (moved from Bujumbura in 2019)","Official languages: Kirundi, French, English","Demonym: Burundian","Currency: Burundian Franc (BIF)"]},
+
+{n:"Cambodia",on:"Kingdom of Cambodia",reg:"Asia",cap:"Phnom Penh",cities:["Phnom Penh","Siem Reap","Battambang","Sihanoukville"],langs:["Khmer"],dem:"Cambodian",cur:"Cambodian Riel",gov:"Constitutional monarchy",
+ flag:{c:["#032EA1","#E00025"],t:"KHM"},
+ l1:["Located in mainland Southeast Asia, south of Laos","Mekong River flows through the east; Tonlé Sap Lake (largest in Southeast Asia) in the center","Tonlé Sap has unique seasonal flow reversal during monsoon season","Khmer Rouge under Pol Pot killed ~1.5-2 million people (1975-79)"],
+ l2:["Angkor (Angkor Wat — world's largest religious complex) — UNESCO WHS","Flag: blue bands top and bottom, red center with Angkor Wat — only flag with a building","Currency: Cambodian Riel but US Dollar widely used","Major exporter: garments, rice, timber, fish"],
+ l3:["Capital: Phnom Penh","Official language: Khmer","Demonym: Cambodian","Currency: Cambodian Riel (KHR)"]},
+
+{n:"Cameroon",on:"Republic of Cameroon",reg:"Africa",cap:"Yaoundé",cities:["Douala","Yaoundé","Garoua","Bamenda"],langs:["French","English"],dem:"Cameroonian",cur:"Central African CFA Franc",gov:"Presidential republic",
+ flag:{c:["#007A5E","#CE1126"],t:"CMR"},
+ l1:["Located in Central/West Africa; called 'Africa in miniature' for its diverse geography","Borders Nigeria, Chad, Central African Republic, Republic of Congo, Gabon, Equatorial Guinea","Mount Cameroon (4,095 m) is an active volcano and highest peak in West/Central Africa","The Bight of Biafra forms its southwestern coast"],
+ l2:["No UNESCO WHS in Cameroon proper","Flag: green, red, yellow vertical stripes with yellow star","Two official languages reflects dual colonial history (French and British)","Major exporter: crude oil, cocoa, coffee, timber"],
+ l3:["Capital: Yaoundé (largest city: Douala)","Official languages: French and English","Demonym: Cameroonian","Currency: Central African CFA Franc (XAF)"]},
+
+{n:"Canada",on:"Canada",reg:"North America",cap:"Ottawa",cities:["Toronto","Montreal","Vancouver","Calgary","Ottawa"],langs:["English","French"],dem:"Canadian",cur:"Canadian Dollar",gov:"Federal parliamentary constitutional monarchy",
+ flag:{c:["#FF0000","#fff"],t:"CAN"},
+ l1:["Second largest country in world (10 million km²); shares world's longest land border with USA","Mount Logan (5,959 m) — Canada's highest peak; in Yukon","Great Lakes system; Mackenzie River (longest at 4,241 km)","Nunavut — largest and newest territory (created 1999)"],
+ l2:["Dinosaur Provincial Park, Head-Smashed-In Buffalo Jump, Rideau Canal — UNESCO WHS","Flag: red-white-red with 11-pointed maple leaf","National animals: beaver (official) and Canadian horse","Major exporter: oil sands, wheat, timber, potash, automobiles"],
+ l3:["Capital: Ottawa, Ontario","Official languages: English and French","Demonym: Canadian","Currency: Canadian Dollar (CAD, 'Loonie')"]},
+
+{n:"Cape Verde",on:"Republic of Cabo Verde",reg:"Africa",cap:"Praia",cities:["Praia","Mindelo","Santa Maria"],langs:["Portuguese"],dem:"Cape Verdean",cur:"Cape Verdean Escudo",gov:"Parliamentary republic",
+ flag:{c:["#003893","#CF2027"],t:"CPV"},
+ l1:["Archipelago of 10 volcanic islands in the Atlantic Ocean, 570 km west of Senegal","No land borders; surrounded by Atlantic Ocean","Highest peak: Mount Fogo (2,829 m) — an active volcano on Fogo Island","Lies at the intersection of Atlantic trade routes"],
+ l2:["No UNESCO WHS","Flag: blue with horizontal red and white stripes and 10 yellow stars in a circle","Gained independence from Portugal in 1975","Major revenue: remittances from diaspora, tourism, fishing"],
+ l3:["Capital: Praia","Official language: Portuguese","Demonym: Cape Verdean","Currency: Cape Verdean Escudo (CVE)"]},
+
+{n:"Central African Republic",on:"Central African Republic",reg:"Africa",cap:"Bangui",cities:["Bangui","Bimbo","Berbérati"],langs:["French","Sango"],dem:"Central African",cur:"Central African CFA Franc",gov:"Presidential republic",
+ flag:{c:["#003082","#BC0026"],t:"CAF"},
+ l1:["Landlocked in Central Africa; borders Chad, Sudan, South Sudan, DRC, Congo, Cameroon","The Ubangi River forms the southern border with DRC","The Sangha River drains into the Congo River system","One of world's most underdeveloped countries; rich in minerals"],
+ l2:["No UNESCO WHS","Flag: four horizontal bands (blue, white, green, yellow) with vertical red stripe and yellow star","Rich in diamonds, gold, uranium, timber — but chronically conflict-affected","Major exporter: diamonds, timber, gold, cotton"],
+ l3:["Capital: Bangui","Official languages: French and Sango","Demonym: Central African","Currency: Central African CFA Franc (XAF)"]},
+
+{n:"Chad",on:"Republic of Chad",reg:"Africa",cap:"N'Djamena",cities:["N'Djamena","Moundou","Sarh","Abéché"],langs:["French","Arabic"],dem:"Chadian",cur:"Central African CFA Franc",gov:"Presidential republic",
+ flag:{c:["#003082","#FCDD09"],t:"TCD"},
+ l1:["Landlocked in north-central Africa; borders Libya, Sudan, CAR, Nigeria, Cameroon, Niger","Lake Chad has shrunk by 90% since 1960s due to climate change and irrigation","The Tibesti Mountains in the north are the highest range in the Sahara","The country is divided north-south: desert, Sahel, savanna"],
+ l2:["No UNESCO WHS","Flag: blue, yellow, red vertical stripes — almost identical to Romania's flag","Called 'Dead Heart of Africa' for its remoteness","Major exporter: oil, cattle, cotton, gum arabic"],
+ l3:["Capital: N'Djamena","Official languages: French and Arabic","Demonym: Chadian","Currency: Central African CFA Franc (XAF)"]},
+
+{n:"Chile",on:"Republic of Chile",reg:"South America",cap:"Santiago",cities:["Santiago","Valparaíso","Concepción","Antofagasta"],langs:["Spanish"],dem:"Chilean",cur:"Chilean Peso",gov:"Presidential republic",
+ flag:{c:["#D52B1E","#fff"],t:"CHL"},
+ l1:["World's longest and narrowest country: 4,300 km long, avg 177 km wide","The Andes run along entire eastern border with Argentina","Atacama Desert — driest non-polar desert on Earth, in the north","Easter Island (Rapa Nui) with moai statues is a Chilean territory in the Pacific"],
+ l2:["Easter Island (Rapa Nui) and Humberstone saltpeter works — UNESCO WHS","Flag: white over red horizontal bands, blue square with white five-pointed star in top-left","Ojos del Salado (6,893 m) — world's highest active volcano","World's largest copper producer; major exporter of lithium, wine, salmon"],
+ l3:["Capital: Santiago","Official language: Spanish","Demonym: Chilean","Currency: Chilean Peso (CLP)"]},
+
+{n:"China",on:"People's Republic of China",reg:"Asia",cap:"Beijing",cities:["Shanghai","Beijing","Guangzhou","Shenzhen","Chengdu"],langs:["Mandarin Chinese"],dem:"Chinese",cur:"Renminbi (Yuan)",gov:"Communist single-party state",
+ flag:{c:["#DE2910","#FFDE00"],t:"CHN"},
+ l1:["Borders 14 countries — more than any other (tied with Russia)","Contains world's highest point: Mt. Everest (8,848 m) on Nepal border","Yangtze River (6,300 km) is Asia's longest; Yellow River is 'cradle of civilization'","South China Sea, East China Sea, Yellow Sea, and Bohai Sea adjoin it"],
+ l2:["Great Wall, Forbidden City, Terracotta Army, West Lake — UNESCO WHS (most sites tied with Italy)","Flag: red with large yellow star and 4 smaller stars","Largest economy by PPP; world's largest exporter of manufactured goods","National symbol: giant panda"],
+ l3:["Capital: Beijing","Official language: Mandarin Chinese (Putonghua)","Demonym: Chinese","Currency: Renminbi / Yuan (CNY, ¥)"]},
+
+{n:"Colombia",on:"Republic of Colombia",reg:"South America",cap:"Bogotá",cities:["Bogotá","Medellín","Cali","Barranquilla","Cartagena"],langs:["Spanish"],dem:"Colombian",cur:"Colombian Peso",gov:"Presidential republic",
+ flag:{c:["#FCD116","#003087"],t:"COL"},
+ l1:["Only South American country with coastlines on both Pacific Ocean and Caribbean Sea","Andes split into three ranges (cordilleras) within Colombia","Amazon River tributaries flow through the south","Borders Venezuela, Brazil, Peru, Ecuador, Panama"],
+ l2:["Cartagena's historic fortifications and Los Katíos NP — UNESCO WHS","Flag: yellow (double-width top), blue, red horizontal bands with coat of arms","Named after Christopher Columbus","World's largest emerald producer; 2nd largest cut flower exporter; major coffee"],
+ l3:["Capital: Bogotá (2,640 m altitude)","Official language: Spanish","Demonym: Colombian","Currency: Colombian Peso (COP)"]},
+
+{n:"Comoros",on:"Union of the Comoros",reg:"Africa",cap:"Moroni",cities:["Moroni","Mutsamudu","Fomboni"],langs:["Comorian","Arabic","French"],dem:"Comorian",cur:"Comorian Franc",gov:"Federal presidential republic",
+ flag:{c:["#3A75C4","#3A8C47"],t:"COM"},
+ l1:["Archipelago of 3 main islands in the Indian Ocean between Mozambique and Madagascar","Borders no country by land; surrounded by Indian Ocean","Mount Karthala is an active volcano — one of world's largest calderas","The island of Mayotte is claimed by Comoros but administered by France"],
+ l2:["No UNESCO WHS","Flag: four horizontal stripes (yellow, white, red, blue) with green triangle and white crescent and 4 stars","One of Africa's most politically unstable countries (30+ coups)","Major exporter: vanilla, cloves, ylang-ylang (perfume) — 'Perfume Islands'"],
+ l3:["Capital: Moroni (on Grande Comore island)","Official languages: Comorian, Arabic, French","Demonym: Comorian","Currency: Comorian Franc (KMF)"]},
+
+{n:"Costa Rica",on:"Republic of Costa Rica",reg:"North America",cap:"San José",cities:["San José","Cartago","Heredia","Alajuela"],langs:["Spanish"],dem:"Costa Rican (Tico)",cur:"Costa Rican Colón",gov:"Presidential republic",
+ flag:{c:["#002B7F","#CE1126"],t:"CRI"},
+ l1:["Located in Central America between Nicaragua and Panama","Has no permanent military — abolished its army in 1948 (constitutional prohibition)","Rich biodiversity; 5% of world's species in 0.03% of land area","The Arenal Volcano is one of the most active in Latin America"],
+ l2:["Area de Conservación Guanacaste — UNESCO WHS","Flag: blue, white, red, white, blue horizontal stripes with coat of arms on red","Ecotourism leader; one of greenest economies","Major exporter: medical devices, bananas, pineapples, coffee"],
+ l3:["Capital: San José","Official language: Spanish","Demonym: Costa Rican (informally 'Tico')","Currency: Costa Rican Colón (CRC)"]},
+
+{n:"Croatia",on:"Republic of Croatia",reg:"Europe",cap:"Zagreb",cities:["Zagreb","Split","Rijeka","Osijek"],langs:["Croatian"],dem:"Croatian",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#FF0000","#0093DD"],t:"HRV"},
+ l1:["Located on the Adriatic coast in southeastern Europe","Has a distinctive crescent shape with 1,246 islands and islets","Borders Slovenia, Hungary, Serbia, Bosnia, Montenegro","The Plitvice Lakes chain features 16 terraced lakes with waterfalls"],
+ l2:["Old City of Dubrovnik, Plitvice Lakes NP — UNESCO WHS","Flag: red, white, blue horizontal stripes with the Croatian coat of arms (checkerboard)","Adopted Euro in 2023","Major exporter: machinery, chemicals, tourism (nicknamed 'Croatia the Beautiful')"],
+ l3:["Capital: Zagreb","Official language: Croatian","Demonym: Croatian","Currency: Euro (EUR, adopted 2023)"]},
+
+{n:"Cuba",on:"Republic of Cuba",reg:"Caribbean",cap:"Havana",cities:["Havana","Santiago de Cuba","Camagüey","Holguín"],langs:["Spanish"],dem:"Cuban",cur:"Cuban Peso",gov:"Communist single-party state",
+ flag:{c:["#002A8F","#CF142B"],t:"CUB"},
+ l1:["Largest island in the Caribbean Sea; 90 miles south of Florida","Guantanamo Bay is a US naval base on its eastern tip (leased since 1903)","Sierra Maestra mountains in the southeast — where Castro launched his revolution","No land borders; surrounded by Straits of Florida, Atlantic, and Caribbean"],
+ l2:["Old Havana and its Fortification System — UNESCO WHS","Flag: blue/white horizontal stripes with red triangle containing white star","Communist state since Fidel Castro's 1959 revolution; US embargo since 1962","Major exports: nickel, tobacco (Cohiba cigars), sugar, rum, medical services"],
+ l3:["Capital: Havana","Official language: Spanish","Demonym: Cuban","Currency: Cuban Peso (CUP)"]},
+
+{n:"Cyprus",on:"Republic of Cyprus",reg:"Europe",cap:"Nicosia",cities:["Nicosia","Limassol","Larnaca","Famagusta"],langs:["Greek","Turkish"],dem:"Cypriot",cur:"Euro",gov:"Presidential republic",
+ flag:{c:["#fff","#D47600"],t:"CYP"},
+ l1:["Third largest island in Mediterranean Sea; island state with no land borders","Divided since 1974 Turkish invasion: Republic of Cyprus (south) and Turkish Republic of Northern Cyprus (only Turkey recognizes)","The Troodos Mountains contain Byzantine churches","Named after copper (cuprum), which was mined here in antiquity"],
+ l2:["Painted Churches of Troodos and Paphos — UNESCO WHS","Flag: white with copper-colored Cyprus map outline and olive branches — one of only two country flags with a map","Nicosia is the world's last divided capital city","Major industries: tourism, shipping, financial services"],
+ l3:["Capital: Nicosia (world's last divided capital)","Official languages: Greek and Turkish","Demonym: Cypriot","Currency: Euro (EUR)"]},
+
+{n:"Czech Republic",on:"Czech Republic (Czechia)",reg:"Europe",cap:"Prague",cities:["Prague","Brno","Ostrava","Plzeň"],langs:["Czech"],dem:"Czech",cur:"Czech Koruna",gov:"Parliamentary republic",
+ flag:{c:["#D7141A","#11457E"],t:"CZE"},
+ l1:["Landlocked in Central Europe; historically Bohemia and Moravia","Borders Germany, Austria, Slovakia, Poland","The Vltava River flows through Prague; the Elbe drains to Germany","The Bohemian Massif and Sudeten Mountains form natural borders"],
+ l2:["Historic Prague and Kutná Hora — UNESCO WHS","Flag: blue wedge on left, white and red horizontal bands","Velvet Divorce (1993) peacefully split Czechoslovakia into Czech and Slovak republics","Major exports: vehicles (Škoda), machinery, electronics; birthplace of Pilsner beer"],
+ l3:["Capital: Prague","Official language: Czech","Demonym: Czech","Currency: Czech Koruna (CZK) — not Euro despite EU membership"]},
+
+{n:"Denmark",on:"Kingdom of Denmark",reg:"Europe",cap:"Copenhagen",cities:["Copenhagen","Aarhus","Odense","Aalborg"],langs:["Danish"],dem:"Danish",cur:"Danish Krone",gov:"Constitutional monarchy",
+ flag:{c:["#C60C30","#fff"],t:"DNK"},
+ l1:["Scandinavian country comprising the Jutland Peninsula and 443 islands","Greenland and Faroe Islands are autonomous territories of Denmark","Surrounded by North Sea, Skagerrak, Kattegat, Baltic Sea","Bordered only by Germany on Jutland"],
+ l2:["Jelling mounds and runic stones (Viking heritage) — UNESCO WHS","Flag: red with white cross (Dannebrog — world's oldest state flag, ~1219 AD)","Nobel Prizes awarded in Stockholm; Peace Prize in Oslo — proposed by Swede Alfred Nobel","Major exporter: pharmaceuticals (Novo Nordisk), food, machinery, wind turbines (Vestas)"],
+ l3:["Capital: Copenhagen","Official language: Danish","Demonym: Danish","Currency: Danish Krone (DKK) — not Euro despite EU membership"]},
+
+{n:"Djibouti",on:"Republic of Djibouti",reg:"Africa",cap:"Djibouti City",cities:["Djibouti City","Ali Sabieh","Tadjoura"],langs:["French","Arabic"],dem:"Djiboutian",cur:"Djiboutian Franc",gov:"Presidential republic",
+ flag:{c:["#6AB2E7","#12AD2B"],t:"DJI"},
+ l1:["Tiny country at the Horn of Africa, at the entrance to the Red Sea","Borders Eritrea, Ethiopia, Somalia; Gulf of Aden and Red Sea","Lake Assal (-155 m) is the lowest point in Africa and third lowest on Earth","Controls the Bab-el-Mandeb strait — critical global shipping chokepoint"],
+ l2:["No UNESCO WHS","Flag: light blue and green horizontal bands with white triangle and red star","Hosts US, French, Chinese, and Japanese military bases — strategic location","Major revenue: port services (crucial transit for landlocked Ethiopia)"],
+ l3:["Capital: Djibouti City","Official languages: French and Arabic","Demonym: Djiboutian","Currency: Djiboutian Franc (DJF)"]},
+
+{n:"Dominican Republic",on:"Dominican Republic",reg:"Caribbean",cap:"Santo Domingo",cities:["Santo Domingo","Santiago","La Romana","San Pedro de Macorís"],langs:["Spanish"],dem:"Dominican",cur:"Dominican Peso",gov:"Presidential republic",
+ flag:{c:["#002D62","#CE1126"],t:"DOM"},
+ l1:["Occupies the eastern two-thirds of Hispaniola island; shares island with Haiti","Pico Duarte (3,098 m) is the highest peak in the Caribbean","Lago Enriquillo is the Caribbean's largest lake and lowest point","Borders Haiti and surrounded by Atlantic Ocean and Caribbean Sea"],
+ l2:["Colonial City of Santo Domingo — UNESCO WHS (oldest continuously inhabited European settlement in the Americas)","Flag: blue and red quartered with white cross and coat of arms — blue represents liberty, red for blood of heroes","Major exports: free-trade zone goods, gold, silver, cocoa, tobacco","Major tourism destination"],
+ l3:["Capital: Santo Domingo (oldest European city in the Americas, founded 1496)","Official language: Spanish","Demonym: Dominican","Currency: Dominican Peso (DOP)"]},
+
+{n:"DR Congo",on:"Democratic Republic of the Congo",reg:"Africa",cap:"Kinshasa",cities:["Kinshasa","Lubumbashi","Mbuji-Mayi","Kisangani"],langs:["French"],dem:"Congolese",cur:"Congolese Franc",gov:"Presidential republic",
+ flag:{c:["#007FFF","#F7D618"],t:"COD"},
+ l1:["Second largest country in Africa; borders 9 countries","Congo River is world's deepest river and 2nd largest by volume","The Congo Basin rainforest is world's second largest tropical rainforest","Rich in minerals: cobalt (world's largest), coltan, diamonds, gold"],
+ l2:["Garamba, Virunga, Salonga NP — UNESCO WHS","Flag: sky blue with diagonal red stripe outlined in yellow and yellow star","Formerly Zaire (1971-1997) under Mobutu Sese Seko","Major exporter: cobalt, coltan (for smartphones), diamonds, copper"],
+ l3:["Capital: Kinshasa (2nd most populous French-speaking city after Paris)","Official language: French","Demonym: Congolese","Currency: Congolese Franc (CDF)"]},
+
+{n:"Ecuador",on:"Republic of Ecuador",reg:"South America",cap:"Quito",cities:["Guayaquil","Quito","Cuenca","Santo Domingo"],langs:["Spanish"],dem:"Ecuadorian",cur:"US Dollar",gov:"Presidential republic",
+ flag:{c:["#FFD100","#003580"],t:"ECU"},
+ l1:["Named for the equator (Ecuador = equator in Spanish) which passes through it","Galápagos Islands (600 km offshore) inspired Darwin's theory of evolution (1835)","Andes split into two ranges here; highest peak Chimborazo is farthest from Earth's center","Borders Colombia and Peru"],
+ l2:["Galápagos Islands and Quito — UNESCO WHS","Flag: yellow (double-width), blue, red horizontal bands with coat of arms — similar to Colombia's","Currency: abandoned Sucre in 2000 and uses US Dollar","World's largest banana exporter; also shrimp, cacao, cut flowers, oil"],
+ l3:["Capital: Quito (highest official capital at 2,850 m)","Official language: Spanish","Demonym: Ecuadorian","Currency: US Dollar (USD)"]},
+
+{n:"Egypt",on:"Arab Republic of Egypt",reg:"Africa",cap:"Cairo",cities:["Cairo","Alexandria","Giza","Shubra al-Khaymah"],langs:["Arabic"],dem:"Egyptian",cur:"Egyptian Pound",gov:"Presidential republic",
+ flag:{c:["#CE1126","#fff"],t:"EGY"},
+ l1:["Only country bordering both Mediterranean Sea and Red Sea","Divided between Africa and Asia by the Sinai Peninsula","The Nile — world's longest river — flows northward through the country","The Suez Canal connects the Mediterranean to the Red Sea"],
+ l2:["Pyramids of Giza, Great Sphinx, Abu Simbel, Memphis — UNESCO WHS","Flag: red, white, black horizontal stripes with Eagle of Saladin in center","One of world's oldest civilizations (~3,100 BC) — ancient Egypt","Major exporter: oil, natural gas, cotton; Suez Canal revenues are critical"],
+ l3:["Capital: Cairo (Africa's largest city)","Official language: Arabic","Demonym: Egyptian","Currency: Egyptian Pound (EGP)"]},
+
+{n:"El Salvador",on:"Republic of El Salvador",reg:"North America",cap:"San Salvador",cities:["San Salvador","Santa Ana","San Miguel"],langs:["Spanish"],dem:"Salvadoran",cur:"US Dollar",gov:"Presidential republic",
+ flag:{c:["#0F47AF","#fff"],t:"SLV"},
+ l1:["Smallest and most densely populated country in Central America","Only Central American country with no Caribbean coastline","Borders Guatemala, Honduras; Pacific Ocean to the south","Known as 'Land of Volcanoes' — has 20+ volcanoes; Santa Ana is highest (2,381 m)"],
+ l2:["No UNESCO WHS","Flag: blue-white-blue horizontal stripes with coat of arms","First country to adopt Bitcoin as legal tender (2021)","Major exporter: coffee, textiles, sugar; huge remittances from the USA"],
+ l3:["Capital: San Salvador","Official language: Spanish","Demonym: Salvadoran","Currency: US Dollar (USD; replaced Salvadoran Colón in 2001)"]},
+
+{n:"Equatorial Guinea",on:"Republic of Equatorial Guinea",reg:"Africa",cap:"Malabo",cities:["Bata","Malabo","Ebebiyín"],langs:["Spanish","French","Portuguese"],dem:"Equatoguinean",cur:"Central African CFA Franc",gov:"Presidential republic",
+ flag:{c:["#3E9A00","#E32118"],t:"GNQ"},
+ l1:["Only country in Africa where Spanish is an official language","Consists of a mainland (Río Muni) and 5 islands; Bioko Island holds the capital","Borders Cameroon and Gabon; Gulf of Guinea surrounds islands","Bioko Island is an extinct volcanic island with Mount Santa Isabel (3,011 m)"],
+ l2:["No UNESCO WHS","Flag: green, white, red horizontal stripes with blue triangle and national emblem","Discovery of oil in 1995 transformed economy — one of Africa's highest GDPs per capita","Major exporter: crude oil, methanol, timber"],
+ l3:["Capital: Malabo (on Bioko Island — not on the mainland)","Official languages: Spanish, French, Portuguese","Demonym: Equatoguinean","Currency: Central African CFA Franc (XAF)"]},
+
+{n:"Eritrea",on:"State of Eritrea",reg:"Africa",cap:"Asmara",cities:["Asmara","Keren","Massawa","Assab"],langs:["Tigrinya","Arabic","English"],dem:"Eritrean",cur:"Eritrean Nakfa",gov:"Single-party state (de facto dictatorship)",
+ flag:{c:["#4189DD","#4CAA4B"],t:"ERI"},
+ l1:["Located on the Horn of Africa with Red Sea coastline","Borders Sudan, Ethiopia, and Djibouti","Gained independence from Ethiopia in 1993 after 30-year war of independence","The Dahlak Archipelago of 200+ islands is in the Red Sea"],
+ l2:["Asmara — UNESCO WHS (modernist Italian colonial architecture)","Flag: green, red, blue triangle divisions with yellow olive wreath","Called 'Africa's North Korea' for its isolation and authoritarianism","Major exports: gold, zinc, food/livestock; one of poorest economies"],
+ l3:["Capital: Asmara","Official languages: Tigrinya, Arabic, English","Demonym: Eritrean","Currency: Eritrean Nakfa (ERN)"]},
+
+{n:"Estonia",on:"Republic of Estonia",reg:"Europe",cap:"Tallinn",cities:["Tallinn","Tartu","Narva","Pärnu"],langs:["Estonian"],dem:"Estonian",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#0072CE","#000"],t:"EST"},
+ l1:["Northernmost of the three Baltic states; borders Russia and Latvia","Baltic Sea and Gulf of Finland coastlines; over 2,200 islands","Lake Peipus is Europe's 4th largest lake (shared with Russia)","Flat terrain; highest point only 318 m (Suur Munamägi)"],
+ l2:["Historic centre of Tallinn — UNESCO WHS","Flag: blue, black, white horizontal stripes","One of world's most digitally advanced societies — e-residency, digital voting, Skype founded here","Major exporter: machinery, wood, electronics, chemicals"],
+ l3:["Capital: Tallinn","Official language: Estonian (Finno-Ugric — not Indo-European)","Demonym: Estonian","Currency: Euro (EUR)"]},
+
+{n:"Eswatini",on:"Kingdom of Eswatini",reg:"Africa",cap:"Mbabane",cities:["Mbabane","Manzini","Lobamba"],langs:["Swati","English"],dem:"Swazi",cur:"Swazi Lilangeni",gov:"Absolute monarchy",
+ flag:{c:["#3E5EB9","#B10C0C"],t:"SWZ"},
+ l1:["One of Africa's last absolute monarchies; landlocked in southern Africa","Entirely surrounded by South Africa and Mozambique","The Lubombo Mountains form the eastern border","Formerly Swaziland; renamed Eswatini in 2018 by King Mswati III"],
+ l2:["No UNESCO WHS","Flag: horizontal bands with central shield and two spears","Name change from Swaziland to Eswatini in 2018 ('Land of the Swazis' in Swati)","Major exports: soft drink concentrates (Coca-Cola), sugar, timber, cotton"],
+ l3:["Capital: Mbabane (administrative); Lobamba (royal/legislative)","Official languages: Swati and English","Demonym: Swazi","Currency: Swazi Lilangeni (SZL, pegged to South African Rand)"]},
+
+{n:"Ethiopia",on:"Federal Democratic Republic of Ethiopia",reg:"Africa",cap:"Addis Ababa",cities:["Addis Ababa","Dire Dawa","Mekelle","Gondar"],langs:["Amharic"],dem:"Ethiopian",cur:"Ethiopian Birr",gov:"Federal republic",
+ flag:{c:["#078930","#FCDD09"],t:"ETH"},
+ l1:["Most populous landlocked country (120M+); never colonized except briefly by Italy (1936-41)","Blue Nile source is Lake Tana; Danakil Depression (-116 m) is Africa's lowest point","The Great Rift Valley cuts through Ethiopia with several lakes","Borders Eritrea, Djibouti, Somalia, Kenya, South Sudan, Sudan"],
+ l2:["Rock-Hewn Churches of Lalibela, Aksum obelisk, Fasil Ghebbi — UNESCO WHS","Flag: green, yellow, red horizontal stripes (Pan-African colors originated here) with blue disc and star","HQ of the African Union is in Addis Ababa","World's oldest coffee region; major exporter of coffee, cut flowers, sesame, gold"],
+ l3:["Capital: Addis Ababa (HQ of African Union)","Official language: Amharic","Demonym: Ethiopian","Currency: Ethiopian Birr (ETB)"]},
+
+{n:"Fiji",on:"Republic of Fiji",reg:"Oceania",cap:"Suva",cities:["Suva","Nadi","Lautoka"],langs:["English","Fijian","Hindi"],dem:"Fijian",cur:"Fijian Dollar",gov:"Parliamentary republic",
+ flag:{c:["#68BFE5","#003F87"],t:"FJI"},
+ l1:["Archipelago of 332 islands in the South Pacific; 110 are inhabited","Viti Levu is the largest island and hosts the capital Suva","The International Date Line passes near Fiji","Located on the Pacific Ring of Fire"],
+ l2:["No UNESCO WHS","Flag: light blue with Union Jack in upper left corner and Fijian coat of arms","One of most developed Pacific island nations","Major exports: water (Fiji Water), sugar, garments, tourism"],
+ l3:["Capital: Suva","Official languages: English, Fijian, Hindi","Demonym: Fijian","Currency: Fijian Dollar (FJD)"]},
+
+{n:"Finland",on:"Republic of Finland",reg:"Europe",cap:"Helsinki",cities:["Helsinki","Espoo","Tampere","Vantaa","Oulu"],langs:["Finnish","Swedish"],dem:"Finnish",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#fff","#003580"],t:"FIN"},
+ l1:["Northern Europe; borders Russia (longest EU border with non-member), Norway, Sweden","About 188,000 lakes — 'Land of a Thousand Lakes'","Lapland hosts midnight sun (summer) and aurora borealis (winter)","No mountains; highest point Halti (1,324 m) on Norwegian border"],
+ l2:["Old Rauma, Fortress of Suomenlinna, Petäjävesi Church — UNESCO WHS","Flag: white with blue cross (Nordic cross)","Birthplace of Nokia and Linux (Linus Torvalds); consistently happiest country","Major exporter: machinery, electronics, forest products, chemicals"],
+ l3:["Capital: Helsinki","Official languages: Finnish and Swedish","Demonym: Finnish","Currency: Euro (EUR)"]},
+
+{n:"France",on:"French Republic",reg:"Europe",cap:"Paris",cities:["Paris","Marseille","Lyon","Toulouse","Nice"],langs:["French"],dem:"French",cur:"Euro",gov:"Semi-presidential republic",
+ flag:{c:["#0055A4","#EF4135"],t:"FRA"},
+ l1:["Has more time zones than any other country (12) due to overseas territories","Only country bordering both Atlantic Ocean and Mediterranean in Western Europe","Mont Blanc (4,808 m) is highest peak in the Alps and Western Europe","The Rhine, Loire, Rhône, and Seine are major rivers"],
+ l2:["Palace of Versailles, Mont-Saint-Michel, Loire Valley — UNESCO WHS","Flag: blue, white, red vertical bands (tricolore)","National symbol: Gallic Rooster (Coq Gaulois)","World's most visited country (90M+ tourists); major wine, cheese, luxury goods exporter"],
+ l3:["Capital: Paris","Official language: French","Demonym: French","Currency: Euro (EUR)"]},
+
+{n:"Gabon",on:"Gabonese Republic",reg:"Africa",cap:"Libreville",cities:["Libreville","Port-Gentil","Franceville"],langs:["French"],dem:"Gabonese",cur:"Central African CFA Franc",gov:"Presidential republic",
+ flag:{c:["#009E60","#FCD116"],t:"GAB"},
+ l1:["Located on the equator in Central Africa on the Atlantic coast","Borders Cameroon, Republic of Congo, and Equatorial Guinea","About 85% of the country is covered by tropical rainforest","The Ogooué River is the main waterway"],
+ l2:["No UNESCO WHS","Flag: green, yellow, blue horizontal stripes","One of Africa's wealthiest countries per capita due to oil; large untouched rainforest","Major exporter: crude oil, manganese (world's 4th largest producer), timber"],
+ l3:["Capital: Libreville","Official language: French","Demonym: Gabonese","Currency: Central African CFA Franc (XAF)"]},
+
+{n:"Georgia",on:"Georgia",reg:"Asia",cap:"Tbilisi",cities:["Tbilisi","Kutaisi","Batumi","Rustavi"],langs:["Georgian"],dem:"Georgian",cur:"Georgian Lari",gov:"Parliamentary republic",
+ flag:{c:["#fff","#DA291C"],t:"GEO"},
+ l1:["Located in the South Caucasus between Russia and Turkey","Borders Russia, Turkey, Armenia, Azerbaijan; Black Sea on the west","Abkhazia and South Ossetia are breakaway regions recognized only by Russia","The Greater Caucasus Mountains form the northern border with Russia"],
+ l2:["Mtskheta ancient churches and Gelati monastery — UNESCO WHS","Flag: white with red cross and four smaller red crosses in each quarter (Five-Cross Flag)","One of world's oldest wine-producing regions (8,000 years)","Major exports: wine, ferroalloys, nuts, mineral water (Borjomi)"],
+ l3:["Capital: Tbilisi","Official language: Georgian (has its own unique alphabet)","Demonym: Georgian","Currency: Georgian Lari (GEL)"]},
+
+{n:"Germany",on:"Federal Republic of Germany",reg:"Europe",cap:"Berlin",cities:["Berlin","Hamburg","Munich","Cologne","Frankfurt"],langs:["German"],dem:"German",cur:"Euro",gov:"Federal parliamentary republic",
+ flag:{c:["#000","#DD0000"],t:"DEU"},
+ l1:["Borders 9 countries — most in Europe (Denmark, Netherlands, Belgium, Luxembourg, France, Switzerland, Austria, Czech Republic, Poland)","The Rhine and Elbe rivers are historically vital trade routes","Highest point: Zugspitze (2,962 m) in the Bavarian Alps","Reunified in 1990 after Cold War division into West and East Germany"],
+ l2:["Cologne Cathedral, Rhine Valley, Neuschwanstein Castle area — UNESCO WHS","Flag: three horizontal bands — black, red, gold","National anthem: 'Das Lied der Deutschen' (music by Haydn)","Europe's largest economy; top exporter of cars (BMW, Mercedes, VW), machinery"],
+ l3:["Capital: Berlin","Official language: German","Demonym: German","Currency: Euro (EUR)"]},
+
+{n:"Ghana",on:"Republic of Ghana",reg:"Africa",cap:"Accra",cities:["Accra","Kumasi","Tamale","Sekondi-Takoradi"],langs:["English"],dem:"Ghanaian",cur:"Ghanaian Cedi",gov:"Presidential republic",
+ flag:{c:["#006B3F","#FCD116"],t:"GHA"},
+ l1:["Located in West Africa on Gulf of Guinea; close to equator and prime meridian","Borders Côte d'Ivoire, Burkina Faso, and Togo","Lake Volta is one of world's largest artificial lakes (by surface area)","The 0° longitude (prime meridian) runs through the country"],
+ l2:["Cape Coast Castle (slave trade) — UNESCO WHS","Flag: red, gold, green horizontal stripes with black five-pointed star in center","First sub-Saharan African country to gain independence from Britain (1957)","World's 2nd largest cocoa producer; also exporter of gold and oil"],
+ l3:["Capital: Accra","Official language: English","Demonym: Ghanaian","Currency: Ghanaian Cedi (GHS)"]},
+
+{n:"Greece",on:"Hellenic Republic",reg:"Europe",cap:"Athens",cities:["Athens","Thessaloniki","Patras","Piraeus","Heraklion"],langs:["Greek"],dem:"Greek",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#0D5EAF","#fff"],t:"GRC"},
+ l1:["Southern tip of the Balkans; longest Mediterranean coastline","6,000+ islands; Crete is the largest; Peloponnese is a large peninsula","Mount Olympus (2,918 m) — highest peak and home of the gods in mythology","Borders Albania, North Macedonia, Bulgaria, Turkey"],
+ l2:["Acropolis of Athens, Delphi, Olympia, Rhodes — UNESCO WHS","Flag: nine blue and white horizontal stripes with white cross on blue canton","Birthplace of democracy (Athens), Olympic Games (776 BC), Western philosophy","Major industries: tourism, shipping (world's largest merchant fleet by tonnage)"],
+ l3:["Capital: Athens","Official language: Greek","Demonym: Greek","Currency: Euro (EUR)"]},
+
+{n:"Guatemala",on:"Republic of Guatemala",reg:"North America",cap:"Guatemala City",cities:["Guatemala City","Quetzaltenango","Escuintla","Antigua"],langs:["Spanish"],dem:"Guatemalan",cur:"Guatemalan Quetzal",gov:"Presidential republic",
+ flag:{c:["#4997D0","#fff"],t:"GTM"},
+ l1:["Located in Central America; borders Mexico, Belize, Honduras, El Salvador","The Cuchumatanes Mountains are the highest non-volcanic range in Central America","Tajumulco (4,202 m) is the highest peak in all of Central America","Lake Atitlán is a volcanic caldera lake in the Highlands"],
+ l2:["Antigua Guatemala and Tikal National Park (Maya ruins) — UNESCO WHS","Flag: blue-white-blue vertical stripes with coat of arms — contains the resplendent quetzal bird","The quetzal is the national bird and currency is named after it","Major exporter: coffee, bananas, sugar, palm oil, cardamom"],
+ l3:["Capital: Guatemala City","Official language: Spanish","Demonym: Guatemalan","Currency: Guatemalan Quetzal (GTQ)"]},
+
+{n:"Guinea",on:"Republic of Guinea",reg:"Africa",cap:"Conakry",cities:["Conakry","Nzérékoré","Kindia","Kankan"],langs:["French"],dem:"Guinean",cur:"Guinean Franc",gov:"Military junta",
+ flag:{c:["#CE1126","#FCD116"],t:"GIN"},
+ l1:["Located in West Africa on the Atlantic coast","Borders Guinea-Bissau, Senegal, Mali, Côte d'Ivoire, Sierra Leone, Liberia","The Fouta Djallon highlands are the source of many West African rivers (Niger, Senegal, Gambia)","Conakry is on the Kaloum Peninsula"],
+ l2:["No UNESCO WHS","Flag: red, yellow, green vertical stripes (Pan-African colors)","World's largest bauxite reserves (used for aluminum)","Major exporter: bauxite, gold, diamonds"],
+ l3:["Capital: Conakry","Official language: French","Demonym: Guinean","Currency: Guinean Franc (GNF)"]},
+
+{n:"Haiti",on:"Republic of Haiti",reg:"Caribbean",cap:"Port-au-Prince",cities:["Port-au-Prince","Cap-Haïtien","Gonaïves"],langs:["French","Haitian Creole"],dem:"Haitian",cur:"Haitian Gourde",gov:"Presidential republic",
+ flag:{c:["#00209F","#D21034"],t:"HTI"},
+ l1:["Occupies the western third of Hispaniola island; shares island with Dominican Republic","Highest peak: Pic la Selle (2,674 m)","First Black republic in the world (1804 revolution against France)","Prone to natural disasters: 2010 earthquake killed ~200,000 people"],
+ l2:["Historic National History Park (Citadelle, Sans-Souci, Ramiers) — UNESCO WHS","Flag: blue over red horizontal bands with coat of arms","First Caribbean/Latin American country to gain independence (1804)","Poorest country in the Western Hemisphere"],
+ l3:["Capital: Port-au-Prince","Official languages: French and Haitian Creole","Demonym: Haitian","Currency: Haitian Gourde (HTG)"]},
+
+{n:"Honduras",on:"Republic of Honduras",reg:"North America",cap:"Tegucigalpa",cities:["Tegucigalpa","San Pedro Sula","La Ceiba"],langs:["Spanish"],dem:"Honduran",cur:"Honduran Lempira",gov:"Presidential republic",
+ flag:{c:["#0073CF","#fff"],t:"HND"},
+ l1:["Located in Central America; borders Guatemala, Nicaragua, El Salvador","Has Caribbean (north) and Pacific (Gulf of Fonseca) coastlines","The Copán Maya ruins are in the western highlands","Bay Islands (Roatán) in the Caribbean are major dive destinations"],
+ l2:["Maya Site of Copán — UNESCO WHS","Flag: blue-white-blue horizontal stripes with five blue stars","Currency named after Chief Lempira who resisted Spanish conquest","Major exporter: coffee, bananas, palm oil, shrimp, textiles (maquiladoras)"],
+ l3:["Capital: Tegucigalpa","Official language: Spanish","Demonym: Honduran","Currency: Honduran Lempira (HNL)"]},
+
+{n:"Hungary",on:"Hungary",reg:"Europe",cap:"Budapest",cities:["Budapest","Debrecen","Miskolc","Pécs","Győr"],langs:["Hungarian"],dem:"Hungarian",cur:"Hungarian Forint",gov:"Parliamentary republic",
+ flag:{c:["#CE2939","#fff"],t:"HUN"},
+ l1:["Landlocked in Central Europe in the Carpathian Basin","Borders Austria, Slovakia, Ukraine, Romania, Serbia, Croatia, Slovenia","The Danube flows through Budapest (Buda + Pest)","Lake Balaton is Central Europe's largest lake"],
+ l2:["Budapest, Tokaj wine region, Hollókő village — UNESCO WHS","Flag: red, white, green horizontal stripes (no emblem)","Hungarian (Magyar) language is Finno-Ugric — unrelated to surrounding Slavic/Germanic languages","Major exporter: pharmaceuticals, vehicles, machinery"],
+ l3:["Capital: Budapest (merged from Buda, Óbuda, Pest in 1873)","Official language: Hungarian (Magyar)","Demonym: Hungarian","Currency: Hungarian Forint (HUF)"]},
+
+{n:"Iceland",on:"Iceland",reg:"Europe",cap:"Reykjavik",cities:["Reykjavik","Akureyri","Kópavogur"],langs:["Icelandic"],dem:"Icelandic",cur:"Icelandic Króna",gov:"Parliamentary republic",
+ flag:{c:["#003897","#DC1E35"],t:"ISL"},
+ l1:["Island in North Atlantic between Arctic Circle and Gulf Stream","Sits on the Mid-Atlantic Ridge — geologically young and very volcanically active","Vatnajökull is Europe's largest glacier by volume","Eyjafjallajökull (2010) disrupted European air travel for weeks"],
+ l2:["Þingvellir NP (world's oldest parliament, Althing, 930 AD) — UNESCO WHS","Flag: blue with red cross outlined in white (Nordic cross)","Nearly 100% renewable energy (geothermal and hydro)","Major exporter: fish/seafood, aluminum, diatomite"],
+ l3:["Capital: Reykjavik (world's northernmost capital of a sovereign state)","Official language: Icelandic","Demonym: Icelandic","Currency: Icelandic Króna (ISK)"]},
+
+{n:"India",on:"Republic of India",reg:"Asia",cap:"New Delhi",cities:["Mumbai","Delhi","Bangalore","Hyderabad","Chennai","Kolkata"],langs:["Hindi","English"],dem:"Indian",cur:"Indian Rupee",gov:"Federal parliamentary republic",
+ flag:{c:["#FF9933","#138808"],t:"IND"},
+ l1:["Second most populous (1.44B+) — surpassed China in 2023","Himalaya, Hindu Kush, and Karakoram form north; Ganges, Indus, Brahmaputra are major rivers","Borders Pakistan, China, Nepal, Bhutan, Bangladesh, Myanmar","Thar Desert in northwest; Western Ghats and Eastern Ghats along coasts"],
+ l2:["Taj Mahal, Agra Fort, Qutb Minar, Hampi — UNESCO WHS","Flag: saffron, white, green horizontal stripes with blue Ashoka Chakra (24-spoke wheel)","World's largest democracy; 22 official scheduled languages","Major exporter: software/IT, textiles, gems, pharmaceuticals, spices"],
+ l3:["Capital: New Delhi","Official languages: Hindi and English (+ 20 others scheduled)","Demonym: Indian","Currency: Indian Rupee (INR, ₹)"]},
+
+{n:"Indonesia",on:"Republic of Indonesia",reg:"Asia",cap:"Jakarta",cities:["Jakarta","Surabaya","Bandung","Medan","Makassar"],langs:["Indonesian (Bahasa)"],dem:"Indonesian",cur:"Indonesian Rupiah",gov:"Presidential republic",
+ flag:{c:["#CE1126","#fff"],t:"IDN"},
+ l1:["World's largest archipelago: 17,000+ islands over 5,100 km","Major islands: Java, Sumatra, Borneo (Kalimantan), Sulawesi, Papua","Ring of Fire: 130+ active volcanoes including Krakatoa and Merapi","Borders Malaysia, Papua New Guinea, East Timor"],
+ l2:["Borobudur Temple, Prambanan Temple, Komodo NP — UNESCO WHS","Flag: red over white horizontal bands ('Sang Saka Merah-Putih')","4th most populous country (275M+); largest Muslim-majority country by population","Major exporter: palm oil, coal, natural gas, rubber"],
+ l3:["Capital: Jakarta (moving to Nusantara on Borneo)","Official language: Bahasa Indonesia","Demonym: Indonesian","Currency: Indonesian Rupiah (IDR)"]},
+
+{n:"Iran",on:"Islamic Republic of Iran",reg:"Middle East",cap:"Tehran",cities:["Tehran","Mashhad","Isfahan","Karaj","Tabriz"],langs:["Persian (Farsi)"],dem:"Iranian",cur:"Iranian Rial",gov:"Islamic Republic (theocracy)",
+ flag:{c:["#239f40","#DA0000"],t:"IRN"},
+ l1:["Largest country in Middle East after Saudi Arabia; borders 7 countries and 2 bodies of water","Zagros and Alborz mountains flank the Iranian Plateau","Caspian Sea (north), Persian Gulf and Gulf of Oman (south)","Mount Damavand (5,610 m) — highest peak in Middle East"],
+ l2:["Persepolis, Naqsh-e Jahan Square (Isfahan), Golestan Palace — UNESCO WHS","Flag: green, white, red horizontal stripes with Allah emblem; Allahu Akbar inscription on borders","Ancient Persia — one of world's oldest civilizations","Major exporter: oil, gas, petrochemicals, carpets, pistachios, saffron"],
+   l3:["Capital: Tehran","Official language: Persian (Farsi)","Demonym: Iranian","Currency: Iranian Rial (IRR)"]},
+
+{n:"Iraq",on:"Republic of Iraq",reg:"Middle East",cap:"Baghdad",cities:["Baghdad","Basra","Mosul","Erbil","Sulaymaniyah"],langs:["Arabic","Kurdish"],dem:"Iraqi",cur:"Iraqi Dinar",gov:"Federal parliamentary republic",
+ flag:{c:["#141414","#007A3D"],t:"IRQ"},
+ l1:["Located in the heart of the Middle East — ancient Mesopotamia","Tigris and Euphrates rivers form the 'Cradle of Civilization' (Sumer, Babylon, Assyria)","The Shatt al-Arab waterway connects to the Persian Gulf","Borders Turkey, Syria, Jordan, Saudi Arabia, Kuwait, Iran"],
+ l2:["Hatra and Samarra Archaeological City — UNESCO WHS","Flag: red, white, black horizontal stripes with green Allahu Akbar inscription","Site of ancient Babylon (Hanging Gardens) and Code of Hammurabi","World's 5th largest proven oil reserves"],
+ l3:["Capital: Baghdad","Official languages: Arabic and Kurdish","Demonym: Iraqi","Currency: Iraqi Dinar (IQD)"]},
+
+{n:"Ireland",on:"Republic of Ireland",reg:"Europe",cap:"Dublin",cities:["Dublin","Cork","Limerick","Galway","Waterford"],langs:["Irish (Gaelic)","English"],dem:"Irish",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#169B62","#FF883E"],t:"IRL"},
+ l1:["Island nation in the North Atlantic sharing the island of Ireland with Northern Ireland (UK)","The Shannon River is Ireland's longest river and longest in the British Isles","The Ring of Kerry, Cliffs of Moher, and Burren are famous landscapes","Connacht, Leinster, Munster, and Ulster are the four provinces"],
+ l2:["Skellig Michael, Brú na Bóinne (Newgrange) — UNESCO WHS","Flag: green, white, orange vertical stripes (similar to India's but no wheel)","One of world's largest Celtic diasporas due to Great Famine (1845-52)","Major exporter: pharmaceuticals, chemicals, IT services; home of Google/Apple EU headquarters"],
+ l3:["Capital: Dublin","Official languages: Irish (Gaelic) and English","Demonym: Irish","Currency: Euro (EUR)"]},
+
+{n:"Israel",on:"State of Israel",reg:"Middle East",cap:"Jerusalem",cities:["Jerusalem","Tel Aviv","Haifa","Rishon LeZion"],langs:["Hebrew","Arabic"],dem:"Israeli",cur:"Israeli New Shekel",gov:"Parliamentary democracy",
+ flag:{c:["#fff","#0038b8"],t:"ISR"},
+ l1:["Located at eastern end of Mediterranean Sea","Borders Lebanon, Syria, Jordan, Egypt, Palestinian territories","The Dead Sea (-430 m) is the lowest point on Earth's land surface","Sea of Galilee (Lake Kinneret) is the lowest freshwater lake on Earth"],
+ l2:["Old City of Jerusalem (sacred to Judaism, Christianity, Islam) — UNESCO WHS (contested)","Flag: white with two blue horizontal stripes and Star of David (blue hexagram)","Declared independence in 1948; only Jewish-majority state in the world","Major exporter: diamonds, high-tech products (Intel chips designed here), military tech"],
+ l3:["Capital: Jerusalem (disputed; most embassies in Tel Aviv)","Official languages: Hebrew and Arabic","Demonym: Israeli","Currency: Israeli New Shekel (ILS, ₪)"]},
+
+{n:"Italy",on:"Italian Republic",reg:"Europe",cap:"Rome",cities:["Rome","Milan","Naples","Turin","Palermo","Florence"],langs:["Italian"],dem:"Italian",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#009246","#CE2B37"],t:"ITA"},
+ l1:["Boot-shaped peninsula extending into Mediterranean with Sicily and Sardinia","Contains two independent microstates: Vatican City and San Marino","The Po River flows east through the Po Valley — Italy's agricultural heartland","The Alps form northern border; Apennines run the peninsula's spine"],
+ l2:["Rome, Venice, Florence, Pompeii, Cinque Terre — UNESCO WHS (most sites tied with China)","Flag: green, white, red vertical stripes","National anthem: 'Il Canto degli Italiani'","Major exporter: machinery, vehicles, pharmaceuticals, luxury goods, wine, olive oil"],
+ l3:["Capital: Rome","Official language: Italian","Demonym: Italian","Currency: Euro (EUR)"]},
+
+{n:"Jamaica",on:"Jamaica",reg:"Caribbean",cap:"Kingston",cities:["Kingston","Spanish Town","Montego Bay","Portmore"],langs:["English"],dem:"Jamaican",cur:"Jamaican Dollar",gov:"PARLIAMENTARY CONSTITUTIONAL MONARCHY",
+ flag:{c:["#000","#FED100"],t:"JAM"},
+ l1:["Island in the Caribbean Sea, south of Cuba","Part of the Greater Antilles archipelago","Blue Mountains (highest point: Blue Mountain Peak, 2,256 m) produce famous coffee","Only Caribbean nation with four Olympic gold medals in the same sprinting events (4x100m)"],
+ l2:["No UNESCO WHS","Flag: black, gold, green diagonal cross (saltire) — only flag with no red, white, or blue","Home of reggae music and Bob Marley; birthplace of Rastafarianism","Major exports: alumina, bauxite, sugar, rum, Blue Mountain coffee"],
+ l3:["Capital: Kingston","Official language: English","Demonym: Jamaican","Currency: Jamaican Dollar (JMD)"]},
+
+{n:"Japan",on:"Japan",reg:"Asia",cap:"Tokyo",cities:["Tokyo","Osaka","Yokohama","Nagoya","Sapporo","Kyoto"],langs:["Japanese"],dem:"Japanese",cur:"Japanese Yen",gov:"Constitutional monarchy",
+ flag:{c:["#fff","#BC002D"],t:"JPN"},
+ l1:["Island archipelago of 6,852 islands in Pacific Ring of Fire","Bounded by Sea of Japan (west), Pacific Ocean (east), East China Sea (south)","Mount Fuji (3,776 m) is an active stratovolcano and highest peak","The Shinano River is Japan's longest river"],
+ l2:["Historic Monuments of Ancient Kyoto, Hiroshima Peace Memorial — UNESCO WHS","Flag: white with red circle (rising sun — Nisshōki)","National symbol: chrysanthemum","World's 3rd largest economy; leading exporter of cars (Toyota, Honda), electronics"],
+ l3:["Capital: Tokyo (world's largest metro, 37M+)","Official language: Japanese","Demonym: Japanese","Currency: Japanese Yen (JPY, ¥)"]},
+
+{n:"Jordan",on:"Hashemite Kingdom of Jordan",reg:"Middle East",cap:"Amman",cities:["Amman","Zarqa","Irbid"],langs:["Arabic"],dem:"Jordanian",cur:"Jordanian Dinar",gov:"Constitutional monarchy",
+ flag:{c:["#007A3D","#CE1126"],t:"JOR"},
+ l1:["Bordered by Saudi Arabia, Iraq, Syria, Israel, and the West Bank","The Dead Sea (Jordan's western border) is Earth's lowest point on land (-430 m)","The Jordan River forms its western border with Israel","Formerly known as Transjordan until 1949"],
+ l2:["Petra (ancient Nabataean rock-cut city) — UNESCO WHS","Flag: black, white, green horizontal stripes with red triangle and white star","The Wadi Rum desert is known for Lawrence of Arabia connections","Major exporter: phosphates, potash, fertilizers"],
+ l3:["Capital: Amman","Official language: Arabic","Demonym: Jordanian","Currency: Jordanian Dinar (JOD)"]},
+
+{n:"Kazakhstan",on:"Republic of Kazakhstan",reg:"Asia",cap:"Astana",cities:["Almaty","Astana","Shymkent","Karaganda"],langs:["Kazakh","Russian"],dem:"Kazakhstani",cur:"Kazakhstani Tenge",gov:"Presidential republic",
+ flag:{c:["#00AFCA","#FECB00"],t:"KAZ"},
+ l1:["9th largest country; largest landlocked country in world","Borders Russia, China, Kyrgyzstan, Uzbekistan, Turkmenistan; also borders Caspian Sea","Aral Sea (shared with Uzbekistan) was 4th largest lake — 90% desiccated by Soviet irrigation","Steppe dominates; Tian Shan mountains in the east"],
+ l2:["Mausoleum of Khoja Ahmed Yasawi — UNESCO WHS","Flag: light blue with yellow sun and soaring eagle, yellow ornamental stripe on left","Baikonur Cosmodrome — where Sputnik and Gagarin launched to space","World's top uranium exporter; major oil, gas, wheat, metals"],
+ l3:["Capital: Astana (renamed from Nur-Sultan, formerly Akmola)","Official languages: Kazakh and Russian","Demonym: Kazakhstani","Currency: Kazakhstani Tenge (KZT)"]},
+
+{n:"Kenya",on:"Republic of Kenya",reg:"Africa",cap:"Nairobi",cities:["Nairobi","Mombasa","Kisumu","Nakuru"],langs:["Swahili","English"],dem:"Kenyan",cur:"Kenyan Shilling",gov:"Presidential republic",
+ flag:{c:["#006600","#BB0000"],t:"KEN"},
+ l1:["Crossed by the equator; East Africa on Indian Ocean coast","Borders Ethiopia, Somalia, Tanzania, Uganda, South Sudan","Lake Victoria (world's largest tropical lake) on western border (shared)","The Great Rift Valley cuts through the country with volcanoes and lakes"],
+ l2:["Mount Kenya NP and Lake Turkana — UNESCO WHS","Flag: black, red, green horizontal stripes with Maasai shield and two spears","World's top marathon runners; major safari destination","Major exporter: tea, coffee, cut flowers, horticulture"],
+ l3:["Capital: Nairobi","Official languages: Swahili and English","Demonym: Kenyan","Currency: Kenyan Shilling (KES)"]},
+
+{n:"Kuwait",on:"State of Kuwait",reg:"Middle East",cap:"Kuwait City",cities:["Kuwait City","Hawalli","Al Ahmadi"],langs:["Arabic"],dem:"Kuwaiti",cur:"Kuwaiti Dinar",gov:"Constitutional monarchy (Emirate)",
+ flag:{c:["#007A3D","#000"],t:"KWT"},
+ l1:["Located at northern tip of the Persian Gulf; borders Iraq and Saudi Arabia","Mostly flat desert; no rivers","Invaded and occupied by Iraq (1990); liberated by US-led coalition in Gulf War (1991)","World's 6th largest oil reserves"],
+ l2:["No UNESCO WHS","Flag: green, white, red horizontal stripes with black trapezoid on left","The Kuwaiti Dinar is the world's highest-valued currency unit","Major exporter: crude oil (constitutes ~90% of export revenue)"],
+ l3:["Capital: Kuwait City","Official language: Arabic","Demonym: Kuwaiti","Currency: Kuwaiti Dinar (KWD) — world's highest-valued currency"]},
+
+{n:"Kyrgyzstan",on:"Kyrgyz Republic",reg:"Asia",cap:"Bishkek",cities:["Bishkek","Osh","Jalal-Abad","Karakol"],langs:["Kyrgyz","Russian"],dem:"Kyrgyz",cur:"Kyrgyzstani Som",gov:"Parliamentary republic",
+ flag:{c:["#E8112D","#FECB00"],t:"KGZ"},
+ l1:["Landlocked in Central Asia; entirely mountainous — the Tian Shan and Pamir ranges","Borders Kazakhstan, China, Tajikistan, Uzbekistan","Lake Issyk-Kul (1,607 m altitude) is one of world's largest mountain lakes and never freezes","Highest peak: Jengish Chokusu (7,439 m, also called Peak Pobeda)"],
+ l2:["Sulaiman-Too Sacred Mountain — UNESCO WHS","Flag: red with yellow sun containing 40-ray pattern representing 40 Kyrgyz tribes","Nomadic horse culture with traditional yurts (boz-üy)","Major exports: gold, mercury, uranium, natural gas, electricity"],
+ l3:["Capital: Bishkek","Official languages: Kyrgyz and Russian","Demonym: Kyrgyz","Currency: Kyrgyzstani Som (KGS)"]},
+
+{n:"Laos",on:"Lao People's Democratic Republic",reg:"Asia",cap:"Vientiane",cities:["Vientiane","Luang Prabang","Savannakhet","Pakse"],langs:["Lao"],dem:"Laotian",cur:"Lao Kip",gov:"Communist single-party state",
+ flag:{c:["#CE1126","#002868"],t:"LAO"},
+ l1:["Only landlocked country in Southeast Asia","Borders China, Vietnam, Cambodia, Thailand, Myanmar","The Mekong River forms much of the western border with Thailand","Plain of Jars (ancient megalithic site) is in Xieng Khouang Province"],
+ l2:["Town of Luang Prabang — UNESCO WHS","Flag: red bands top and bottom, blue center band with white disc","Most heavily bombed country per capita in history (US bombing 1964-73 during Vietnam War era)","Major exporter: electricity (hydropower sold to Thailand), copper, gold, coffee"],
+ l3:["Capital: Vientiane","Official language: Lao","Demonym: Laotian","Currency: Lao Kip (LAK)"]},
+
+{n:"Latvia",on:"Republic of Latvia",reg:"Europe",cap:"Riga",cities:["Riga","Daugavpils","Liepāja","Jēkabpils"],langs:["Latvian"],dem:"Latvian",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#9E3039","#fff"],t:"LVA"},
+ l1:["Middle Baltic state; borders Estonia, Lithuania, Russia, Belarus","Baltic Sea and Gulf of Riga coastline","The Daugava River flows through Riga to the Baltic Sea","Flat terrain; highest point only 312 m"],
+ l2:["Historic centre of Riga — UNESCO WHS","Flag: carmine/dark red, white, carmine horizontal stripes (one of world's oldest flags, 13th century)","Rīga is the largest city in the Baltic states","Major exports: wood products, food, metals, machinery"],
+ l3:["Capital: Riga","Official language: Latvian (Baltic language — very old linguistic group)","Demonym: Latvian","Currency: Euro (EUR)"]},
+
+{n:"Lebanon",on:"Lebanese Republic",reg:"Middle East",cap:"Beirut",cities:["Beirut","Tripoli","Sidon","Tyre"],langs:["Arabic"],dem:"Lebanese",cur:"Lebanese Pound",gov:"Parliamentary republic (confessional)",
+ flag:{c:["#fff","#EE161F"],t:"LBN"},
+ l1:["Small country on Eastern Mediterranean coast; borders Syria and Israel","The Lebanon and Anti-Lebanon mountain ranges frame the Bekaa Valley","The Litani River is Lebanon's main river","No landlocked area; smallest sovereign state in mainland Asia"],
+ l2:["Baalbek (Heliopolis — Roman temples), Byblos (one of world's oldest cities) — UNESCO WHS","Flag: white with horizontal red stripes and green cedar tree in center","Cedar of Lebanon is the national symbol — appears on flag","Major exporter: diamonds, metals, chemicals; banking was once 'Switzerland of the Middle East'"],
+ l3:["Capital: Beirut","Official language: Arabic","Demonym: Lebanese","Currency: Lebanese Pound (LBP)"]},
+
+{n:"Lesotho",on:"Kingdom of Lesotho",reg:"Africa",cap:"Maseru",cities:["Maseru","Teyateyaneng","Mafeteng"],langs:["Sesotho","English"],dem:"Mosotho (pl: Basotho)",cur:"Lesotho Loti",gov:"Constitutional monarchy",
+ flag:{c:["#009543","#003580"],t:"LSO"},
+ l1:["Entirely surrounded by South Africa — one of only three enclave nations worldwide","Highest lowest point of any country — even at its lowest point it is 1,400 m above sea level","The Drakensberg and Maluti mountains cover most of the country","Senqu (Orange) River has its source in Lesotho"],
+ l2:["No UNESCO WHS","Flag: blue, white, green horizontal stripes with black Basotho hat in center","One of highest countries by average elevation; nicknamed 'Kingdom in the Sky'","Major exports: water (sold to South Africa via Lesotho Highlands Water Project), diamonds, wool"],
+ l3:["Capital: Maseru","Official languages: Sesotho and English","Demonym: Mosotho (sing.) / Basotho (pl.)","Currency: Lesotho Loti (LSL)"]},
+
+{n:"Liberia",on:"Republic of Liberia",reg:"Africa",cap:"Monrovia",cities:["Monrovia","Gbarnga","Kakata","Bensonville"],langs:["English"],dem:"Liberian",cur:"Liberian Dollar",gov:"Presidential republic",
+ flag:{c:["#BF0A30","#002868"],t:"LBR"},
+ l1:["Located in West Africa on the Atlantic coast; Africa's oldest republic","Borders Guinea, Côte d'Ivoire, and Sierra Leone","Founded by freed American slaves in 1847 — name from 'liberty'","The Mano River forms part of the border with Sierra Leone"],
+ l2:["No UNESCO WHS","Flag: 11 red and white stripes with blue canton containing white star — inspired by US flag","Capital Monrovia named after US President James Monroe","Major exports: rubber (world's 5th largest producer), iron ore, gold, timber"],
+ l3:["Capital: Monrovia (named after US President Monroe)","Official language: English","Demonym: Liberian","Currency: Liberian Dollar (LRD)"]},
+
+{n:"Libya",on:"State of Libya",reg:"Africa",cap:"Tripoli",cities:["Tripoli","Benghazi","Misrata","Bayda"],langs:["Arabic"],dem:"Libyan",cur:"Libyan Dinar",gov:"Fragmented (civil conflict)",
+ flag:{c:["#000","#239E46"],t:"LBA"},
+ l1:["4th largest country in Africa; 90% is Sahara Desert","Borders Egypt, Sudan, Chad, Niger, Algeria, Tunisia","Mediterranean coastline; Cyrenaica plateau in the northeast","Highest point: Bikku Bitti (2,267 m) in the Tibesti region"],
+ l2:["Archaeological site of Leptis Magna (Roman city) — UNESCO WHS","Flag: all green (Gaddafi era) changed to black-red-green with white crescent and star","Oil-rich but in civil conflict since 2011 Arab Spring and Gaddafi's fall","Major exporter: crude oil (90% of revenue)"],
+ l3:["Capital: Tripoli","Official language: Arabic","Demonym: Libyan","Currency: Libyan Dinar (LYD)"]},
+
+{n:"Liechtenstein",on:"Principality of Liechtenstein",reg:"Europe",cap:"Vaduz",cities:["Vaduz","Schaan","Balzers"],langs:["German"],dem:"Liechtensteiner",cur:"Swiss Franc",gov:"Constitutional monarchy (Principality)",
+ flag:{c:["#002B7F","#CE1126"],t:"LIE"},
+ l1:["One of only two doubly landlocked countries (surrounded by landlocked nations: Switzerland and Austria)","Smallest German-speaking country; Rhine River forms western border with Switzerland","Highest point: Grauspitz (2,599 m)","No army since 1868 — only 2 police-related forces"],
+ l2:["No UNESCO WHS","Flag: blue over red horizontal bands with gold crown in upper left corner","One of world's highest GDPs per capita; major financial center","Major exporter: dental products, specialty machinery, precision instruments"],
+ l3:["Capital: Vaduz","Official language: German","Demonym: Liechtensteiner","Currency: Swiss Franc (CHF)"]},
+
+{n:"Lithuania",on:"Republic of Lithuania",reg:"Europe",cap:"Vilnius",cities:["Vilnius","Kaunas","Klaipėda","Šiauliai"],langs:["Lithuanian"],dem:"Lithuanian",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#FDB913","#006A44"],t:"LTU"},
+ l1:["Southernmost Baltic state; borders Latvia, Belarus, Poland, and Kaliningrad (Russia exclave)","Nemunas River flows to the Baltic Sea; Curonian Lagoon on the coast","Geographical centre of Europe is located near Vilnius (by some calculations)","First Soviet Republic to declare independence (March 11, 1990)"],
+ l2:["Vilnius Old Town and Curonian Spit — UNESCO WHS","Flag: yellow, green, red horizontal stripes","Lithuanian is one of the oldest surviving Indo-European languages","Major exports: mineral fuels, machinery, furniture, chemicals"],
+ l3:["Capital: Vilnius","Official language: Lithuanian","Demonym: Lithuanian","Currency: Euro (EUR)"]},
+
+{n:"Luxembourg",on:"Grand Duchy of Luxembourg",reg:"Europe",cap:"Luxembourg City",cities:["Luxembourg City","Esch-sur-Alzette","Differdange"],langs:["Luxembourgish","French","German"],dem:"Luxembourger",cur:"Euro",gov:"Constitutional monarchy (Grand Duchy)",
+ flag:{c:["#EF3340","#00A3E0"],t:"LUX"},
+ l1:["One of Europe's smallest countries; borders Belgium, France, and Germany","The Sure and Moselle rivers form parts of borders","Highly elevated plateau (Ardennes in north); the Oesling region","Unique trilingual society: Luxembourgish, French, German all official"],
+ l2:["City of Luxembourg (old city and fortifications) — UNESCO WHS","Flag: three horizontal bands — red, white, light blue (similar to Netherlands but lighter blue)","Highest GDP per capita in the world (by some measures)","Major financial center; hosts European Court of Justice and ECB"],
+ l3:["Capital: Luxembourg City","Official languages: Luxembourgish, French, German","Demonym: Luxembourger","Currency: Euro (EUR)"]},
+
+{n:"Madagascar",on:"Republic of Madagascar",reg:"Africa",cap:"Antananarivo",cities:["Antananarivo","Toamasina","Antsirabe","Fianarantsoa"],langs:["Malagasy","French"],dem:"Malagasy",cur:"Malagasy Ariary",gov:"Presidential republic",
+ flag:{c:["#FC3D32","#007E3A"],t:"MDG"},
+ l1:["World's 4th largest island, in the Indian Ocean east of Mozambique","No land borders; separated from Africa 165 million years ago","About 90% of wildlife is endemic (lemurs, baobabs, chameleons)","The Mozambique Channel separates it from Africa"],
+ l2:["Rainforests of the Atsinanana — UNESCO WHS","Flag: white vertical band on left, red over green horizontal bands","Called 'the Eighth Continent' for its unique biodiversity","Major exports: vanilla (world's 2nd largest producer), cloves, coffee, seafood, chromite"],
+ l3:["Capital: Antananarivo","Official languages: Malagasy and French","Demonym: Malagasy","Currency: Malagasy Ariary (MGA)"]},
+
+{n:"Malawi",on:"Republic of Malawi",reg:"Africa",cap:"Lilongwe",cities:["Lilongwe","Blantyre","Mzuzu","Zomba"],langs:["Chichewa","English"],dem:"Malawian",cur:"Malawian Kwacha",gov:"Presidential republic",
+ flag:{c:["#000","#CE1126"],t:"MWI"},
+ l1:["Landlocked in southeastern Africa; formerly known as Nyasaland","Borders Tanzania, Mozambique, and Zambia","Lake Malawi (Nyasa) covers about 1/5 of the country — 3rd largest in Africa","The African Rift Valley runs through the country"],
+ l2:["Lake Malawi National Park — UNESCO WHS","Flag: black, red, green horizontal stripes with red rising sun in center of black stripe","One of world's poorest countries despite natural resources","Major exports: tobacco (largest single product), tea, sugar, cotton"],
+ l3:["Capital: Lilongwe (moved from Zomba in 1975)","Official languages: Chichewa and English","Demonym: Malawian","Currency: Malawian Kwacha (MWK)"]},
+
+{n:"Malaysia",on:"Malaysia",reg:"Asia",cap:"Kuala Lumpur",cities:["Kuala Lumpur","George Town","Johor Bahru","Kota Kinabalu"],langs:["Malay"],dem:"Malaysian",cur:"Malaysian Ringgit",gov:"Constitutional monarchy (federation)",
+ flag:{c:["#CC0001","#fff"],t:"MYS"},
+ l1:["Divided between Peninsular Malaysia and Borneo (Sabah and Sarawak)","Borders Thailand (peninsula), Indonesia and Brunei (Borneo)","Mount Kinabalu (4,095 m) in Sabah is Southeast Asia's highest peak outside Papua New Guinea","The Strait of Malacca is one of world's busiest and most strategic shipping lanes"],
+ l2:["Kinabalu NP and Mulu NP (world's largest cave chamber) — UNESCO WHS","Flag: 14 red and white stripes with blue canton, yellow crescent and 14-pointed star (Jalur Gemilang)","Petronas Towers (452 m) were world's tallest buildings 1998-2004","Major exporter: electronics, palm oil, LNG, rubber"],
+ l3:["Capital: Kuala Lumpur","Official language: Malay (Bahasa Malaysia)","Demonym: Malaysian","Currency: Malaysian Ringgit (MYR)"]},
+
+{n:"Maldives",on:"Republic of Maldives",reg:"Asia",cap:"Malé",cities:["Malé","Addu City","Fuvahmulah"],langs:["Dhivehi"],dem:"Maldivian",cur:"Maldivian Rufiyaa",gov:"Presidential republic",
+ flag:{c:["#D21034","#007E3A"],t:"MDV"},
+ l1:["Archipelago of 1,192 coral islands in the Indian Ocean; world's lowest country (avg 1.5 m above sea level)","Most threatened nation by sea level rise from climate change","Located southwest of Sri Lanka; no land borders","Sits on the Equatorial Channel"],
+ l2:["No UNESCO WHS","Flag: red with green rectangle and white crescent moon","World's flattest country — highest natural point: 2.4 m above sea level","Major revenue: tourism (coral reef diving) and fishing"],
+ l3:["Capital: Malé","Official language: Dhivehi","Demonym: Maldivian","Currency: Maldivian Rufiyaa (MVR)"]},
+
+{n:"Mali",on:"Republic of Mali",reg:"Africa",cap:"Bamako",cities:["Bamako","Sikasso","Mopti","Koutiala"],langs:["French"],dem:"Malian",cur:"West African CFA Franc",gov:"Military junta",
+ flag:{c:["#14B53A","#FCD116"],t:"MLI"},
+ l1:["Landlocked in West Africa; 8th largest country in Africa","Borders Algeria, Niger, Burkina Faso, Côte d'Ivoire, Guinea, Senegal, Mauritania","The Niger River makes a great bend (Niger Inland Delta) through the country","The Sahara covers the north; the south is Sahel and savanna"],
+ l2:["Timbuktu and Djenné (Great Mosque) — UNESCO WHS","Flag: green, yellow, red vertical stripes","Timbuktu was a major center of Islamic scholarship and gold trade (14th-16th century)","Major exports: gold (largest export), cotton, livestock"],
+ l3:["Capital: Bamako","Official language: French","Demonym: Malian","Currency: West African CFA Franc (XOF)"]},
+
+{n:"Malta",on:"Republic of Malta",reg:"Europe",cap:"Valletta",cities:["Valletta","Birkirkara","Mosta","Qormi"],langs:["Maltese","English"],dem:"Maltese",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#CF142B","#fff"],t:"MLT"},
+ l1:["Island nation in the Mediterranean Sea south of Sicily; no land borders","Consists of Malta, Gozo, and Comino islands","Strategically located between Europe and North Africa — historically fought over","The Grand Harbour (Valletta) is one of Europe's finest natural harbours"],
+ l2:["City of Valletta and Megalithic Temples (world's oldest free-standing structures) — UNESCO WHS","Flag: white and red vertical bands with George Cross on white portion","Knights of St. John (Hospitallers) ruled Malta for 268 years","Major industries: tourism, electronics (ST Microelectronics), pharmaceuticals"],
+ l3:["Capital: Valletta (smallest EU capital city)","Official languages: Maltese and English","Demonym: Maltese","Currency: Euro (EUR)"]},
+
+{n:"Mauritania",on:"Islamic Republic of Mauritania",reg:"Africa",cap:"Nouakchott",cities:["Nouakchott","Nouâdhibou","Rosso","Atar"],langs:["Arabic"],dem:"Mauritanian",cur:"Mauritanian Ouguiya",gov:"Presidential republic",
+ flag:{c:["#006233","#FFC400"],t:"MRT"},
+ l1:["Located in northwestern Africa spanning the Sahara and Sahel","Borders Western Sahara, Algeria, Mali, Senegal; Atlantic coast","The Sahara covers 3/4 of the country; iron ore mountains in the north","The Senegal River forms the southern border"],
+ l2:["Ancient Ksour of Ouadane, Chinguetti — UNESCO WHS","Flag: green with yellow crescent, star, and two yellow horizontal stripes (added 2017)","Bridge between Arab North Africa and sub-Saharan Africa","Major exports: iron ore, gold, copper, fish"],
+ l3:["Capital: Nouakchott","Official language: Arabic","Demonym: Mauritanian","Currency: Mauritanian Ouguiya (MRU)"]},
+
+{n:"Mauritius",on:"Republic of Mauritius",reg:"Africa",cap:"Port Louis",cities:["Port Louis","Beau Bassin-Rose Hill","Vacoas-Phoenix"],langs:["English","French","Mauritian Creole"],dem:"Mauritian",cur:"Mauritian Rupee",gov:"Parliamentary republic",
+ flag:{c:["#EA2839","#1A206D"],t:"MUS"},
+ l1:["Island nation in the Indian Ocean, east of Madagascar","Volcanic island with no land borders; surrounded by Indian Ocean","The dodo bird (extinct) was native to Mauritius","Relatively high income for Africa due to tourism, sugar, and financial services"],
+ l2:["Le Morne Cultural Landscape — UNESCO WHS","Flag: red, blue, yellow, green horizontal stripes — one of few 4-colored flags","Home of the now-extinct dodo bird","Major exports: textiles, sugar, tourism, financial services"],
+ l3:["Capital: Port Louis","Official language: English (but French/Creole dominant)","Demonym: Mauritian","Currency: Mauritian Rupee (MUR)"]},
+
+{n:"Mexico",on:"United Mexican States",reg:"North America",cap:"Mexico City",cities:["Mexico City","Guadalajara","Monterrey","Puebla","Tijuana"],langs:["Spanish"],dem:"Mexican",cur:"Mexican Peso",gov:"Federal presidential republic",
+ flag:{c:["#006847","#CE1126"],t:"MEX"},
+ l1:["Borders USA (north), Guatemala and Belize (south); Pacific and Gulf of Mexico coasts","Active Popocatépetl (5,426 m) and Citlaltépetl/Pico de Orizaba (5,636 m — highest)","Yucatan Peninsula has world's largest karst sinkhole systems (cenotes)","The Rio Grande/Río Bravo forms part of the US border"],
+ l2:["Pre-Hispanic City of Teotihuacan, Chichen Itza, Monte Albán — UNESCO WHS","Flag: green, white, red vertical stripes with eagle-on-cactus coat of arms","National symbol: golden eagle (on flag)","Major exporter: vehicles, electronics, oil, beer, tequila"],
+ l3:["Capital: Mexico City (one of world's highest capitals at 2,240 m)","Official language: Spanish","Demonym: Mexican","Currency: Mexican Peso (MXN)"]},
+
+{n:"Moldova",on:"Republic of Moldova",reg:"Europe",cap:"Chișinău",cities:["Chișinău","Tiraspol","Bălți","Bender"],langs:["Romanian (Moldovan)"],dem:"Moldovan",cur:"Moldovan Leu",gov:"Parliamentary republic",
+ flag:{c:["#003DA5","#CC0000"],t:"MDA"},
+ l1:["Landlocked in Eastern Europe between Romania and Ukraine","The Prut River forms the western border with Romania","Transnistria (Pridnestrovie) is a pro-Russian breakaway region not internationally recognized","No access to the sea; one of Europe's poorest countries"],
+ l2:["No UNESCO WHS","Flag: blue, yellow, red vertical stripes with coat of arms — Moldovan coat of arms features an eagle","World's highest wine consumption per capita; major wine producer","Major exports: wine, spirits, machinery, food products"],
+ l3:["Capital: Chișinău","Official language: Romanian (also called Moldovan)","Demonym: Moldovan","Currency: Moldovan Leu (MDL)"]},
+
+{n:"Monaco",on:"Principality of Monaco",reg:"Europe",cap:"Monaco",cities:["Monaco","Monte-Carlo","Fontvieille"],langs:["French"],dem:"Monegasque",cur:"Euro",gov:"Constitutional monarchy (Principality)",
+ flag:{c:["#CE1126","#fff"],t:"MCO"},
+ l1:["Second smallest country in the world (2.02 km²) after Vatican City","Located on the French Riviera; surrounded by France on three sides and Mediterranean Sea","No natural resources; population of about 39,000","The Principality has been ruled by the Grimaldi family since 1297"],
+ l2:["No UNESCO WHS","Flag: red over white horizontal bands — same colors as Poland but horizontal (Poland's is also red/white but vertical)","Monaco Grand Prix runs through the city streets — most prestigious F1 race","Major revenue: tourism, gambling (Monte-Carlo Casino), financial services"],
+ l3:["Capital: Monaco (same name as the country)","Official language: French","Demonym: Monegasque","Currency: Euro (EUR)"]},
+
+{n:"Mongolia",on:"Mongolia",reg:"Asia",cap:"Ulaanbaatar",cities:["Ulaanbaatar","Erdenet","Darkhan","Choibalsan"],langs:["Mongolian"],dem:"Mongolian",cur:"Mongolian Tögrög",gov:"Parliamentary republic",
+ flag:{c:["#C4272F","#015197"],t:"MNG"},
+ l1:["Landlocked in Central/East Asia; one of world's largest landlocked countries","Borders Russia (north) and China (south) only","The Gobi Desert covers the south; the Mongolian steppe the center and north","Average altitude 1,580 m — one of highest countries; also world's most sparsely populated"],
+ l2:["Mongolian Nomadic Culture — UNESCO Intangible Heritage (not WHS)","Flag: red, blue, red vertical stripes with gold Soyombo national symbol","The Mongol Empire (13th-14th century) was the largest contiguous land empire in history","Major exporter: copper, coal, gold, molybdenum, cashmere"],
+ l3:["Capital: Ulaanbaatar (world's coldest capital)","Official language: Mongolian","Demonym: Mongolian","Currency: Mongolian Tögrög (MNT)"]},
+
+{n:"Montenegro",on:"Montenegro",reg:"Europe",cap:"Podgorica",cities:["Podgorica","Nikšić","Budva","Bar"],langs:["Montenegrin"],dem:"Montenegrin",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#D4AF37","#D4170D"],t:"MNE"},
+ l1:["Small country on the Adriatic coast of the Balkans","Borders Croatia, Bosnia, Serbia, Kosovo, Albania","The Bay of Kotor is a fjord-like bay — southernmost fjord in Europe","Durmitor National Park has the Tara River Canyon (Europe's deepest gorge)"],
+ l2:["Natural and Culturo-Historical Region of Kotor — UNESCO WHS","Flag: golden border with red center and golden coat of arms","Name means 'Black Mountain' (Monte Negro in Italian/Portuguese)","Major revenue: tourism, aluminum, steel"],
+ l3:["Capital: Podgorica","Official language: Montenegrin","Demonym: Montenegrin","Currency: Euro (EUR, unilaterally adopted — not EU member)"]},
+
+{n:"Morocco",on:"Kingdom of Morocco",reg:"Africa",cap:"Rabat",cities:["Casablanca","Rabat","Fez","Marrakech","Tangier"],langs:["Arabic","Tamazight"],dem:"Moroccan",cur:"Moroccan Dirham",gov:"Constitutional monarchy",
+ flag:{c:["#c1121f","#006233"],t:"MAR"},
+ l1:["Northwestern tip of Africa; one of few countries on both Atlantic and Mediterranean","Controls southern entrance to Strait of Gibraltar","Atlas Mountains run through country; highest peak Toubkal (4,167 m)","Western Sahara is a disputed territory administered by Morocco"],
+ l2:["Medina of Fez and Ksar of Aït-Ben-Haddou — UNESCO WHS","Flag: red with green pentagram (Solomon's Seal) in center","World's largest exporter of phosphate rock","Major exporter: phosphates, automobiles, citrus fruit; major tourism"],
+ l3:["Capital: Rabat (NOT Casablanca — common trick question)","Official languages: Arabic and Tamazight (Berber)","Demonym: Moroccan","Currency: Moroccan Dirham (MAD)"]},
+
+{n:"Mozambique",on:"Republic of Mozambique",reg:"Africa",cap:"Maputo",cities:["Maputo","Matola","Beira","Nampula"],langs:["Portuguese"],dem:"Mozambican",cur:"Mozambican Metical",gov:"Presidential republic",
+ flag:{c:["#009A44","#DC241F"],t:"MOZ"},
+ l1:["Southeastern Africa on Indian Ocean coast","Borders Tanzania, Malawi, Zambia, Zimbabwe, South Africa, Eswatini","The Zambezi River with Cahora Bassa Dam (one of Africa's largest dams)","The Mozambique Channel separates it from Madagascar"],
+ l2:["Island of Mozambique — UNESCO WHS","Flag: green, black, yellow stripes with red triangle containing AK-47, book, and hoe — only flag with an assault rifle","Only Portuguese-speaking country in southern Africa","Major exports: aluminum, LNG (major reserves discovered), coal, tobacco"],
+ l3:["Capital: Maputo","Official language: Portuguese","Demonym: Mozambican","Currency: Mozambican Metical (MZN)"]},
+
+{n:"Myanmar",on:"Republic of the Union of Myanmar",reg:"Asia",cap:"Naypyidaw",cities:["Yangon","Mandalay","Naypyidaw","Mawlamyine"],langs:["Burmese"],dem:"Burmese",cur:"Myanmar Kyat",gov:"Military junta (since 2021 coup)",
+ flag:{c:["#FECB00","#34B233"],t:"MMR"},
+ l1:["Located in mainland Southeast Asia; Irrawaddy (Ayeyarwady) is the main river","Borders Bangladesh, India, China, Laos, Thailand","The ancient Bagan/Pagan has 2,000+ Buddhist temples","Formerly known as Burma until 1989"],
+ l2:["Ancient city of Pagan/Bagan — UNESCO WHS","Flag: yellow, green, red horizontal stripes with large white five-pointed star","Military coup in 2021 overthrew democratic government of Aung San Suu Kyi","Major exports: jade, timber, natural gas, rice, precious stones"],
+ l3:["Capital: Naypyidaw (moved from Yangon in 2006)","Official language: Burmese","Demonym: Burmese","Currency: Myanmar Kyat (MMK)"]},
+
+{n:"Namibia",on:"Republic of Namibia",reg:"Africa",cap:"Windhoek",cities:["Windhoek","Rundu","Walvis Bay","Oshakati"],langs:["English"],dem:"Namibian",cur:"Namibian Dollar",gov:"Presidential republic",
+ flag:{c:["#003580","#CC0000"],t:"NAM"},
+ l1:["Located in southwestern Africa on the Atlantic coast","Borders South Africa, Botswana, Zimbabwe (Caprivi Strip), Zambia, Angola","The Namib Desert (one of world's oldest) stretches along the coast","The Etosha Pan is a vast salt flat — major wildlife area"],
+ l2:["Twyfelfontein rock art — UNESCO WHS","Flag: blue diagonal stripe from bottom-left to top-right with red stripe outlined in white; yellow sun on blue, green triangle below","One of world's lowest population densities","World's largest uranium producer; also diamonds, zinc, gold"],
+ l3:["Capital: Windhoek","Official language: English","Demonym: Namibian","Currency: Namibian Dollar (NAD)"]},
+
+{n:"Nepal",on:"Federal Democratic Republic of Nepal",reg:"Asia",cap:"Kathmandu",cities:["Kathmandu","Pokhara","Lalitpur","Biratnagar"],langs:["Nepali"],dem:"Nepali",cur:"Nepali Rupee",gov:"Federal democratic republic",
+ flag:{c:["#003893","#DC143C"],t:"NPL"},
+ l1:["Himalayan landlocked country between India and China (Tibet)","Home to 8 of world's 10 highest peaks, including Mt. Everest (8,848.86 m)","Buddha was born at Lumbini in Nepal (~563 BC)","The Kathmandu Valley has numerous UNESCO-listed historic sites"],
+ l2:["Sagarmatha (Everest) NP, Chitwan NP, Kathmandu Valley — UNESCO WHS","Flag: ONLY non-quadrilateral national flag — double pennant (two triangles stacked)","Sacred cow is the national animal (only country with this)","Major income: remittances from abroad, trekking/mountaineering tourism, hydropower"],
+ l3:["Capital: Kathmandu","Official language: Nepali","Demonym: Nepali","Currency: Nepali Rupee (NPR)"]},
+
+{n:"Netherlands",on:"Kingdom of the Netherlands",reg:"Europe",cap:"Amsterdam",cities:["Amsterdam","Rotterdam","The Hague","Utrecht","Eindhoven"],langs:["Dutch"],dem:"Dutch",cur:"Euro",gov:"Constitutional monarchy",
+ flag:{c:["#AE1C28","#21468B"],t:"NLD"},
+ l1:["About 26% of land is below sea level — protected by elaborate dykes and pumps","Rhine, Meuse, and Scheldt rivers delta into the North Sea","Borders Germany and Belgium","Aruba, Curaçao, Sint Maarten are constituent countries in the Caribbean"],
+ l2:["Schokland and Defence Line of Amsterdam — UNESCO WHS","Flag: red, white, blue horizontal stripes (one of world's oldest tricolor flags)","Seat of government: The Hague (capital is Amsterdam)","World's largest flower exporter; major port (Rotterdam — busiest in Europe)"],
+ l3:["Capital: Amsterdam (government in The Hague)","Official language: Dutch","Demonym: Dutch","Currency: Euro (EUR)"]},
+
+{n:"New Zealand",on:"New Zealand",reg:"Oceania",cap:"Wellington",cities:["Auckland","Wellington","Christchurch","Hamilton","Dunedin"],langs:["English","Maori","NZ Sign Language"],dem:"New Zealander (Kiwi)",cur:"New Zealand Dollar",gov:"Parliamentary constitutional monarchy",
+ flag:{c:["#00247D","#fff"],t:"NZL"},
+ l1:["Island nation in South Pacific: two main islands separated by Cook Strait","Part of Pacific Ring of Fire — active volcanoes (Ruapehu, White Island/Whakaari)","Aoraki/Mount Cook (3,724 m) highest peak on South Island","Fiordland — Milford Sound is the world's wettest inhabited place"],
+ l2:["Te Wāhipounamu, Tongariro NP — UNESCO WHS","Flag: Blue Ensign with Union Jack and four-star Southern Cross","First country in the world to give women the right to vote (1893)","Major exports: dairy products, meat, wool, kiwifruit, wine"],
+ l3:["Capital: Wellington (NOT Auckland — common trick question)","Official languages: English, Māori, NZ Sign Language","Demonym: New Zealander (informal: Kiwi)","Currency: New Zealand Dollar (NZD)"]},
+
+{n:"Nicaragua",on:"Republic of Nicaragua",reg:"North America",cap:"Managua",cities:["Managua","León","Masaya","Chinandega"],langs:["Spanish"],dem:"Nicaraguan",cur:"Nicaraguan Córdoba",gov:"Presidential republic",
+ flag:{c:["#3D70CC","#fff"],t:"NIC"},
+ l1:["Largest country in Central America; borders Honduras and Costa Rica","Lake Nicaragua (Cocibolca) is the largest lake in Central America and only freshwater lake with sharks","The Pacific coast has a chain of 40 volcanoes; Caribbean coast called the Mosquito Coast","Managua is on the shore of Lake Managua (Xolotlán)"],
+ l2:["No UNESCO WHS","Flag: blue-white-blue horizontal stripes with coat of arms (contains rainbow and volcano)","Called 'Land of Lakes and Volcanoes'","Major exports: coffee, beef, gold, sugar, peanuts"],
+ l3:["Capital: Managua","Official language: Spanish","Demonym: Nicaraguan","Currency: Nicaraguan Córdoba (NIO)"]},
+
+{n:"Niger",on:"Republic of the Niger",reg:"Africa",cap:"Niamey",cities:["Niamey","Zinder","Maradi","Agadez"],langs:["French"],dem:"Nigerien",cur:"West African CFA Franc",gov:"Military junta",
+ flag:{c:["#E05206","#fff"],t:"NER"},
+ l1:["Landlocked in West Africa; largest country in West Africa","Borders Algeria, Libya, Chad, Nigeria, Benin, Burkina Faso, Mali","The Air Massif in the north; the Sahara covers 80% of the country","The Niger River flows through the southwest corner"],
+ l2:["Air and Ténéré Natural Reserves — UNESCO WHS (world's largest protected area)","Flag: orange, white, green horizontal stripes with orange disc in center","Named after the Niger River; NOTE: Nigerien refers to Niger, Nigerian refers to Nigeria","World's 5th largest uranium producer; major exporter of gold, uranium"],
+ l3:["Capital: Niamey","Official language: French","Demonym: Nigerien (NOT Nigerian)","Currency: West African CFA Franc (XOF)"]},
+
+{n:"Nigeria",on:"Federal Republic of Nigeria",reg:"Africa",cap:"Abuja",cities:["Lagos","Abuja","Kano","Ibadan","Kaduna"],langs:["English"],dem:"Nigerian",cur:"Nigerian Naira",gov:"Federal presidential republic",
+ flag:{c:["#008751","#fff"],t:"NGA"},
+ l1:["Most populous country in Africa (220M+); most populous Black nation on Earth","The Niger River (giving it its name) flows through to the Gulf of Guinea delta","Borders Benin, Niger, Chad, Cameroon","Lake Chad in the northeast is shared and shrinking"],
+ l2:["Osun-Osogbo Sacred Grove — UNESCO WHS","Flag: two green vertical bands flanking white vertical band (no emblem on flag)","Called 'Giant of Africa'; largest oil producer in Africa","Major exporter: crude oil, cocoa, sesame, cashews; Nollywood is world's 2nd largest film industry"],
+ l3:["Capital: Abuja (moved from Lagos in 1991)","Official language: English","Demonym: Nigerian","Currency: Nigerian Naira (NGN)"]},
+
+{n:"North Korea",on:"Democratic People's Republic of Korea",reg:"Asia",cap:"Pyongyang",cities:["Pyongyang","Hamhung","Chongjin","Nampo"],langs:["Korean"],dem:"North Korean",cur:"North Korean Won",gov:"Single-party state (Kim dynasty)",
+ flag:{c:["#024FA2","#BC122B"],t:"PRK"},
+ l1:["Northern half of Korean Peninsula; borders China, Russia, and South Korea","The DMZ (Demilitarized Zone) divides North and South Korea along the 38th parallel","Mount Paektu (2,744 m) is a sacred volcano at North Korea-China border — origin myth","The Tumen and Yalu (Amnok) rivers form most of the border with China"],
+ l2:["Complex of Goguryeo Tombs — UNESCO WHS","Flag: red horizontal band with thin white-bordered blue bands; red star on white disc","Military-first (Songun) policy; nuclear weapons program; heavily sanctioned","Most isolated country in the world; Kim Jong-un is Supreme Leader"],
+ l3:["Capital: Pyongyang","Official language: Korean","Demonym: North Korean","Currency: North Korean Won (KPW)"]},
+
+{n:"North Macedonia",on:"Republic of North Macedonia",reg:"Europe",cap:"Skopje",cities:["Skopje","Bitola","Kumanovo","Tetovo"],langs:["Macedonian","Albanian"],dem:"Macedonian",cur:"Macedonian Denar",gov:"Parliamentary republic",
+ flag:{c:["#CE2028","#F7DD01"],t:"MKD"},
+ l1:["Landlocked in the Balkans; formerly a Yugoslav republic","Borders Kosovo, Serbia, Bulgaria, Greece, Albania","Lake Ohrid (shared with Albania) is one of Europe's oldest and deepest lakes","Mount Korab (2,764 m) is the highest peak, on Albania border"],
+ l2:["Natural and Cultural Heritage of the Ohrid region — UNESCO WHS","Flag: red with golden 'sun' radiating 8 rays","Formerly named FYROM (Former Yugoslav Republic of Macedonia); renamed per Prespa Agreement (2019) to North Macedonia to satisfy Greece","Major exports: iron/steel, food, beverages, tobacco"],
+ l3:["Capital: Skopje","Official languages: Macedonian and Albanian","Demonym: Macedonian","Currency: Macedonian Denar (MKD)"]},
+
+{n:"Norway",on:"Kingdom of Norway",reg:"Europe",cap:"Oslo",cities:["Oslo","Bergen","Trondheim","Stavanger","Tromsø"],langs:["Norwegian"],dem:"Norwegian",cur:"Norwegian Krone",gov:"Constitutional monarchy",
+ flag:{c:["#EF2B2D","#002868"],t:"NOR"},
+ l1:["Shares the Scandinavian Peninsula with Sweden; one of world's longest coastlines","Svalbard archipelago near North Pole is its northernmost territory","Norwegian coast has world's most dramatic fjords (Sognefjord, Geirangerfjord)","Borders Sweden, Finland, and Russia"],
+ l2:["Geirangerfjord and Nærøyfjord, Urnes Stave Church — UNESCO WHS","Flag: red with blue cross outlined in white (Nordic cross)","Consistently #1 in Human Development Index","World's largest sovereign wealth fund (Oil Fund); major exporter of oil, gas, seafood, aluminum"],
+ l3:["Capital: Oslo","Official language: Norwegian (Bokmål and Nynorsk)","Demonym: Norwegian","Currency: Norwegian Krone (NOK)"]},
+
+{n:"Oman",on:"Sultanate of Oman",reg:"Middle East",cap:"Muscat",cities:["Muscat","Salalah","Sohar","Nizwa"],langs:["Arabic"],dem:"Omani",cur:"Omani Rial",gov:"Absolute monarchy (Sultanate)",
+ flag:{c:["#DB161B","#fff"],t:"OMN"},
+ l1:["Located in southeastern Arabian Peninsula; borders UAE, Saudi Arabia, Yemen","Has the Musandam Peninsula (exclave) which juts into the Strait of Hormuz — crucial oil shipping route","Al-Hajar Mountains in the north; Rub' al Khali desert in the west","The Dhofar region in the south has a unique monsoon (khareef) season"],
+ l2:["Bahla Fort and the Aflaj irrigation systems — UNESCO WHS","Flag: red with white and green vertical stripes and national emblem (Khanjar dagger and swords)","Sultan Qaboos (ruled 1970-2020) modernized the country","Major exporter: oil, LNG, metals, chemicals, fish"],
+ l3:["Capital: Muscat","Official language: Arabic","Demonym: Omani","Currency: Omani Rial (OMR)"]},
+
+{n:"Pakistan",on:"Islamic Republic of Pakistan",reg:"Asia",cap:"Islamabad",cities:["Karachi","Lahore","Faisalabad","Rawalpindi","Islamabad"],langs:["Urdu","English"],dem:"Pakistani",cur:"Pakistani Rupee",gov:"Parliamentary republic",
+ flag:{c:["#01411C","#fff"],t:"PAK"},
+ l1:["Borders India, Afghanistan, Iran, and China (Xinjiang)","K2 (8,611 m) — world's second highest mountain — in the Karakoram range","The Indus Valley was one of world's earliest civilizations (Mohenjo-daro)","The Tarbela Dam on the Indus is one of world's largest earth-filled dams"],
+ l2:["Archaeological ruins of Mohenjo-daro — UNESCO WHS","Flag: dark green with white crescent and star, white vertical band on left","Separated from India in 1947 (Partition); 6th most populous country (230M+)","Major exporter: textiles, garments, leather, sports goods (Sialkot)"],
+ l3:["Capital: Islamabad (planned capital replacing Karachi)","Official languages: Urdu and English","Demonym: Pakistani","Currency: Pakistani Rupee (PKR)"]},
+
+{n:"Palestine",on:"State of Palestine",reg:"Middle East",cap:"Ramallah",cities:["Gaza","Ramallah","Nablus","Hebron","Jericho"],langs:["Arabic"],dem:"Palestinian",cur:"Israeli New Shekel / Jordanian Dinar",gov:"Palestinian Authority (limited self-rule)",
+ flag:{c:["#000","#007A3D"],t:"PSE"},
+ l1:["Comprises the West Bank (landlocked) and Gaza Strip (Mediterranean coast)","Jericho is one of the world's oldest continuously inhabited cities (9,000+ years)","Bordered by Israel, Jordan (West Bank) and Egypt, Israel (Gaza)","The Dead Sea lies on the eastern border of the West Bank"],
+ l2:["Birthplace of Jesus (Bethlehem) and site of many biblical events","Flag: black, white, green horizontal stripes with red triangle","UNESCO observer state since 2011; recognized by 145+ countries","Economy severely impacted by Israeli restrictions on movement and trade"],
+ l3:["Seat of government: Ramallah","Official language: Arabic","Demonym: Palestinian","Currency: Israeli New Shekel / Jordanian Dinar"]},
+
+{n:"Panama",on:"Republic of Panama",reg:"North America",cap:"Panama City",cities:["Panama City","San Miguelito","David","Colón"],langs:["Spanish"],dem:"Panamanian",cur:"Panamanian Balboa / US Dollar",gov:"Presidential republic",
+ flag:{c:["#fff","#DA121A"],t:"PAN"},
+ l1:["Southernmost Central American country; connects North and South America","The Panama Canal (opened 1914) connects Pacific and Atlantic Oceans","Borders Costa Rica (north) and Colombia (south)","The narrowest part of the Americas (80 km between Pacific and Caribbean)"],
+ l2:["Fortifications on the Caribbean Side and Darien NP — UNESCO WHS","Flag: four squares — white with blue star, red, blue, white with red star","Major banking and logistics hub; Colón Free Trade Zone is world's 2nd largest","Canal generates massive revenue — 14,000+ vessels per year"],
+ l3:["Capital: Panama City","Official language: Spanish","Demonym: Panamanian","Currency: Panamanian Balboa (pegged 1:1 to USD)"]},
+
+{n:"Papua New Guinea",on:"Independent State of Papua New Guinea",reg:"Oceania",cap:"Port Moresby",cities:["Port Moresby","Lae","Mount Hagen","Madang"],langs:["Tok Pisin","English","Hiri Motu"],dem:"Papua New Guinean",cur:"Papua New Guinean Kina",gov:"Parliamentary constitutional monarchy",
+ flag:{c:["#000","#CE1126"],t:"PNG"},
+ l1:["Occupies eastern half of New Guinea island; western half is Indonesia (Papua)","World's 3rd largest island (New Guinea); home to Birds of Paradise","Borders Indonesia (only land border); Coral Sea and Pacific Ocean surround it","Has the most languages of any country (800+ distinct languages)"],
+ l2:["Kuk Early Agricultural Site — UNESCO WHS","Flag: diagonal from bottom-left: black with Bird of Paradise (top right) and red with gold Southern Cross (bottom left)","One of world's most linguistically diverse nations (800+ languages)","Major exports: gold, copper, LNG, timber, fish"],
+ l3:["Capital: Port Moresby","Official languages: Tok Pisin, English, Hiri Motu","Demonym: Papua New Guinean","Currency: Papua New Guinean Kina (PGK)"]},
+
+{n:"Paraguay",on:"Republic of Paraguay",reg:"South America",cap:"Asunción",cities:["Asunción","Ciudad del Este","San Lorenzo","Luque"],langs:["Spanish","Guaraní"],dem:"Paraguayan",cur:"Paraguayan Guaraní",gov:"Presidential republic",
+ flag:{c:["#D52B1E","#fff"],t:"PRY"},
+ l1:["Landlocked in South America between Brazil, Bolivia, and Argentina","The Paraguay River divides the country into eastern Paraná Plateau and western Gran Chaco","Itaipú Dam (shared with Brazil) was the world's largest hydroelectric dam by output (until Three Gorges)","One of only two landlocked countries in South America (with Bolivia)"],
+ l2:["Jesuit Missions of the Guaranis — UNESCO WHS","Flag: red, white, blue horizontal stripes — one of two flags with different emblems on each side (coat of arms on front, Treasury seal on back)","One of few countries where an indigenous language (Guaraní) is co-official and widely spoken","Major exports: soybeans, electricity (hydropower), beef, corn"],
+ l3:["Capital: Asunción","Official languages: Spanish and Guaraní","Demonym: Paraguayan","Currency: Paraguayan Guaraní (PYG)"]},
+
+{n:"Peru",on:"Republic of Peru",reg:"South America",cap:"Lima",cities:["Lima","Arequipa","Trujillo","Chiclayo","Cusco"],langs:["Spanish","Quechua","Aymara"],dem:"Peruvian",cur:"Peruvian Sol",gov:"Presidential republic",
+ flag:{c:["#D91023","#fff"],t:"PER"},
+ l1:["Home to Machu Picchu, 15th-century Inca citadel (2,430 m elevation)","Lake Titicaca — highest navigable lake (3,812 m), shared with Bolivia","Amazon River has its source in the Peruvian Andes (Nevado Mismi)","Borders Ecuador, Colombia, Brazil, Bolivia, Chile"],
+ l2:["Machu Picchu, Chan Chan, Cusco, Nazca Lines — UNESCO WHS","Flag: red, white, red vertical stripes with coat of arms","The Nazca Lines are giant desert geoglyphs visible from the air","Major exporter: copper, gold, zinc, silver, fishmeal"],
+ l3:["Capital: Lima","Official languages: Spanish, Quechua, Aymara","Demonym: Peruvian","Currency: Peruvian Sol (PEN)"]},
+
+{n:"Philippines",on:"Republic of the Philippines",reg:"Asia",cap:"Manila",cities:["Manila","Quezon City","Davao","Cebu","Zamboanga"],langs:["Filipino (Tagalog)","English"],dem:"Filipino",cur:"Philippine Peso",gov:"Presidential republic",
+ flag:{c:["#0038A8","#FCD116"],t:"PHL"},
+ l1:["Archipelago of 7,641 islands in Southeast Asia in Pacific Ring of Fire","Luzon is largest island; hosts Manila; Mindanao is 2nd largest","Mount Pinatubo (1991) eruption was 20th century's largest volcanic eruption","Typhoon Alley — one of world's most typhoon-prone countries"],
+ l2:["Puerto-Princesa Subterranean River (world's longest navigable underground river) — UNESCO WHS","Flag: blue (top) and red (bottom) horizontal bands with white triangle; red on top during war","Only predominantly Christian nation in Southeast Asia","Major exports: electronics, remittances from OFWs, coconut products, bananas"],
+ l3:["Capital: Manila","Official languages: Filipino (Tagalog) and English","Demonym: Filipino","Currency: Philippine Peso (PHP)"]},
+
+{n:"Poland",on:"Republic of Poland",reg:"Europe",cap:"Warsaw",cities:["Warsaw","Kraków","Łódź","Wrocław","Poznań","Gdańsk"],langs:["Polish"],dem:"Polish",cur:"Polish Złoty",gov:"Parliamentary republic",
+ flag:{c:["#DC143C","#fff"],t:"POL"},
+ l1:["Central Europe with Baltic Sea access; largest former Eastern Bloc country after Russia","Borders Germany, Czech Republic, Slovakia, Ukraine, Belarus, Lithuania, Kaliningrad (Russia)","The Vistula (Wisła) is Poland's longest river, flowing through Warsaw and Kraków","The Tatra Mountains form the border with Slovakia"],
+ l2:["Historic Kraków, Auschwitz-Birkenau, Wieliczka Salt Mine — UNESCO WHS","Flag: white over red horizontal bands","Regained independence in 1918 after 123 years of partition (Russia, Prussia, Austria)","Major exporter: machinery, vehicles, furniture, food, electronics"],
+ l3:["Capital: Warsaw","Official language: Polish","Demonym: Polish","Currency: Polish Złoty (PLN)"]},
+
+{n:"Portugal",on:"Portuguese Republic",reg:"Europe",cap:"Lisbon",cities:["Lisbon","Porto","Amadora","Braga"],langs:["Portuguese"],dem:"Portuguese",cur:"Euro",gov:"Semi-presidential republic",
+ flag:{c:["#006600","#FF0000"],t:"PRT"},
+ l1:["Westernmost country in mainland Europe; on the Iberian Peninsula","Bordered only by Spain; Atlantic coast and the Azores and Madeira archipelagos","The Tagus River flows through Lisbon to the Atlantic; Cape Roca is Europe's westernmost point","Highest point: Mount Pico (2,351 m) on Pico Island in the Azores"],
+ l2:["Historic centre of Porto, Sintra Cultural Landscape — UNESCO WHS","Flag: green and red vertical bands with coat of arms centered on boundary","Named after Portus Cale (Porto); founded world's colonial empires in 15th century","Major exporter: machinery, vehicles, footwear, wine (port wine), cork (world's largest)"],
+ l3:["Capital: Lisbon","Official language: Portuguese","Demonym: Portuguese","Currency: Euro (EUR)"]},
+
+{n:"Qatar",on:"State of Qatar",reg:"Middle East",cap:"Doha",cities:["Doha","Al Rayyan","Al Wakrah","Al Khor"],langs:["Arabic"],dem:"Qatari",cur:"Qatari Riyal",gov:"Constitutional monarchy (Emirate)",
+ flag:{c:["#8D1B3D","#fff"],t:"QAT"},
+ l1:["Small peninsula jutting into the Persian Gulf; only land border with Saudi Arabia","Flat terrain; highest point only 103 m","World's largest LNG (liquefied natural gas) exporter","The Qatar-Bahrain Causeway (planned) would create the world's longest bridge"],
+ l2:["No UNESCO WHS","Flag: maroon (9 points of serrated white band) and white — one of only two non-rectangular national flags (with Nepal)","Hosted FIFA World Cup 2022 — first in the Middle East","Major exporter: LNG, crude oil, petrochemicals, fertilizers"],
+ l3:["Capital: Doha","Official language: Arabic","Demonym: Qatari","Currency: Qatari Riyal (QAR)"]},
+
+{n:"Romania",on:"Romania",reg:"Europe",cap:"Bucharest",cities:["Bucharest","Cluj-Napoca","Timișoara","Iași","Constanța"],langs:["Romanian"],dem:"Romanian",cur:"Romanian Leu",gov:"Semi-presidential republic",
+ flag:{c:["#002B7F","#FCD116"],t:"ROU"},
+ l1:["Southeastern Europe; Carpathian Mountains arc through the country","Borders Ukraine, Moldova, Bulgaria, Serbia, Hungary; Black Sea coast","The Danube forms the southern border with Bulgaria and empties into the Black Sea","Transylvania — famous historical region — is within Romania"],
+ l2:["Danube Delta and Horezu Monastery — UNESCO WHS","Flag: blue, yellow, red vertical stripes (identical to Chad's flag — this is a known confusion)","Home of the Dracula legend — Vlad the Impaler (Vlad III) was a 15th-century Wallachian prince","Major exporter: vehicles, machinery, petroleum products, chemicals"],
+ l3:["Capital: Bucharest","Official language: Romanian","Demonym: Romanian","Currency: Romanian Leu (RON)"]},
+
+{n:"Russia",on:"Russian Federation",reg:"Europe",cap:"Moscow",cities:["Moscow","Saint Petersburg","Novosibirsk","Yekaterinburg","Kazan"],langs:["Russian"],dem:"Russian",cur:"Russian Ruble",gov:"Federal semi-presidential republic",
+ flag:{c:["#fff","#D52B1E"],t:"RUS"},
+ l1:["World's largest country (17.1M km²) spanning 11 time zones; borders 14 countries","Lake Baikal — world's deepest lake (1,642 m) and oldest (25M years)","Mount Elbrus (5,642 m) in the Caucasus — highest peak in Europe","Volga River (3,531 km) is longest river in Europe"],
+ l2:["Moscow Kremlin and Red Square, Lake Baikal — UNESCO WHS","Flag: white, blue, red horizontal stripes","Kaliningrad is a Russian exclave on the Baltic Sea, surrounded by Lithuania and Poland","Major exporter: oil, natural gas, wheat, metals, military equipment"],
+ l3:["Capital: Moscow","Official language: Russian","Demonym: Russian","Currency: Russian Ruble (RUB, ₽)"]},
+
+{n:"Rwanda",on:"Republic of Rwanda",reg:"Africa",cap:"Kigali",cities:["Kigali","Butare","Gitarama","Ruhengeri"],langs:["Kinyarwanda","French","English","Swahili"],dem:"Rwandan",cur:"Rwandan Franc",gov:"Presidential republic",
+ flag:{c:["#20603D","#FAD201"],t:"RWA"},
+ l1:["Landlocked in Central Africa; one of Africa's most densely populated","Borders Uganda, Tanzania, Burundi, DRC","Part of the Albertine Rift (western arm of East African Rift Valley)","Volcanoes National Park is home to the critically endangered mountain gorilla"],
+ l2:["No UNESCO WHS","Flag: blue, yellow, green horizontal stripes with yellow sun in blue area","1994 genocide killed ~800,000 Tutsi in 100 days — one of 20th century's worst atrocities","One of Africa's fastest-growing and most reformed economies post-genocide; very clean"],
+ l3:["Capital: Kigali","Official languages: Kinyarwanda, French, English, Swahili","Demonym: Rwandan","Currency: Rwandan Franc (RWF)"]},
+
+{n:"San Marino",on:"Most Serene Republic of San Marino",reg:"Europe",cap:"San Marino City",cities:["San Marino City","Serravalle","Borgo Maggiore"],langs:["Italian"],dem:"Sammarinese",cur:"Euro",gov:"Parliamentary republic",
+ flag:{c:["#5EB6E4","#fff"],t:"SMR"},
+ l1:["World's oldest republic (301 AD); entirely surrounded by Italy","Located on Mount Titano in the Apennines; highest point is Monte Titano (755 m)","No seacoast; 3 hilltop towers on Titano are its iconic symbols","One of smallest countries in the world (61 km²)"],
+ l2:["Historic Centre of San Marino and Mount Titano — UNESCO WHS","Flag: blue (top) and white (bottom) horizontal bands with coat of arms","Oldest constitutional republic in the world (founded 301 AD)","Major revenue: tourism, banking, electronics, ceramics"],
+ l3:["Capital: San Marino City","Official language: Italian","Demonym: Sammarinese","Currency: Euro (EUR, not EU member)"]},
+
+{n:"Saudi Arabia",on:"Kingdom of Saudi Arabia",reg:"Middle East",cap:"Riyadh",cities:["Riyadh","Jeddah","Mecca","Medina","Dammam"],langs:["Arabic"],dem:"Saudi",cur:"Saudi Riyal",gov:"Absolute monarchy",
+ flag:{c:["#006C35","#fff"],t:"SAU"},
+ l1:["Largest country in Middle East and Arab world","Contains Mecca and Medina — two holiest cities in Islam","The Rub' al Khali ('Empty Quarter') is world's largest continuous sand desert","Borders Jordan, Iraq, Kuwait, Qatar, UAE, Oman, Yemen"],
+ l2:["Hegra (Madain Salih, ancient Nabataean city) — Saudi Arabia's first UNESCO WHS","Flag: green with white Arabic inscription (Shahada) and white sword — no geometric shapes","World's 2nd largest proven oil reserves; OPEC's most influential member","Major exporter: oil, petroleum products, petrochemicals"],
+ l3:["Capital: Riyadh","Official language: Arabic","Demonym: Saudi","Currency: Saudi Riyal (SAR)"]},
+
+{n:"Senegal",on:"Republic of Senegal",reg:"Africa",cap:"Dakar",cities:["Dakar","Thiès","Kaolack","Touba"],langs:["French"],dem:"Senegalese",cur:"West African CFA Franc",gov:"Presidential republic",
+ flag:{c:["#00853F","#E31B23"],t:"SEN"},
+ l1:["Westernmost country in continental Africa; The Gambia is an enclave within Senegal","Borders Mauritania, Mali, Guinea, Guinea-Bissau, The Gambia","Cap-Vert peninsula (Dakar) is the westernmost point of continental Africa","The Senegal River forms the northern border with Mauritania"],
+ l2:["Island of Saint-Louis and Niokolo-Koba NP — UNESCO WHS","Flag: green, yellow, red vertical stripes with green five-pointed star in yellow center","The Gambia is a narrow strip country enclosed by Senegal on three sides","Major exports: fish, peanuts/peanut oil, petroleum products, phosphates"],
+ l3:["Capital: Dakar","Official language: French","Demonym: Senegalese","Currency: West African CFA Franc (XOF)"]},
+
+{n:"Serbia",on:"Republic of Serbia",reg:"Europe",cap:"Belgrade",cities:["Belgrade","Novi Sad","Niš","Kragujevac"],langs:["Serbian"],dem:"Serbian",cur:"Serbian Dinar",gov:"Parliamentary republic",
+ flag:{c:["#C6363C","#0C4076"],t:"SRB"},
+ l1:["Landlocked in the Balkans; borders Hungary, Romania, Bulgaria, North Macedonia, Kosovo, Bosnia, Croatia","The Danube, Sava, and Morava rivers converge at Belgrade","Kosovo declared independence in 2008 but Serbia doesn't recognize it","Highest peak: Midžur (2,169 m) on Bulgarian border"],
+ l2:["Medieval monuments of Kosovo (Dečani Monastery) — UNESCO WHS","Flag: red, blue, white horizontal stripes with coat of arms — Serbian eagle holds shield","Belgrade (Beograd) means 'White City'","Major exports: machinery, vehicles, base metals, food products"],
+ l3:["Capital: Belgrade","Official language: Serbian (uses both Cyrillic and Latin scripts)","Demonym: Serbian","Currency: Serbian Dinar (RSD)"]},
+
+{n:"Sierra Leone",on:"Republic of Sierra Leone",reg:"Africa",cap:"Freetown",cities:["Freetown","Bo","Kenema","Koidu"],langs:["English"],dem:"Sierra Leonean",cur:"Sierra Leonean Leone",gov:"Presidential republic",
+ flag:{c:["#1EB53A","#fff"],t:"SLE"},
+ l1:["Located in West Africa on the Atlantic coast","Borders Guinea and Liberia","Freetown has one of the world's largest natural harbours","Has one of Africa's highest concentration of diamond deposits"],
+ l2:["No UNESCO WHS","Flag: green, white, blue horizontal stripes","Capital Freetown was founded in 1787 for freed slaves","Major exports: diamonds, rutile, iron ore, cocoa, coffee"],
+ l3:["Capital: Freetown","Official language: English","Demonym: Sierra Leonean","Currency: Sierra Leonean Leone (SLL)"]},
+
+{n:"Singapore",on:"Republic of Singapore",reg:"Asia",cap:"Singapore",cities:["Singapore"],langs:["English","Malay","Mandarin","Tamil"],dem:"Singaporean",cur:"Singapore Dollar",gov:"Parliamentary republic",
+ flag:{c:["#EF3340","#fff"],t:"SGP"},
+ l1:["City-state on an island at the southern tip of the Malay Peninsula","Separated from Malaysia by the Johor Strait (crossed by two causeways)","No natural resources; one of world's smallest countries (719 km²)","The Strait of Malacca — one of world's busiest shipping lanes — passes nearby"],
+ l2:["Singapore Botanic Gardens — UNESCO WHS","Flag: red over white horizontal bands with white crescent moon and five white stars","The Merlion (part-lion, part-fish) is the national symbol","World's busiest transshipment port; among world's highest GDPs per capita"],
+ l3:["Capital: Singapore (city-state)","Official languages: English, Malay, Mandarin, Tamil","Demonym: Singaporean","Currency: Singapore Dollar (SGD)"]},
+
+{n:"Somalia",on:"Federal Republic of Somalia",reg:"Africa",cap:"Mogadishu",cities:["Mogadishu","Hargeisa","Merca","Bosasso"],langs:["Somali","Arabic"],dem:"Somali",cur:"Somali Shilling",gov:"Federal parliamentary republic",
+ flag:{c:["#4189DD","#fff"],t:"SOM"},
+ l1:["Strategically located at the Horn of Africa; longest coastline in Africa","Borders Ethiopia, Kenya, and Djibouti","The Indian Ocean and Gulf of Aden border the coast","Somaliland is a self-declared state in the north (not internationally recognized)"],
+ l2:["No UNESCO WHS","Flag: light blue with white five-pointed star (similar to UN flag)","The country has been without a stable government since 1991 civil war; piracy was major issue","Major exports: livestock, bananas, hides, charcoal"],
+ l3:["Capital: Mogadishu","Official languages: Somali and Arabic","Demonym: Somali","Currency: Somali Shilling (SOS)"]},
+
+{n:"South Africa",on:"Republic of South Africa",reg:"Africa",cap:"Pretoria",cities:["Johannesburg","Cape Town","Durban","Pretoria","Port Elizabeth"],langs:["Zulu","Xhosa","Afrikaans","English"],dem:"South African",cur:"South African Rand",gov:"Parliamentary republic",
+ flag:{c:["#007A4D","#FFB81C"],t:"ZAF"},
+ l1:["Completely surrounds Lesotho and borders Eswatini, Namibia, Botswana, Zimbabwe, Mozambique","Three capitals: Pretoria (executive), Cape Town (legislative), Bloemfontein (judicial)","The Drakensberg is the highest mountain range in southern Africa","Cape of Good Hope is not the southernmost point (Cape Agulhas is)"],
+ l2:["Robben Island, Richtersveld NP — UNESCO WHS","Flag: Y-shaped design with six colors — 'rainbow nation' flag","Nelson Mandela ended apartheid; first democratic election 1994","World's largest producer of platinum, chromium, manganese"],
+ l3:["Capitals: Pretoria/Cape Town/Bloemfontein","11 official languages (most in any country)","Demonym: South African","Currency: South African Rand (ZAR)"]},
+
+{n:"South Korea",on:"Republic of Korea",reg:"Asia",cap:"Seoul",cities:["Seoul","Busan","Incheon","Daegu","Daejeon"],langs:["Korean"],dem:"South Korean",cur:"South Korean Won",gov:"Presidential republic",
+ flag:{c:["#fff","#CD2E3A"],t:"KOR"},
+ l1:["Southern half of Korean Peninsula; borders North Korea only (DMZ)","The Han River flows through Seoul; Yellow Sea (west) and Sea of Japan/East Sea","Hallasan (1,950 m) on Jeju Island is the highest peak — volcanic island","Technically still at war with North Korea (armistice only, 1953)"],
+ l2:["Jeju Volcanic Island and Lava Tubes, Changdeokgung Palace — UNESCO WHS","Flag (Taegukgi): white with red/blue yin-yang (taeguk) and four black trigrams","'Miracle on the Han River' — from war-devastated poor to 10th largest economy in 50 years","Major exporter: semiconductors, ships, vehicles (Hyundai/Kia), electronics (Samsung/LG)"],
+ l3:["Capital: Seoul","Official language: Korean","Demonym: South Korean","Currency: South Korean Won (KRW, ₩)"]},
+
+{n:"South Sudan",on:"Republic of South Sudan",reg:"Africa",cap:"Juba",cities:["Juba","Wau","Malakal","Yei"],langs:["English"],dem:"South Sudanese",cur:"South Sudanese Pound",gov:"Presidential republic",
+ flag:{c:["#007800","#078930"],t:"SSD"},
+ l1:["World's newest country (independence from Sudan: July 9, 2011)","Landlocked; borders Sudan, Ethiopia, Kenya, Uganda, DRC, Central African Republic","The White Nile flows through the country","The Sudd swamp is one of the world's largest wetlands"],
+ l2:["No UNESCO WHS","Flag: black, red, green horizontal stripes with white borders and blue triangle with yellow star","One of world's poorest and most conflict-affected countries since independence","Major exports: crude oil (90% of revenue)"],
+ l3:["Capital: Juba","Official language: English","Demonym: South Sudanese","Currency: South Sudanese Pound (SSP)"]},
+
+{n:"Spain",on:"Kingdom of Spain",reg:"Europe",cap:"Madrid",cities:["Madrid","Barcelona","Valencia","Seville","Bilbao"],langs:["Spanish (Castilian)"],dem:"Spanish",cur:"Euro",gov:"Constitutional monarchy",
+ flag:{c:["#AA151B","#F1BF00"],t:"ESP"},
+ l1:["Located on the Iberian Peninsula; borders Portugal, France, Andorra, Morocco (two exclaves)","Ceuta and Melilla are Spanish exclaves on the northern coast of Morocco","The Pyrenees form a natural barrier with France; highest peak: Teide on Canary Islands (3,715 m)","The Ebro and Tagus are major rivers"],
+ l2:["Alhambra, Sagrada Família area, Santiago de Compostela, Altamira Cave — UNESCO WHS","Flag: two red horizontal bands with wider yellow band; coat of arms on yellow","National anthem has no official lyrics — only music","2nd most visited country in world; major exporter of vehicles, fruit, olive oil, wine"],
+ l3:["Capital: Madrid","Official language: Castilian Spanish","Demonym: Spanish","Currency: Euro (EUR)"]},
+
+{n:"Sri Lanka",on:"Democratic Socialist Republic of Sri Lanka",reg:"Asia",cap:"Sri Jayawardenepura Kotte",cities:["Colombo","Sri Jayawardenepura Kotte","Kandy","Galle","Jaffna"],langs:["Sinhala","Tamil"],dem:"Sri Lankan",cur:"Sri Lankan Rupee",gov:"Semi-presidential republic",
+ flag:{c:["#8D153A","#F5A800"],t:"LKA"},
+ l1:["Island nation in Indian Ocean; separated from India by the Palk Strait","Adam's Peak (Sri Pada, 2,243 m) is sacred to four religions","Mahaweli is the longest river; the central highlands form the core","Formerly known as Ceylon until 1972"],
+ l2:["Ancient city of Sigiriya (5th century rock fortress), Sacred City of Kandy — UNESCO WHS","Flag: yellow border with gold lion holding sword on maroon; green (Muslims) and orange (Tamils) stripes","Formerly Ceylon; major tea producer — Ceylon tea is world-famous","Major exports: tea, apparel, rubber, precious stones (sapphires)"],
+ l3:["Capital: Sri Jayawardenepura Kotte (legislative); Colombo is commercial capital","Official languages: Sinhala and Tamil","Demonym: Sri Lankan","Currency: Sri Lankan Rupee (LKR)"]},
+
+{n:"Sudan",on:"Republic of the Sudan",reg:"Africa",cap:"Khartoum",cities:["Khartoum","Omdurman","Port Sudan","Kassala"],langs:["Arabic","English"],dem:"Sudanese",cur:"Sudanese Pound",gov:"Transitional authority",
+ flag:{c:["#D21034","#078930"],t:"SDN"},
+ l1:["3rd largest country in Africa; North Africa/East Africa border region","The Blue Nile and White Nile converge at Khartoum ('trunk of the elephant')","Borders Egypt, Libya, Chad, CAR, South Sudan, Ethiopia, Eritrea","Has more ancient pyramids than Egypt (Meroe pyramids — 200+)"],
+ l2:["Gebel Barkal and the Sites of the Napatan Region (Meroe Pyramids) — UNESCO WHS","Flag: red, white, black horizontal stripes with green triangle on left","South Sudan seceded in 2011, taking most of the oil resources","Major exports: gold, oil, sesame, livestock, peanuts"],
+ l3:["Capital: Khartoum","Official languages: Arabic and English","Demonym: Sudanese","Currency: Sudanese Pound (SDG)"]},
+
+{n:"Suriname",on:"Republic of Suriname",reg:"South America",cap:"Paramaribo",cities:["Paramaribo","Lelydorp","Nieuw Nickerie","Moengo"],langs:["Dutch"],dem:"Surinamese",cur:"Surinamese Dollar",gov:"Presidential republic",
+ flag:{c:["#377E3F","#B40A2D"],t:"SUR"},
+ l1:["Smallest sovereign country in South America; borders Guyana, Brazil, French Guiana","About 80% of the country is covered by tropical rainforest","The Suriname River flows to the Atlantic coast; the Brokopondo Reservoir is one of world's largest","The only country in South America where Dutch is the official language"],
+ l2:["Historic Inner City of Paramaribo — UNESCO WHS","Flag: green-white-red-white-green horizontal stripes with yellow five-pointed star in center","Only Dutch-speaking country in South America","Major exports: gold, oil, lumber, bananas, shrimp"],
+ l3:["Capital: Paramaribo","Official language: Dutch","Demonym: Surinamese","Currency: Surinamese Dollar (SRD)"]},
+
+{n:"Sweden",on:"Kingdom of Sweden",reg:"Europe",cap:"Stockholm",cities:["Stockholm","Gothenburg","Malmö","Uppsala"],langs:["Swedish"],dem:"Swedish",cur:"Swedish Krona",gov:"Constitutional monarchy",
+ flag:{c:["#006AA7","#FECC02"],t:"SWE"},
+ l1:["Largest Scandinavian country; occupies eastern part of Scandinavian Peninsula","Borders Norway and Finland; Baltic Sea and Kattegat/Skagerrak surround it","Lake Vänern is the largest lake in the European Union","Kebnekaise (2,097 m) is Sweden's highest peak"],
+ l2:["Birka, Drottningholm Palace, World Heritage Laponia — UNESCO WHS","Flag: yellow/gold cross on blue background (Nordic cross)","Nobel Prizes awarded annually in Stockholm (Peace Prize in Oslo)","Major exporter: Volvo, Ericsson, IKEA, timber, iron ore, paper"],
+ l3:["Capital: Stockholm (built on 14 islands)","Official language: Swedish","Demonym: Swedish","Currency: Swedish Krona (SEK)"]},
+
+{n:"Switzerland",on:"Swiss Confederation",reg:"Europe",cap:"Bern",cities:["Zurich","Geneva","Basel","Bern","Lausanne"],langs:["German","French","Italian","Romansh"],dem:"Swiss",cur:"Swiss Franc",gov:"Federal republic with direct democracy",
+ flag:{c:["#D52B1E","#fff"],t:"CHE"},
+ l1:["Landlocked in Central Europe; the Alps cover 60% of territory","Borders Germany, France, Italy, Austria, Liechtenstein","Monte Rosa (4,634 m) is highest; Matterhorn (4,478 m) is most iconic","The Rhine and Rhône rivers originate in the Swiss Alps"],
+ l2:["Old City of Bern, Swiss Alps/Jungfrau, Monte San Giorgio — UNESCO WHS","Flag: red square with white cross — one of only TWO square national flags (Vatican City the other)","Officially neutral since 1815; hosts UN agencies, Red Cross (ICRC), WTO in Geneva","Major exporter: pharmaceuticals (Roche, Novartis), machinery, watches, chemicals, banking"],
+ l3:["Capital: Bern (de facto; largest city is Zurich)","Official languages: German, French, Italian, Romansh","Demonym: Swiss","Currency: Swiss Franc (CHF) — not Euro despite surrounded by EU"]},
+
+{n:"Syria",on:"Syrian Arab Republic",reg:"Middle East",cap:"Damascus",cities:["Damascus","Aleppo","Homs","Hama","Latakia"],langs:["Arabic"],dem:"Syrian",cur:"Syrian Pound",gov:"Presidential republic (Ba'athist)",
+ flag:{c:["#CE1126","#007A3D"],t:"SYR"},
+ l1:["Located in the Fertile Crescent of the Middle East","Borders Turkey, Iraq, Jordan, Israel, Lebanon; Mediterranean Sea coast","The Euphrates River flows through the east and northeast","Damascus is one of the world's oldest continuously inhabited cities (3,000+ BC)"],
+ l2:["Ancient city of Damascus, Crac des Chevaliers — UNESCO WHS","Flag: red, white, black horizontal stripes with two green stars in center","Syrian civil war began 2011; millions displaced — largest refugee crisis since WWII","Major exports (pre-war): oil, phosphates, cotton, fruit"],
+ l3:["Capital: Damascus","Official language: Arabic","Demonym: Syrian","Currency: Syrian Pound (SYP)"]},
+
+{n:"Taiwan",on:"Republic of China (Taiwan)",reg:"Asia",cap:"Taipei",cities:["Taipei","Kaohsiung","Taichung","Tainan"],langs:["Mandarin Chinese"],dem:"Taiwanese",cur:"New Taiwan Dollar",gov:"Semi-presidential republic",
+ flag:{c:["#FE0000","#003087"],t:"TWN"},
+ l1:["Island nation off the southeastern coast of China; 180 km from mainland","Yushan (Jade Mountain, 3,952 m) is the highest peak in northeast Asia excluding Japan","The Tropic of Cancer passes through Taiwan","The Taiwan Strait separates it from China (People's Republic)"],
+ l2:["No UNESCO WHS (not UN member)","Flag: red with blue canton containing white sun with 12 rays","Claims to be the legitimate government of all China; China claims Taiwan as a province","Major exporter: semiconductors (TSMC), electronics, chemicals"],
+ l3:["Capital: Taipei","Official language: Mandarin Chinese","Demonym: Taiwanese","Currency: New Taiwan Dollar (TWD)"]},
+
+{n:"Tajikistan",on:"Republic of Tajikistan",reg:"Asia",cap:"Dushanbe",cities:["Dushanbe","Khujand","Kulob","Qurghonteppa"],langs:["Tajik","Russian"],dem:"Tajik",cur:"Tajikistani Somoni",gov:"Presidential republic",
+ flag:{c:["#CC0000","#1D6300"],t:"TJK"},
+ l1:["Landlocked; most mountainous country in Central Asia","Borders Afghanistan, China, Kyrgyzstan, Uzbekistan","The Pamir Mountains ('Roof of the World') contain Ismoil Somoni Peak (7,495 m) — highest in former USSR","The Amu Darya forms part of the border with Afghanistan"],
+ l2:["Proto-urban site of Sarazm (ancient settlement) — UNESCO WHS","Flag: red, white, green horizontal stripes with gold crown and 7 stars in white center","Ismoil Somoni (currency) honors medieval Persian/Tajik poet","Major exports: aluminum (TALCO smelter), cotton, fruits, electricity"],
+ l3:["Capital: Dushanbe","Official languages: Tajik and Russian","Demonym: Tajik","Currency: Tajikistani Somoni (TJS)"]},
+
+{n:"Tanzania",on:"United Republic of Tanzania",reg:"Africa",cap:"Dodoma",cities:["Dar es Salaam","Dodoma","Mwanza","Arusha","Zanzibar City"],langs:["Swahili","English"],dem:"Tanzanian",cur:"Tanzanian Shilling",gov:"Presidential republic",
+ flag:{c:["#1EB53A","#009BDE"],t:"TZA"},
+ l1:["Mount Kilimanjaro (5,895 m) — highest peak in Africa — in northern Tanzania","Lake Victoria, Lake Tanganyika (2nd deepest lake), Lake Nyasa (Malawi) all border Tanzania","The Serengeti hosts world's largest annual wildlife migration","Formed by union of Tanganyika and Zanzibar in 1964"],
+ l2:["Serengeti NP, Kilimanjaro NP, Stone Town of Zanzibar, Ngorongoro — UNESCO WHS","Flag: green (top left) and blue (bottom right) separated by diagonal black stripe with yellow outline","Zanzibar is a semi-autonomous archipelago; major spice island (Spice Islands)","Major exports: gold, coffee, tea, cashews, tobacco, sisal"],
+ l3:["Capital: Dodoma (Dar es Salaam is largest city and former capital)","Official languages: Swahili and English","Demonym: Tanzanian","Currency: Tanzanian Shilling (TZS)"]},
+
+{n:"Thailand",on:"Kingdom of Thailand",reg:"Asia",cap:"Bangkok",cities:["Bangkok","Chiang Mai","Pattaya","Phuket","Hat Yai"],langs:["Thai"],dem:"Thai",cur:"Thai Baht",gov:"Constitutional monarchy",
+ flag:{c:["#A51931","#2D2A4A"],t:"THA"},
+ l1:["Located in center of mainland Southeast Asia; Gulf of Thailand to the south","Borders Myanmar, Laos, Cambodia, Malaysia","The Chao Phraya flows through Bangkok; Mekong forms much of eastern border","Never colonized by a European power — previously called Siam (until 1939)"],
+ l2:["Historic city of Sukhothai and Ayutthaya, Ban Chiang archaeological site — UNESCO WHS","Flag: red, white, blue, white, red horizontal stripes","Formerly Siam — name changed to Thailand in 1939","Major exporter: electronics, automobiles, rice (major producer), rubber"],
+ l3:["Capital: Bangkok","Official language: Thai","Demonym: Thai","Currency: Thai Baht (THB)"]},
+
+{n:"Timor-Leste",on:"Democratic Republic of Timor-Leste",reg:"Asia",cap:"Dili",cities:["Dili","Baucau","Liquiçá"],langs:["Tetum","Portuguese"],dem:"Timorese",cur:"US Dollar",gov:"Semi-presidential republic",
+ flag:{c:["#DC241F","#FFC726"],t:"TLS"},
+ l1:["Eastern half of Timor island in Southeast Asia; western half is Indonesian","No land border except with Indonesia; Timor Sea to the south","Gained independence from Indonesia in 2002 — one of world's newest nations","The Atauro Island to the north has one of world's highest marine biodiversity"],
+ l2:["No UNESCO WHS","Flag: red with black triangle (yellow outline) and yellow diagonal stripe with white star","Formerly Portuguese colony, then invaded by Indonesia (1975-1999)","Major exports: oil and LNG from the Timor Sea"],
+ l3:["Capital: Dili","Official languages: Tetum and Portuguese","Demonym: Timorese","Currency: US Dollar (USD)"]},
+
+{n:"Togo",on:"Togolese Republic",reg:"Africa",cap:"Lomé",cities:["Lomé","Sokodé","Kara","Atakpamé"],langs:["French"],dem:"Togolese",cur:"West African CFA Franc",gov:"Presidential republic",
+ flag:{c:["#006A4E","#FFCE00"],t:"TGO"},
+ l1:["Narrow country in West Africa; one of Africa's smallest","Borders Ghana, Benin, Burkina Faso; Gulf of Guinea to the south","The Togo Mountains run through the center of the country","Lomé is the only capital in Africa directly on a land border (Ghana border)"],
+ l2:["No UNESCO WHS","Flag: five horizontal stripes (green, yellow alternating) with white star on red square canton","Named after the city of Togoville on Lake Togo","Major exports: phosphates, cotton, cocoa, coffee"],
+ l3:["Capital: Lomé","Official language: French","Demonym: Togolese","Currency: West African CFA Franc (XOF)"]},
+
+{n:"Trinidad and Tobago",on:"Republic of Trinidad and Tobago",reg:"Caribbean",cap:"Port of Spain",cities:["Port of Spain","San Fernando","Arima","Chaguanas"],langs:["English"],dem:"Trinidadian/Tobagonian",cur:"Trinidad and Tobago Dollar",gov:"Parliamentary republic",
+ flag:{c:["#CE1126","#000"],t:"TTO"},
+ l1:["Two-island nation off the northeastern coast of Venezuela","Trinidad is geologically part of South America — very close to Venezuela","The Pitch Lake on Trinidad is the world's largest natural asphalt lake","Tobago has the world's oldest protected rainforest (since 1776)"],
+ l2:["No UNESCO WHS","Flag: red with black diagonal stripe from top-left to bottom-right, outlined in white","Birthplace of calypso and steel pan music; Trinidad Carnival is one of the world's largest","Major exports: oil, LNG, methanol; Angostura bitters produced here"],
+ l3:["Capital: Port of Spain","Official language: English","Demonym: Trinidadian/Tobagonian","Currency: Trinidad and Tobago Dollar (TTD)"]},
+
+{n:"Tunisia",on:"Republic of Tunisia",reg:"Africa",cap:"Tunis",cities:["Tunis","Sfax","Sousse","Kairouan"],langs:["Arabic"],dem:"Tunisian",cur:"Tunisian Dinar",gov:"Presidential republic",
+ flag:{c:["#E70013","#fff"],t:"TUN"},
+ l1:["Northernmost country in Africa; borders Algeria and Libya; Mediterranean and Gulf of Tunisia","The Sahara covers the south; the Atlas Mountains in the northwest","Cape Angela is Africa's northernmost point","Part of the historical Carthaginian Empire (Carthage was near modern Tunis)"],
+ l2:["Medina of Tunis, Carthage, Kairouan — UNESCO WHS","Flag: red with white circle containing red crescent and star","Home of ancient Carthage; pivotal role in Punic Wars with Rome","Major exports: petroleum, phosphates, textiles, olive oil (world's 2nd largest producer)"],
+ l3:["Capital: Tunis","Official language: Arabic","Demonym: Tunisian","Currency: Tunisian Dinar (TND)"]},
+
+{n:"Turkey",on:"Republic of Türkiye",reg:"Middle East",cap:"Ankara",cities:["Istanbul","Ankara","Izmir","Bursa","Adana"],langs:["Turkish"],dem:"Turkish",cur:"Turkish Lira",gov:"Presidential republic",
+ flag:{c:["#E30A17","#fff"],t:"TUR"},
+ l1:["Transcontinental: Europe (Thrace) and Asia (Anatolia)","Borders Greece, Bulgaria, Georgia, Armenia, Azerbaijan, Iran, Iraq, Syria","The Bosphorus and Dardanelles straits connect Black Sea to Mediterranean","Highest point: Mount Ararat (5,137 m) — sacred Armenian site"],
+ l2:["Göbekli Tepe (world's oldest known temple, ~9,600 BC), Ephesus — UNESCO WHS","Flag: red with white crescent moon and five-pointed star","Istanbul (Constantinople) was capital of Byzantine and Ottoman empires","Major exporter: vehicles, machinery, textiles, hazelnuts (world's largest exporter)"],
+ l3:["Capital: Ankara (NOT Istanbul — common trick question)","Official language: Turkish","Demonym: Turkish","Currency: Turkish Lira (TRY)"]},
+
+{n:"Turkmenistan",on:"Turkmenistan",reg:"Asia",cap:"Ashgabat",cities:["Ashgabat","Türkmenabat","Mary","Dasoguz"],langs:["Turkmen"],dem:"Turkmen",cur:"Turkmenistani Manat",gov:"Presidential republic (de facto authoritarian)",
+ flag:{c:["#1DA462","#fff"],t:"TKM"},
+ l1:["Landlocked in Central Asia; one of most isolated countries","Borders Kazakhstan, Uzbekistan, Afghanistan, Iran; Caspian Sea to the west","The Karakum (Black Sand) Desert covers 70% of the country","The Darvaza gas crater ('Door to Hell') — burning natural gas crater since 1971"],
+ l2:["Ancient Merv and Köneürgench — UNESCO WHS","Flag: green with five vertical carpet patterns and crescent with five stars — world's most complex flag","One of world's largest natural gas reserves; self-declared neutral state","Major exporter: natural gas, petroleum, petrochemicals, textiles"],
+ l3:["Capital: Ashgabat (made largely of white marble)","Official language: Turkmen","Demonym: Turkmen","Currency: Turkmenistani Manat (TMT)"]},
+
+{n:"Uganda",on:"Republic of Uganda",reg:"Africa",cap:"Kampala",cities:["Kampala","Gulu","Lira","Mbarara","Jinja"],langs:["English","Swahili"],dem:"Ugandan",cur:"Ugandan Shilling",gov:"Presidential republic",
+ flag:{c:["#000","#FCDC04"],t:"UGA"},
+ l1:["Landlocked in East Africa; the equator crosses the south","Lake Victoria — world's largest tropical lake — on the south border","Bwindi Impenetrable Forest has half the world's mountain gorillas","Borders South Sudan, Kenya, Tanzania, Rwanda, DRC"],
+ l2:["Bwindi Impenetrable NP and Rwenzori Mountains NP — UNESCO WHS","Flag: six horizontal stripes (black, yellow, red repeated) with Grey Crowned Crane on white disc","Source of the White Nile at Jinja (Lake Victoria outlet)","Major exports: coffee, tea, fish, gold, tobacco"],
+ l3:["Capital: Kampala","Official languages: English and Swahili","Demonym: Ugandan","Currency: Ugandan Shilling (UGX)"]},
+
+{n:"Ukraine",on:"Ukraine",reg:"Europe",cap:"Kyiv",cities:["Kyiv","Kharkiv","Odessa","Dnipro","Lviv"],langs:["Ukrainian"],dem:"Ukrainian",cur:"Ukrainian Hryvnia",gov:"Presidential republic",
+ flag:{c:["#005BBB","#FFD500"],t:"UKR"},
+ l1:["Largest country entirely within Europe by area","The Dnieper River divides it into Right Bank and Left Bank regions","Borders Russia, Belarus, Poland, Slovakia, Hungary, Romania, Moldova","Chernobyl Exclusion Zone from 1986 nuclear disaster is in northern Ukraine"],
+ l2:["Kyiv-Pechersk Lavra (cave monastery) — UNESCO WHS","Flag: two horizontal bands — blue (top, sky) and yellow (bottom, wheat fields)","'Breadbasket of Europe' — one of world's largest wheat and sunflower oil exporters","Russian invasion began February 24, 2022"],
+ l3:["Capital: Kyiv (not Kiev — Ukrainian spelling)","Official language: Ukrainian","Demonym: Ukrainian","Currency: Ukrainian Hryvnia (UAH)"]},
+
+{n:"United Arab Emirates",on:"United Arab Emirates",reg:"Middle East",cap:"Abu Dhabi",cities:["Dubai","Abu Dhabi","Sharjah","Ajman","Al Ain"],langs:["Arabic"],dem:"Emirati",cur:"UAE Dirham",gov:"Federal constitutional monarchy (federation of Emirates)",
+ flag:{c:["#00732F","#FF0000"],t:"ARE"},
+ l1:["Federation of 7 emirates on the Arabian Peninsula; borders Saudi Arabia and Oman","No rivers; hot desert climate; Persian Gulf and Gulf of Oman coastlines","Dubai's Burj Khalifa (828 m) is the world's tallest building","The Strait of Hormuz — through which 20% of world's oil passes — is nearby"],
+ l2:["Al Ain Oasis — UNESCO WHS","Flag: green, white, black horizontal stripes with red vertical stripe on left","Dubai is one of world's largest aviation hubs (Emirates airline)","Major exports: crude oil, natural gas, gold re-exports; luxury tourism"],
+ l3:["Capital: Abu Dhabi (NOT Dubai — common trick question)","Official language: Arabic","Demonym: Emirati","Currency: UAE Dirham (AED)"]},
+
+{n:"United Kingdom",on:"United Kingdom of Great Britain and Northern Ireland",reg:"Europe",cap:"London",cities:["London","Birmingham","Manchester","Glasgow","Edinburgh","Liverpool"],langs:["English"],dem:"British",cur:"Pound Sterling",gov:"Constitutional monarchy and parliamentary democracy",
+ flag:{c:["#012169","#C8102E"],t:"GBR"},
+ l1:["Island nation: Great Britain (England, Scotland, Wales) + Northern Ireland + 14 overseas territories","No land borders except Northern Ireland with the Republic of Ireland","Ben Nevis (1,345 m) — highest peak in British Isles — in Scotland","Thames River flows through London; the Severn is Britain's longest river"],
+ l2:["Tower of London, Stonehenge, Canterbury Cathedral, Edinburgh Old/New Town — UNESCO WHS","Flag: Union Jack — combination of Cross of St George (England), Cross of St Andrew (Scotland), Cross of St Patrick (Ireland)","Home of the Westminster System of government, adopted worldwide","Major exporter: machinery, financial services, pharmaceuticals, aerospace"],
+ l3:["Capital: London","Official language: English (de facto)","Demonym: British","Currency: Pound Sterling (GBP, £)"]},
+
+{n:"United States",on:"United States of America",reg:"North America",cap:"Washington D.C.",cities:["New York","Los Angeles","Chicago","Houston","Washington D.C.","Phoenix"],langs:["English"],dem:"American",cur:"US Dollar",gov:"Federal presidential republic",
+ flag:{c:["#B22234","#3C3B6E"],t:"USA"},
+ l1:["3rd largest country by area (9.8M km²); borders Canada (north) and Mexico (south)","Contains 50 states; Alaska (largest state) is separated by Canada; Hawaii is Pacific archipelago","The Mississippi-Missouri River system is the 4th longest in the world","Mount Denali (6,190 m) in Alaska is the highest peak in North America"],
+ l2:["Yellowstone, Grand Canyon, Everglades, Independence Hall — UNESCO WHS","Flag: 13 red/white stripes (original colonies) and 50 white stars on blue canton (states)","Largest economy in the world by nominal GDP","Major exporter: machinery, aircraft, vehicles, soybeans, petroleum"],
+ l3:["Capital: Washington D.C.","Official language: English (de facto; no federal official language)","Demonym: American","Currency: US Dollar (USD, $)"]},
+
+{n:"Uruguay",on:"Oriental Republic of Uruguay",reg:"South America",cap:"Montevideo",cities:["Montevideo","Salto","Paysandú","Maldonado"],langs:["Spanish"],dem:"Uruguayan",cur:"Uruguayan Peso",gov:"Presidential republic",
+ flag:{c:["#fff","#FCD116"],t:"URY"},
+ l1:["Smallest country in South America after Suriname; borders Argentina and Brazil","Located on the Río de la Plata and Atlantic Ocean","The Uruguay River forms the border with Argentina","Punta del Este is a famous South American beach resort destination"],
+ l2:["Historic quarter of Colonia del Sacramento — UNESCO WHS","Flag: nine horizontal stripes (white and light blue) with yellow Sun of May in upper left white canton","First country to legalize marijuana (2013); highly progressive social policies","Major exports: beef, soybeans, cellulose/paper, rice, wool"],
+ l3:["Capital: Montevideo","Official language: Spanish","Demonym: Uruguayan","Currency: Uruguayan Peso (UYU)"]},
+
+{n:"Uzbekistan",on:"Republic of Uzbekistan",reg:"Asia",cap:"Tashkent",cities:["Tashkent","Samarkand","Namangan","Andijan","Nukus"],langs:["Uzbek"],dem:"Uzbekistani",cur:"Uzbekistani Som",gov:"Presidential republic",
+ flag:{c:["#1EB53A","#fff"],t:"UZB"},
+ l1:["One of only two doubly landlocked countries worldwide (surrounded by landlocked countries)","Borders Kazakhstan, Kyrgyzstan, Tajikistan, Afghanistan, Turkmenistan","The Amu Darya and Syr Darya rivers flow through; Aral Sea disaster in the north","Located on the ancient Silk Road trade route"],
+ l2:["Historic centres of Bukhara, Samarkand, Khiva — UNESCO WHS","Flag: blue, white, green horizontal bands with red stripes separating, crescent moon and 12 stars","Registan Square in Samarkand was a Silk Road hub under Timur (Tamerlane)","World's largest cotton exporter; also gold, uranium, natural gas"],
+ l3:["Capital: Tashkent","Official language: Uzbek","Demonym: Uzbekistani","Currency: Uzbekistani Som (UZS)"]},
+
+{n:"Vatican City",on:"Holy See (Vatican City State)",reg:"Europe",cap:"Vatican City",cities:["Vatican City"],langs:["Latin","Italian"],dem:"Vaticano",cur:"Euro",gov:"Absolute monarchy (theocracy) — the Pope",
+ flag:{c:["#FFE000","#fff"],t:"VAT"},
+ l1:["World's smallest country by area (0.44 km²) and population (~800 permanent residents)","Entirely within Rome, Italy — one of three enclave nations","The Tiber River flows nearby; no natural features within the city-state","Rules the Roman Catholic Church (1.3 billion adherents worldwide)"],
+ l2:["Vatican City itself (St. Peter's Basilica, Vatican Museums) — UNESCO WHS","Flag: yellow and white vertical bands with Papal coat of arms — one of only two square flags (with Switzerland)","The Sistine Chapel ceiling was painted by Michelangelo (1508-1512)","State revenue: Museum admissions, postal stamps, publications, tourism"],
+ l3:["Capital: Vatican City (city-state)","Official languages: Latin and Italian","Demonym: Vaticano","Currency: Euro (EUR, mints own Vatican Euro coins)"]},
+
+{n:"Venezuela",on:"Bolivarian Republic of Venezuela",reg:"South America",cap:"Caracas",cities:["Caracas","Maracaibo","Valencia","Barquisimeto"],langs:["Spanish"],dem:"Venezuelan",cur:"Venezuelan Bolívar",gov:"Presidential republic",
+ flag:{c:["#CF142B","#CF9700"],t:"VEN"},
+ l1:["Northern coast of South America on the Caribbean Sea","Angel Falls (Salto Ángel, 979 m) — world's highest uninterrupted waterfall in Canaima NP","The Orinoco River divides the country; Maracaibo Basin has vast oil deposits","Tepuis (tabletop mountains) — unique landforms; Roraima is shared with Brazil/Guyana"],
+ l2:["Canaima NP (Angel Falls) and Coro Historical City — UNESCO WHS","Flag: yellow, blue, red horizontal stripes with arc of 8 white stars and coat of arms","World's largest proven oil reserves (Orinoco Belt)","Named after Amerigo Vespucci — 'Little Venice' (coastal stilt houses)"],
+ l3:["Capital: Caracas","Official language: Spanish","Demonym: Venezuelan","Currency: Venezuelan Bolívar (VES)"]},
+
+{n:"Vietnam",on:"Socialist Republic of Vietnam",reg:"Asia",cap:"Hanoi",cities:["Ho Chi Minh City","Hanoi","Da Nang","Haiphong","Can Tho"],langs:["Vietnamese"],dem:"Vietnamese",cur:"Vietnamese Dong",gov:"Communist single-party state",
+ flag:{c:["#DA251D","#FFCD00"],t:"VNM"},
+ l1:["S-shaped country along eastern coast of mainland Southeast Asia","Borders China (north), Laos, Cambodia; South China Sea","Ha Long Bay contains 1,600+ limestone karst islands — UNESCO WHS","Mekong River delta in the south is the 'rice bowl'"],
+ l2:["Complex of Huế Monuments, Ha Long Bay, Hội An Ancient Town — UNESCO WHS","Flag: red with five-pointed gold star","Formerly French Indochina; reunified in 1975 after Vietnam War","Major exporter: electronics (Samsung), garments, footwear, coffee, rice"],
+ l3:["Capital: Hanoi","Official language: Vietnamese","Demonym: Vietnamese","Currency: Vietnamese Dong (VND)"]},
+
+{n:"Yemen",on:"Republic of Yemen",reg:"Middle East",cap:"Sanaa",cities:["Sanaa","Aden","Taiz","Hodeidah"],langs:["Arabic"],dem:"Yemeni",cur:"Yemeni Rial",gov:"Internationally recognized government (civil war)",
+ flag:{c:["#CE1126","#000"],t:"YEM"},
+ l1:["Located on the southern Arabian Peninsula; borders Saudi Arabia and Oman","The Bab-el-Mandeb strait at the southern end of the Red Sea is nearby (Djibouti controls the other side)","Socotra Island in the Indian Ocean has unique endemic species (Dragon Blood Trees)","In civil war since 2015 — worst humanitarian crisis in the world"],
+ l2:["Old city of Sanaa and Historic Town of Zabid — UNESCO WHS","Flag: red, white, black horizontal stripes","Socotra is called the 'Galapagos of the Indian Ocean' for its unique fauna/flora","Major exports (pre-war): oil, LNG, coffee, fish"],
+ l3:["Capital: Sanaa (contested; Aden is temporary capital of recognized government)","Official language: Arabic","Demonym: Yemeni","Currency: Yemeni Rial (YER)"]},
+
+{n:"Zambia",on:"Republic of Zambia",reg:"Africa",cap:"Lusaka",cities:["Lusaka","Ndola","Kitwe","Kabwe"],langs:["English"],dem:"Zambian",cur:"Zambian Kwacha",gov:"Presidential republic",
+ flag:{c:["#198A00","#EF7D00"],t:"ZMB"},
+ l1:["Landlocked in southern Africa; borders 8 countries","The Zambezi River — with Victoria Falls (shared with Zimbabwe) — is the main river","Lake Tanganyika, Lake Bangweulu, Lake Mweru are major lakes","Borders DRC, Tanzania, Malawi, Mozambique, Zimbabwe, Botswana, Namibia, Angola"],
+ l2:["Mosi-oa-Tunya/Victoria Falls — UNESCO WHS (shared)","Flag: green with orange, red, and black vertical stripes on right; orange eagle above stripes","Victoria Falls is called 'The Smoke That Thunders' (Mosi-oa-Tunya)","World's 2nd largest copper producer; major exporter of copper, cobalt"],
+ l3:["Capital: Lusaka","Official language: English","Demonym: Zambian","Currency: Zambian Kwacha (ZMW)"]},
+
+{n:"Zimbabwe",on:"Republic of Zimbabwe",reg:"Africa",cap:"Harare",cities:["Harare","Bulawayo","Chitungwiza","Mutare"],langs:["English","Shona","Ndebele"],dem:"Zimbabwean",cur:"Zimbabwean Dollar",gov:"Presidential republic",
+ flag:{c:["#006400","#FFD200"],t:"ZWE"},
+ l1:["Landlocked in southern Africa; borders Zambia, Mozambique, South Africa, Botswana","Victoria Falls (Mosi-oa-Tunya) on Zambezi River border with Zambia","Great Zimbabwe ruins — ancient stone city (11th-15th century) gave the country its name","Formerly Rhodesia under British colonial rule"],
+ l2:["Victoria Falls and Great Zimbabwe National Monument — UNESCO WHS","Flag: seven horizontal stripes (green, yellow, red, black, red, yellow, green) with white triangle and golden Zimbabwe bird","Had famous hyperinflation — issued 100 trillion dollar notes (2008-2009)","Major resources: platinum, diamonds, gold, tobacco"],
+ l3:["Capital: Harare","Official languages: 16 including English, Shona, Ndebele","Demonym: Zimbabwean","Currency: Zimbabwean Gold (ZiG, new currency introduced 2024)"]}
+];
+
+const QUIZ_TYPES = [
+  {id:'capital',label:'Capitals'},
+  {id:'official_name',label:'Official Names'},
+  {id:'demonym',label:'Demonyms'},
+  {id:'currency',label:'Currencies'},
+  {id:'language',label:'Languages'},
+  {id:'flag',label:'Flag Clues'},
+  {id:'border',label:'Physical / Borders'},
+  {id:'heritage',label:'UNESCO Sites'},
+  {id:'history',label:'History Clues'},
+  {id:'economy',label:'Economy / Exports'},
+  {id:'government',label:'Government Type'},
+  {id:'identify',label:'Identify Country (progressive)'}
+];
+
+let prog = {};
+let mode = 'browse';
+let fReg='',fSt='',srch='';
+let fcList=[],fcIdx=0,fcReg='',fcOrd='random';
+let qState={qs:[],qi:0,score:0,streak:0,tot:0,ans:false};
+let selQTypes = new Set(['capital','language','currency','flag','border','heritage']);
+
+try{const s=localStorage.getItem('gb2p');if(s)prog=JSON.parse(s);}catch(e){}
+
+function saveP(){try{localStorage.setItem('gb2p',JSON.stringify(prog));}catch(e){}}
+function markC(n,v){prog[n]=v;saveP();updateStats();}
+function updateStats(){
+  const studied=Object.keys(prog).length;
+  const mastered=Object.values(prog).filter(v=>v==='mastered').length;
+  const qpct=qState.tot>0?Math.round(qState.score/qState.tot*100)+'%':'—';
+  document.getElementById('s1').textContent=studied;
+  document.getElementById('s2').textContent=mastered;
+  document.getElementById('s3').textContent=qpct;
+  document.getElementById('s4').textContent=qState.streak||0;
+}
+
+function setMode(m){
+  mode=m;
+  ['browse','flash','quiz','prog'].forEach(v=>{
+    document.getElementById(v+'-view').style.display=v===m?'block':'none';
+    document.getElementById('m-'+v).classList.toggle('on',v===m);
+  });
+  if(m==='browse')renderGrid();
+  if(m==='prog')renderProg();
+  if(m==='quiz')renderQTypePills();
+}
+
+function flagDiv(c,size=38){
+  const bg=c.flag.c[0],tx=c.flag.c[1];
+  const h=size==='sm'?22:28;
+  return `<div style="width:${size}px;height:${h}px;border-radius:3px;background:${bg};color:${tx};display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;letter-spacing:.3px;border:0.5px solid rgba(128,128,128,.25);flex-shrink:0">${c.flag.t}</div>`;
+}
+
+function getFiltered(){
+  return DB.filter(c=>{
+    if(fReg&&c.reg!==fReg)return false;
+    if(fSt==='mastered'&&prog[c.n]!=='mastered')return false;
+    if(fSt==='needs-work'&&prog[c.n]!=='needs-work')return false;
+    if(fSt==='new'&&prog[c.n])return false;
+    if(srch&&!c.n.toLowerCase().includes(srch)&&!c.cap.toLowerCase().includes(srch))return false;
+    return true;
+  });
+}
+function doSearch(v){srch=v.toLowerCase();renderGrid();}
+
+function renderGrid(){
+  const list=getFiltered();
+  const g=document.getElementById('cgrid');
+  if(!list.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">No countries match.</div>';return;}
+  document.getElementById('ctag').textContent=list.length+' countries';
+  g.innerHTML=list.map(c=>{
+    const st=prog[c.n]||'';
+    return `<div class="tile ${st}" onclick="showCard('${c.n.replace(/'/g,"\\'")}')">
+      ${flagDiv(c,38)}
+      <div class="tname">${c.n}</div>
+      <div class="treg">${c.reg} · ${c.cap}</div>
+    </div>`;
+  }).join('');
+}
+
+function showCard(name){
+  const c=DB.find(x=>x.n===name);
+  if(!c)return;
+  const html=`
+<div class="card" style="margin-bottom:1rem">
+  <div class="ch">
+    ${flagDiv(c,48)}
+    <div>
+      <div class="coff">${c.on}</div>
+      <div class="cn">${c.n}</div>
+    </div>
+    <span class="rbadge">${c.reg}</span>
+  </div>
+  <div class="levels">
+    <div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:.625rem">Tap a level to reveal — hardest clues first (like a real bee round)</div>
+    <div class="lblock l1">
+      <div class="lhdr" onclick="tgl(this)"><div class="ldot"></div>Level 1 — Hardest: Physical & Historical<span style="margin-left:auto">&#9660;</span></div>
+      <div class="lbody">${c.l1.map(x=>`<div class="ci">&#8250; ${x}</div>`).join('')}</div>
+    </div>
+    <div class="lblock l2">
+      <div class="lhdr" onclick="tgl(this)"><div class="ldot"></div>Level 2 — Medium: Symbols, Economy, Culture<span style="margin-left:auto">&#9660;</span></div>
+      <div class="lbody">${c.l2.map(x=>`<div class="ci">&#8250; ${x}</div>`).join('')}</div>
+    </div>
+    <div class="lblock l3">
+      <div class="lhdr" onclick="tgl(this)"><div class="ldot"></div>Level 3 — Easiest: Core Anchors<span style="margin-left:auto">&#9660;</span></div>
+      <div class="lbody">
+        ${c.l3.map(x=>`<div class="ci">&#8250; ${x}</div>`).join('')}
+        <div class="inforow">
+          <span class="infopill">&#128481; ${c.cap}</span>
+          <span class="infopill">&#128483; ${c.dem}</span>
+          <span class="infopill">&#128177; ${c.cur}</span>
+          <span class="infopill">&#128172; ${c.langs.join(', ')}</span>
+          <span class="infopill">&#127963; ${c.gov}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cactions">
+    <span style="font-size:11px;color:var(--color-text-tertiary);margin-right:auto">Mark as:</span>
+    <button class="btn btn-g" onclick="markC('${c.n.replace(/'/g,"\\'")}','mastered');renderGrid();document.getElementById('card-area').innerHTML=''">Mastered</button>
+    <button class="btn btn-r" onclick="markC('${c.n.replace(/'/g,"\\'")}','needs-work');renderGrid();document.getElementById('card-area').innerHTML=''">Needs work</button>
+    <button class="btn" onclick="document.getElementById('card-area').innerHTML=''">Close</button>
+  </div>
+</div>`;
+  let a=document.getElementById('card-area');
+  if(!a){a=document.createElement('div');a.id='card-area';document.getElementById('cgrid').before(a);}
+  a.innerHTML=html;
+  a.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function tgl(hdr){
+  const body=hdr.nextElementSibling;
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  hdr.querySelector('span').textContent=open?'▼':'▲';
+}
+
+function startFC(){
+  fcReg=document.getElementById('fcrs').value;
+  let list=fcReg?DB.filter(c=>c.reg===fcReg):[...DB];
+  fcOrd=document.getElementById('fco').value;
+  if(fcOrd==='random')list.sort(()=>Math.random()-.5);
+  else if(fcOrd==='needs')list.sort((a,b)=>(prog[b.n]==='needs-work'?1:-1));
+  else list.sort((a,b)=>a.n.localeCompare(b.n));
+  fcList=list;fcIdx=0;renderFC();
+}
+
+function renderFC(){
+  if(!fcList.length){document.getElementById('fc-area').innerHTML='<div class="empty">No countries for this filter.</div>';return;}
+  const c=fcList[fcIdx];
+  const pct=Math.round((fcIdx/fcList.length)*100);
+  document.getElementById('fcp').style.width=pct+'%';
+  document.getElementById('fc-area').innerHTML=`
+<div class="card">
+  <div class="ch">
+    ${flagDiv(c,48)}
+    <div><div class="coff">${c.on}</div><div class="cn">${c.n}</div></div>
+    <span class="rbadge">${fcIdx+1}/${fcList.length}</span>
+  </div>
+  <div class="levels">
+    <div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:.5rem">Open levels one by one — how few did you need?</div>
+    <div class="lblock l1"><div class="lhdr" onclick="tgl(this)"><div class="ldot"></div>Level 1 — Hardest<span style="margin-left:auto">&#9660;</span></div>
+    <div class="lbody">${c.l1.map(x=>`<div class="ci">&#8250; ${x}</div>`).join('')}</div></div>
+    <div class="lblock l2"><div class="lhdr" onclick="tgl(this)"><div class="ldot"></div>Level 2 — Medium<span style="margin-left:auto">&#9660;</span></div>
+    <div class="lbody">${c.l2.map(x=>`<div class="ci">&#8250; ${x}</div>`).join('')}</div></div>
+    <div class="lblock l3"><div class="lhdr" onclick="tgl(this)"><div class="ldot"></div>Level 3 — Easiest<span style="margin-left:auto">&#9660;</span></div>
+    <div class="lbody">
+      ${c.l3.map(x=>`<div class="ci">&#8250; ${x}</div>`).join('')}
+      <div class="inforow">
+        <span class="infopill">&#128481; ${c.cap}</span><span class="infopill">&#128483; ${c.dem}</span>
+        <span class="infopill">&#128177; ${c.cur}</span><span class="infopill">&#128172; ${c.langs.join(', ')}</span>
+      </div>
+    </div></div>
+  </div>
+  <div class="cactions">
+    <button class="btn btn-g" onclick="fcMark('mastered')">Got it</button>
+    <button class="btn btn-r" onclick="fcMark('needs-work')">Study more</button>
+    <button class="btn" onclick="fcSkip()">Skip &#8250;</button>
+    ${fcIdx>0?`<button class="btn" onclick="fcBack()">&#8249; Back</button>`:''}
+  </div>
+</div>`;
+}
+function fcMark(v){markC(fcList[fcIdx].n,v);fcIdx++;if(fcIdx>=fcList.length)fcDone();else renderFC();}
+function fcSkip(){fcIdx++;if(fcIdx>=fcList.length)fcDone();else renderFC();}
+function fcBack(){if(fcIdx>0){fcIdx--;renderFC();}}
+function fcDone(){document.getElementById('fc-area').innerHTML=`<div class="empty" style="padding:2rem">${fcList.length} cards done!<br><br><button class="btn btn-b" onclick="startFC()">Restart</button></div>`;}
+
+function renderQTypePills(){
+  const p=document.getElementById('qtpills');
+  p.innerHTML=QUIZ_TYPES.map(t=>`<button class="qpill${selQTypes.has(t.id)?' on':''}" onclick="toggleQT('${t.id}',this)">${t.label}</button>`).join('');
+}
+function toggleQT(id,el){
+  if(selQTypes.has(id)){if(selQTypes.size>1){selQTypes.delete(id);el.classList.remove('on');}}
+  else{selQTypes.add(id);el.classList.add('on');}
+}
+
+function makeQ(c,type,pool){
+  const oth=pool.filter(x=>x.n!==c.n).sort(()=>Math.random()-.5);
+  const rnd=(n,fn)=>oth.slice(0,n).map(fn).filter(Boolean);
+
+  if(type==='capital'){
+    const opts=[c.cap,...rnd(3,x=>x.cap)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`${flagDiv(c,'sm')} <span style="margin-left:6px">What is the capital city of <b>${c.n}</b>?</span>`,ans:c.cap,opts,fact:`${c.n}'s capital is ${c.cap}.`};
+  }
+  if(type==='official_name'){
+    const opts=[c.on,...rnd(3,x=>x.on)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`${flagDiv(c,'sm')} <span style="margin-left:6px">What is the official name of <b>${c.n}</b>?</span>`,ans:c.on,opts,fact:`Official name: ${c.on}`};
+  }
+  if(type==='demonym'){
+    const opts=[c.dem,...rnd(3,x=>x.dem)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`${flagDiv(c,'sm')} <span style="margin-left:6px">What do you call a citizen of <b>${c.n}</b>?</span>`,ans:c.dem,opts,fact:`Citizens of ${c.n} are called ${c.dem}.`};
+  }
+  if(type==='currency'){
+    const opts=[c.cur,...rnd(3,x=>x.cur)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`${flagDiv(c,'sm')} <span style="margin-left:6px">What is the currency of <b>${c.n}</b>?</span>`,ans:c.cur,opts,fact:`${c.n} uses the ${c.cur}.`};
+  }
+  if(type==='language'){
+    const ans=c.langs[0];
+    const opts=[ans,...rnd(3,x=>x.langs[0])].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`${flagDiv(c,'sm')} <span style="margin-left:6px">What is an official language of <b>${c.n}</b>?</span>`,ans,opts,fact:`${c.n}'s official language(s): ${c.langs.join(', ')}`};
+  }
+  if(type==='government'){
+    const opts=[c.gov,...rnd(3,x=>x.gov)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`${flagDiv(c,'sm')} <span style="margin-left:6px">Which type of government does <b>${c.n}</b> have?</span>`,ans:c.gov,opts,fact:`${c.n} is a ${c.gov}.`};
+  }
+  if(type==='flag'){
+    const clue=c.l2.find(l=>l.toLowerCase().includes('flag'))||c.l2[1]||c.l2[0];
+    const opts=[c.n,...rnd(3,x=>x.n)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`<i>"${clue}"</i><br>Which country is described?`,ans:c.n,opts,fact:`This describes ${c.n}'s flag/symbol.`};
+  }
+  if(type==='border'){
+    const clue=c.l1.find(l=>l.toLowerCase().includes('border')||l.toLowerCase().includes('bound')||l.toLowerCase().includes('adjoin')||l.toLowerCase().includes('borders'))||c.l1[0];
+    const opts=[c.n,...rnd(3,x=>x.n)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`Physical/border clue: <i>"${clue}"</i><br>Which country?`,ans:c.n,opts,fact:`This clue describes ${c.n}.`};
+  }
+  if(type==='heritage'){
+    const clue=c.l2.find(l=>l.toUpperCase().includes('UNESCO'))||c.l1.find(l=>l.toUpperCase().includes('UNESCO'));
+    if(!clue)return null;
+    const opts=[c.n,...rnd(3,x=>x.n)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`UNESCO clue: <i>"${clue}"</i><br>Which country?`,ans:c.n,opts,fact:`This UNESCO site is in ${c.n}.`};
+  }
+  if(type==='history'){
+    const clue=c.l1[1]||c.l1[0];
+    const opts=[c.n,...rnd(3,x=>x.n)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`Historical clue: <i>"${clue}"</i><br>Which country?`,ans:c.n,opts,fact:`This historical clue is about ${c.n}.`};
+  }
+  if(type==='economy'){
+    const clue=c.l2.find(l=>l.toLowerCase().includes('export')||l.toLowerCase().includes('revenue')||l.toLowerCase().includes('major'))||c.l2[c.l2.length-1];
+    const opts=[c.n,...rnd(3,x=>x.n)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`Economy/Export clue: <i>"${clue}"</i><br>Which country?`,ans:c.n,opts,fact:`This economic clue is about ${c.n}.`};
+  }
+  if(type==='identify'){
+    const lvl=Math.random()<.33?0:Math.random()<.5?1:2;
+    const clue=[c.l1,c.l2,c.l3][lvl][0];
+    const lvlName=['Hardest (physical)','Medium (symbols)','Easiest (anchors)'][lvl];
+    const opts=[c.n,...rnd(3,x=>x.n)].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4).sort(()=>Math.random()-.5);
+    return {q:`[${lvlName} clue] <i>"${clue}"</i><br>Which country?`,ans:c.n,opts,fact:`${c.n}: ${c.cap} | ${c.langs[0]} | ${c.cur}`};
+  }
+  return null;
+}
+
+function startQuiz(){
+  const qreg=document.getElementById('qreg').value;
+  const qdiff=document.getElementById('qdiff').value;
+  const qcount=parseInt(document.getElementById('qcount').value);
+  let pool=qreg?DB.filter(c=>c.reg===qreg):[...DB];
+  if(pool.length<4){alert('Not enough countries. Try a larger region.');return;}
+  pool.sort(()=>Math.random()-.5);
+  const typeArr=[...selQTypes];
+  const qs=[];
+  let attempts=0;
+  while(qs.length<qcount&&attempts<500){
+    attempts++;
+    const c=pool[Math.floor(Math.random()*pool.length)];
+    let type=typeArr[Math.floor(Math.random()*typeArr.length)];
+    if(qdiff==='easy'&&type==='border')type='capital';
+    if(qdiff==='hard'&&(type==='capital'||type==='demonym'))type='identify';
+    const q=makeQ(c,type,pool);
+    if(q&&q.opts&&q.opts.length>=2)qs.push(q);
+  }
+  qState={qs,qi:0,score:0,streak:0,tot:qs.length,ans:false};
+  renderQz();
+}
+
+function renderQz(){
+  const qs=qState.qs;
+  if(!qs.length){document.getElementById('quiz-area').innerHTML='<div class="empty">Could not generate questions. Select more categories or a larger region.</div>';return;}
+  if(qState.qi>=qs.length){showResults();return;}
+  const q=qs[qState.qi];
+  const pct=Math.round((qState.qi/qs.length)*100);
+  document.getElementById('quiz-area').innerHTML=`
+<div class="pbar"><div class="pfill" style="width:${pct}%"></div></div>
+<div class="qbox">
+  <div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:.5rem">Q${qState.qi+1}/${qs.length} &nbsp;|&nbsp; Score: ${qState.score} &nbsp;|&nbsp; Streak: ${qState.streak}</div>
+  <div class="qq">${q.q}</div>
+  <div class="qopts" id="opts">
+    ${q.opts.map((o,i)=>`<button class="qopt" id="op${i}" onclick="ansQ(${i})">${o}</button>`).join('')}
+  </div>
+  <div class="qfb" id="qfb"></div>
+  <button class="btn btn-b" id="nxt" style="display:none" onclick="nextQ()">Next &rsaquo;</button>
+</div>`;
+}
+
+function ansQ(idx){
+  if(qState.ans)return;
+  qState.ans=true;
+  const q=qState.qs[qState.qi];
+  const selected=q.opts[idx];
+  const correct=selected===q.ans;
+  if(correct){qState.score++;qState.streak++;}else{qState.streak=0;}
+  updateStats();
+  q.opts.forEach((o,i)=>{
+    const btn=document.getElementById('op'+i);
+    if(o===q.ans)btn.classList.add('correct');
+    else if(i===idx&&!correct)btn.classList.add('wrong');
+    btn.style.cursor='default';
+    btn.onclick=null;
+  });
+  const fb=document.getElementById('qfb');
+  fb.className='qfb show '+(correct?'ok':'bad');
+  fb.textContent=(correct?'Correct! ':'Incorrect. ')+q.fact;
+  document.getElementById('nxt').style.display='inline-block';
+}
+function nextQ(){qState.qi++;qState.ans=false;renderQz();}
+function showResults(){
+  const pct=Math.round(qState.score/qState.qs.length*100);
+  document.getElementById('quiz-area').innerHTML=`
+<div class="qbox" style="text-align:center;padding:1.5rem">
+  <div style="font-size:40px;font-weight:500;margin-bottom:.25rem">${pct}%</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:.75rem">${qState.score} / ${qState.qs.length} correct</div>
+  <div style="font-size:12px;color:var(--color-text-tertiary);margin-bottom:1rem">${pct>=85?'Excellent! Ready for the finals!':pct>=65?'Good effort — keep going!':'More study needed — you can do this!'}</div>
+  <button class="btn btn-b" onclick="startQuiz()">New quiz</button>
+  <button class="btn" style="margin-left:6px" onclick="setMode('browse')">Browse countries</button>
+</div>`;
+}
+
+function renderProg(){
+  const regs=[...new Set(DB.map(c=>c.reg))].sort();
+  let html='<div class="card" style="padding:1rem">';
+  html+=`<div style="font-size:14px;font-weight:500;margin-bottom:.875rem">Your progress — ${DB.length} countries</div>`;
+  regs.forEach(r=>{
+    const cs=DB.filter(c=>c.reg===r);
+    const m=cs.filter(c=>prog[c.n]==='mastered').length;
+    const nw=cs.filter(c=>prog[c.n]==='needs-work').length;
+    const pct=Math.round(m/cs.length*100);
+    html+=`<div style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+        <span style="font-weight:500">${r}</span>
+        <span style="color:var(--color-text-secondary)">${m}/${cs.length} mastered</span>
+      </div>
+      <div class="pbar" style="margin:0"><div class="pfill" style="width:${pct}%"></div></div>
+      <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px">${nw} need work · ${cs.length-m-nw} not studied</div>
+    </div>`;
+  });
+  html+=`<div style="padding-top:.75rem;border-top:0.5px solid var(--color-border-tertiary)">
+    <button class="btn" onclick="if(confirm('Reset all progress?')){prog={};saveP();updateStats();renderProg();}">Reset all progress</button>
+  </div></div>`;
+  document.getElementById('prog-detail').innerHTML=html;
+}
+
+setMode('browse');
+renderGrid();
+updateStats();
+renderQTypePills();
+</script>
+</body>
+</html>
