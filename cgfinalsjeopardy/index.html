@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGC National Finals Jeopardy Trainer</title>
+    <style>
+        :root {
+            /* Design System Colors */
+            --color-background-primary: #ffffff;
+            --color-background-secondary: #f8fafc;
+            --color-text-primary: #1e293b;
+            --color-text-secondary: #475569;
+            --color-text-tertiary: #94a3b8;
+            --color-border-tertiary: #e2e8f0;
+            
+            /* Jeopardy Theme */
+            --jeopardy-blue: #0C447C;
+            --jeopardy-gold: #FFCC00;
+            --jeopardy-card-blue: #060CE9;
+            
+            /* Typography & Spacing */
+            --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+            --border-radius-md: 8px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: var(--font-sans); 
+            background-color: var(--color-background-secondary); 
+            color: var(--color-text-primary);
+            line-height: 1.5;
+        }
+
+        #app { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+        .header { text-align: center; margin-bottom: 2rem; }
+        .header h1 { color: var(--jeopardy-blue); font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px; }
+        .header p { color: var(--color-text-secondary); font-style: italic; }
+
+        .score-panel { 
+            display: flex; 
+            justify-content: center; 
+            gap: 3rem; 
+            margin-bottom: 2rem; 
+            background: white; 
+            padding: 1rem; 
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .score-item { text-align: center; }
+        .score-label { font-size: 0.75rem; text-transform: uppercase; color: var(--color-text-tertiary); font-weight: bold; }
+        .score-val { font-size: 2rem; font-weight: 800; color: var(--jeopardy-blue); }
+
+        .board { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 12px; 
+        }
+
+        .category-header {
+            background: var(--jeopardy-blue);
+            color: white;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            border-radius: 4px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .clue-card {
+            background: var(--jeopardy-card-blue);
+            color: var(--jeopardy-gold);
+            aspect-ratio: 4/3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 900;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: transform 0.1s, opacity 0.3s;
+            box-shadow: 0 4px 0 #0005a3;
+        }
+
+        .clue-card:hover:not(.used) { transform: scale(1.02); }
+        .clue-card.used { opacity: 0.2; cursor: default; }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--jeopardy-card-blue);
+            color: white;
+            padding: 3rem;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            border: 4px solid var(--jeopardy-gold);
+        }
+
+        .clue-text { font-size: 2.5rem; margin-bottom: 2rem; font-weight: 500; text-transform: uppercase; }
+        .answer-text { font-size: 2rem; color: var(--jeopardy-gold); margin-bottom: 2rem; display: none; }
+
+        .btn-group { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .btn-reveal { background: var(--jeopardy-gold); color: black; }
+        .btn-correct { background: #22c55e; color: white; }
+        .btn-wrong { background: #ef4444; color: white; }
+        .btn-pass { background: #64748b; color: white; }
+
+        @media (max-width: 768px) {
+            .board { grid-template-columns: repeat(2, 1fr); }
+            .clue-text { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="header">
+        <h1>Canadian Geographic Challenge</h1>
+        <p>National Finals Trainer — Ottawa 2026</p>
+    </div>
+
+    <div class="score-panel">
+        <div class="score-item">
+            <div class="score-label">Score</div>
+            <div id="total-score" class="score-val">$0</div>
+        </div>
+        <div class="score-item">
+            <div class="score-label">Accuracy</div>
+            <div id="accuracy" class="score-val">0%</div>
+        </div>
+    </div>
+
+    <div id="board" class="board">
+        </div>
+</div>
+
+<script>
+    // Categories and Questions from Master Quiz Book & Study Guide
+    const CATEGORIES = [
+        {
+            name: "Physical Canada",
+            clues: [
+                { q: "This physiographic region underlies half of Canada and is made of ancient Precambrian rock.", a: "The Canadian Shield", pts: 200 },
+                { q: "Canada's longest river, flowing north into the Beaufort Sea.", a: "The Mackenzie River", pts: 400 },
+                { q: "The highest peak in Canada, located in the Yukon's St. Elias Mountains.", a: "Mount Logan", pts: 600 },
+                { q: "The ongoing upward movement of land around Hudson Bay following the last ice age.", a: "Isostatic Rebound", pts: 800 },
+                { q: "The hydrological apex of North America where meltwater flows to three different oceans.", a: "Columbia Icefield (Snow Dome)", pts: 1000 }
+            ]
+        },
+        {
+            name: "Human & Policy",
+            clues: [
+                { q: "The urban corridor containing 50% of Canada's population, stretching from Quebec to Windsor.", a: "Windsor-Quebec City Corridor", pts: 200 },
+                { q: "The last province to join Confederation in 1949.", a: "Newfoundland", pts: 400 },
+                { q: "Economic theory stating Canada's growth was driven by exporting raw materials.", a: "Staples Theory", pts: 600 },
+                { q: "The only officially bilingual province in Canada.", a: "New Brunswick", pts: 800 },
+                { q: "The 1975 agreement that was Canada's first modern land treaty.", a: "James Bay and Northern Quebec Agreement", pts: 1000 }
+            ]
+        },
+        {
+            name: "Landforms",
+            clues: [
+                { q: "A mound of earth-covered ice found in permafrost zones like the Mackenzie Delta.", a: "Pingo", pts: 200 },
+                { q: "A streamlined, wind-carved ridge found in deserts with its axis parallel to the wind.", a: "Yardang", pts: 400 },
+                { q: "A sinuous ridge of sand and gravel deposited by a stream beneath a glacier.", a: "Esker", pts: 600 },
+                { q: "A ring-shaped coral reef enclosing a lagoon.", a: "Atoll", pts: 800 },
+                { q: "Landscape formed by the dissolution of soluble rocks like limestone.", a: "Karst Topography", pts: 1000 }
+            ]
+        },
+        {
+            name: "Global Environment",
+            clues: [
+                { q: "The process where the Arctic warms 4x faster than the global average.", a: "Arctic Amplification", pts: 200 },
+                { q: "A feedback loop where melting ice exposes darker water that absorbs more heat.", a: "Ice-Albedo Feedback", pts: 400 },
+                { q: "This layer of the atmosphere absorbs the majority of the Sun's UV radiation.", a: "Stratosphere", pts: 600 },
+                { q: "Excess nutrients causing algal blooms that deplete oxygen in water.", a: "Eutrophication", pts: 800 },
+                { q: "Framework identifying nine Earth system processes with safe limits.", a: "Planetary Boundaries", pts: 1000 }
+            ]
+        },
+        {
+            name: "World Heritage",
+            clues: [
+                { q: "Alberta site showing sophisticated Indigenous hunting knowledge used for 6,000 years.", a: "Head-Smashed-In Buffalo Jump", pts: 200 },
+                { q: "Newfoundland site containing rare visible evidence of the Earth's mantle.", a: "Gros Morne National Park", pts: 400 },
+                { q: "Quebec fossil site showing the transition from fish to land animals.", a: "Miguasha National Park", pts: 600 },
+                { q: "The world's largest coral reef system.", a: "Great Barrier Reef", pts: 800 },
+                { q: "Inca citadel located high in the Andes Mountains of Peru.", a: "Machu Picchu", pts: 1000 }
+            ]
+        }
+    ];
+
+    let gameState = {
+        score: 0,
+        correct: 0,
+        totalPlayed: 0,
+        usedClues: new Set()
+    };
+
+    function initBoard() {
+        const board = document.getElementById('board');
+        board.innerHTML = '';
+
+        // Add Headers
+        CATEGORIES.forEach(cat => {
+            const header = document.createElement('div');
+            header.className = 'category-header';
+            header.innerText = cat.name;
+            board.appendChild(header);
+        });
+
+        // Add Clues (row by row)
+        for (let i = 0; i < 5; i++) {
+            CATEGORIES.forEach((cat, catIdx) => {
+                const clue = cat.clues[i];
+                const card = document.createElement('div');
+                const clueId = `${catIdx}-${i}`;
+                
+                card.className = `clue-card ${gameState.usedClues.has(clueId) ? 'used' : ''}`;
+                card.innerText = `$${clue.pts}`;
+                
+                if (!gameState.usedClues.has(clueId)) {
+                    card.onclick = () => showClue(clue, clueId);
+                }
+                
+                board.appendChild(card);
+            });
+        }
+    }
+
+    function showClue(clue, id) {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="clue-text">${clue.q}</div>
+                <div id="answer" class="answer-text">Answer: ${clue.a}</div>
+                <div class="btn-group">
+                    <button class="btn-reveal" onclick="revealAnswer()">Reveal Answer</button>
+                    <button id="correct-btn" style="display:none" class="btn-correct" onclick="handleResult(true, ${clue.pts}, '${id}')">Correct</button>
+                    <button id="wrong-btn" style="display:none" class="btn-wrong" onclick="handleResult(false, ${clue.pts}, '${id}')">Missed</button>
+                    <button class="btn-pass" onclick="closeModal()">Close / Skip</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    window.revealAnswer = function() {
+        document.getElementById('answer').style.display = 'block';
+        document.getElementById('correct-btn').style.display = 'inline-block';
+        document.getElementById('wrong-btn').style.display = 'inline-block';
+    };
+
+    window.handleResult = function(isCorrect, pts, id) {
+        gameState.totalPlayed++;
+        gameState.usedClues.add(id);
+        
+        if (isCorrect) {
+            gameState.score += pts;
+            gameState.correct++;
+        } else {
+            gameState.score -= pts;
+        }
+
+        updateScoreboard();
+        closeModal();
+        initBoard();
+    };
+
+    window.closeModal = function() {
+        const modal = document.querySelector('.modal-overlay');
+        if (modal) modal.remove();
+    };
+
+    function updateScoreboard() {
+        document.getElementById('total-score').innerText = `$${gameState.score.toLocaleString()}`;
+        const accuracy = gameState.totalPlayed > 0 
+            ? Math.round((gameState.correct / gameState.totalPlayed) * 100) 
+            : 0;
+        document.getElementById('accuracy').innerText = `${accuracy}%`;
+    }
+
+    initBoard();
+</script>
+
+</body>
+</html>
