@@ -1,763 +1,799 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGC Finals Prep - Canadian Geographic Challenge</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css">
-    <style>
-        :root {
-            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            --border-radius-sm: 6px;
-            --border-radius-md: 10px;
-            --border-radius-lg: 16px;
-            --color-background-primary: #ffffff;
-            --color-background-secondary: #f5f5f5;
-            --color-background-success: #e6f7e6;
-            --color-background-danger: #fee;
-            --color-text-primary: #1a1a1a;
-            --color-text-secondary: #666;
-            --color-text-tertiary: #999;
-            --color-text-success: #2e7d32;
-            --color-text-danger: #c62828;
-            --color-text-warning: #e65100;
-            --color-text-info: #1565c0;
-            --color-border-primary: #ccc;
-            --color-border-tertiary: #e0e0e0;
-            --color-border-success: #4caf50;
-            --color-border-danger: #f44336;
-        }
-        
-        * { box-sizing: border-box; }
-        
-        body {
-            margin: 0;
-            background: #f0f0f0;
-            font-family: var(--font-sans);
-            color: var(--color-text-primary);
-        }
-        
-        #app { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .spin { animation: spin 1s linear infinite; display: inline-block; }
-        
-        .opt-btn {
-            text-align: left;
-            padding: 12px 16px;
-            border-radius: var(--border-radius-md);
-            cursor: pointer;
-            font-size: 14px;
-            line-height: 1.55;
-            font-family: var(--font-sans);
-            width: 100%;
-            transition: opacity .1s;
-            border: 0.5px solid var(--color-border-tertiary);
-            background: var(--color-background-primary);
-        }
-        
-        .opt-btn:disabled { cursor: default; opacity: 0.8; }
-        
-        .jpt-btn {
-            width: 100%;
-            height: 52px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 19px;
-            font-weight: 500;
-            color: var(--color-text-warning);
-            border-radius: var(--border-radius-md);
-            font-family: var(--font-sans);
-        }
-        
-        .jpt-btn:hover { background: var(--color-background-secondary); }
-        
-        .card-hover {
-            cursor: pointer;
-            background: var(--color-background-primary);
-            border: 0.5px solid var(--color-border-tertiary);
-            border-radius: var(--border-radius-lg);
-            padding: 1.5rem;
-            transition: border-color .15s;
-        }
-        
-        .card-hover:hover { border-color: var(--color-border-primary); }
-        
-        .back-btn {
-            border: none;
-            background: none;
-            cursor: pointer;
-            color: var(--color-text-secondary);
-            font-size: 14px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-family: var(--font-sans);
-        }
-        
-        button, select, input { font-family: var(--font-sans); }
-        
-        select, input {
-            padding: 10px 12px;
-            border-radius: var(--border-radius-md);
-            border: 0.5px solid var(--color-border-tertiary);
-            background: var(--color-background-primary);
-            font-size: 14px;
-        }
-        
-        button {
-            background: var(--color-background-secondary);
-            border: 0.5px solid var(--color-border-tertiary);
-            border-radius: var(--border-radius-md);
-            padding: 10px 16px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        button:active { transform: scale(0.98); }
-        
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 0.5px solid var(--color-border-tertiary); padding: 12px 8px; text-align: center; }
-        th { background: var(--color-background-secondary); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
-        
-        .error-banner {
-            background: #ffebee;
-            border: 1px solid #ef9a9a;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
-            color: #c62828;
-            font-size: 13px;
-        }
-        
-        .error-banner code {
-            background: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CGC Finals Prep — Canadian Geographic Challenge</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --br-sm:6px;--br-md:10px;--br-lg:16px;
+  --bg-primary:#fff;--bg-secondary:#f5f5f5;--bg-tertiary:#ebebeb;
+  --bg-success:#e8f5e9;--bg-danger:#ffebee;--bg-warn:#fff8e1;--bg-info:#e3f2fd;
+  --text-primary:#1a1a1a;--text-secondary:#666;--text-tertiary:#999;
+  --text-success:#2e7d32;--text-danger:#c62828;--text-warn:#e65100;--text-info:#1565c0;
+  --border:#e0e0e0;--border-strong:#bbb;--border-success:#4caf50;--border-danger:#f44336;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#ececec;font-family:var(--font-sans);color:var(--text-primary);font-size:15px;line-height:1.6}
+#app{max-width:1100px;margin:0 auto;padding:1.5rem 1rem}
+h1{font-size:24px;font-weight:500;margin-bottom:.5rem}
+h2{font-size:19px;font-weight:500}
+h3{font-size:15px;font-weight:500}
+button,select,input{font-family:var(--font-sans);font-size:14px}
+select,input[type=text],input[type=number]{padding:9px 12px;border-radius:var(--br-md);border:.5px solid var(--border);background:var(--bg-primary);color:var(--text-primary);outline:none}
+select:focus,input:focus{border-color:#888}
+button{padding:9px 18px;border-radius:var(--br-md);border:.5px solid var(--border);background:var(--bg-secondary);cursor:pointer;color:var(--text-primary)}
+button:hover{background:var(--bg-tertiary)}
+button:active{transform:scale(.98)}
+.card{background:var(--bg-primary);border:.5px solid var(--border);border-radius:var(--br-lg);padding:1.25rem 1.5rem}
+.card-click{cursor:pointer;transition:border-color .15s}
+.card-click:hover{border-color:var(--border-strong)}
+.pill{display:inline-block;font-size:11px;padding:2px 10px;border-radius:20px;font-weight:500}
+.pill-green{background:var(--bg-success);color:var(--text-success)}
+.pill-red{background:var(--bg-danger);color:var(--text-danger)}
+.pill-blue{background:var(--bg-info);color:var(--text-info)}
+.pill-warn{background:var(--bg-warn);color:var(--text-warn)}
+.pill-grey{background:var(--bg-secondary);color:var(--text-secondary)}
+.back-btn{background:none;border:none;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;gap:4px;padding:0;font-size:13px}
+.back-btn:hover{color:var(--text-primary)}
+.opt-btn{width:100%;text-align:left;padding:12px 16px;border-radius:var(--br-md);border:.5px solid var(--border);background:var(--bg-primary);cursor:pointer;font-size:14px;line-height:1.55;transition:background .1s}
+.opt-btn:not(:disabled):hover{background:var(--bg-secondary)}
+.opt-btn:disabled{cursor:default}
+.tag{font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.07em;font-weight:500}
+.pbar-wrap{height:4px;background:var(--bg-secondary);border-radius:2px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:2px;transition:width .3s}
+.sep{border:none;border-top:.5px solid var(--border);margin:1.25rem 0}
+.jpt-btn{width:100%;height:56px;background:none;border:none;cursor:pointer;font-size:20px;font-weight:500;color:var(--text-warn);border-radius:var(--br-md)}
+.jpt-btn:hover{background:var(--bg-secondary)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite;display:inline-block}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal-box{background:var(--bg-primary);border-radius:var(--br-lg);padding:1.75rem 2rem;max-width:560px;width:100%;max-height:90vh;overflow-y:auto}
+.notice{padding:10px 14px;border-radius:var(--br-md);font-size:13px;line-height:1.6;margin-bottom:1rem}
+.notice-blue{background:var(--bg-info);color:var(--text-info);border:.5px solid #90caf9}
+.notice-green{background:var(--bg-success);color:var(--text-success);border:.5px solid #a5d6a7}
+.notice-warn{background:var(--bg-warn);color:var(--text-warn);border:.5px solid #ffe082}
+</style>
 </head>
 <body>
-<h2 class="sr-only" style="position: absolute; left: -10000px;">CGC Finals Preparation — AI-powered Written Test and Jeopardy Final Round practice for the Canadian Geographic Challenge</h2>
-<div id="app" style="padding:1.5rem 0;font-family:var(--font-sans);"></div>
+<h2 class="sr-only" style="position:absolute;left:-9999px">CGC Finals Prep — Canadian Geographic Challenge Written Test and Jeopardy Practice</h2>
+<div id="app"></div>
 <div id="modal-root"></div>
 
 <script>
-// ============================================
-// 🔑 PASTE YOUR ANTHROPIC API KEY HERE:
-// ============================================
-const API_KEY = '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';  // <-- PUT YOUR API KEY HERE (starts with "sk-ant-")
-const API = 'https://api.anthropic.com/v1/messages';
+// ─────────────────────────────────────────────
+//  BUILT-IN QUESTION BANK
+//  No API key needed — works entirely offline
+// ─────────────────────────────────────────────
+const QB = {
+"Canadian Physical Geography": [
+  {q:"Which mountain range forms the border between Alberta and British Columbia?",opts:["A) Rocky Mountains","B) Coast Mountains","C) Mackenzie Mountains","D) Laurentian Mountains"],c:0,e:"The Rocky Mountains form the Continental Divide between Alberta and BC. The Columbia Icefield feeds rivers flowing to three oceans.",tag:"Canadian Physical"},
+  {q:"What is the name of the largest island in Canada?",opts:["A) Vancouver Island","B) Victoria Island","C) Baffin Island","D) Ellesmere Island"],c:2,e:"Baffin Island (507,451 km²) is the world's 5th largest island. It is located in Nunavut Territory.",tag:"Canadian Physical"},
+  {q:"The Mackenzie River empties into which body of water?",opts:["A) Hudson Bay","B) Beaufort Sea (Arctic Ocean)","C) Pacific Ocean","D) James Bay"],c:1,e:"At 4,241 km it is Canada's longest river. It flows northwest from Great Slave Lake to the Mackenzie Delta.",tag:"Canadian Physical"},
+  {q:"Which province contains the most of the Canadian Shield?",opts:["A) Ontario","B) Quebec","C) Manitoba","D) Nunavut"],c:1,e:"Quebec has the largest area of Canadian Shield — ancient Precambrian rock rich in minerals and dotted with thousands of lakes.",tag:"Canadian Physical"},
+  {q:"The Bay of Fundy, known for the world's highest tides, lies between which two provinces?",opts:["A) PEI and Nova Scotia","B) Nova Scotia and New Brunswick","C) New Brunswick and Quebec","D) Newfoundland and Nova Scotia"],c:1,e:"Tidal range can exceed 16 m. The funnel shape of the bay and its resonance period amplify tidal effects dramatically.",tag:"Canadian Physical"},
+  {q:"Mount Logan, Canada's highest peak, is located in which territory?",opts:["A) Northwest Territories","B) Nunavut","C) Yukon","D) British Columbia"],c:2,e:"Mount Logan (5,959 m) in Kluane National Park, Yukon, is the second highest peak in North America after Denali.",tag:"Canadian Physical"},
+  {q:"The 49th parallel forms the Canada–US border west of which province?",opts:["A) Saskatchewan","B) Manitoba","C) Ontario","D) Alberta"],c:1,e:"The 49th parallel border runs from Manitoba westward to British Columbia. East of Manitoba the border follows rivers and lakes.",tag:"Canadian Physical"},
+  {q:"Lake Superior is the largest of the Great Lakes. Which two countries share it?",opts:["A) Canada and USA only","B) Canada, USA, and Mexico","C) USA only","D) Canada only"],c:0,e:"Lake Superior (82,103 km²) is the world's largest freshwater lake by surface area. Its southern shore is entirely in the USA.",tag:"Canadian Physical"},
+  {q:"The Great Bear Lake is located entirely within which Canadian territory?",opts:["A) Yukon","B) Nunavut","C) Northwest Territories","D) Manitoba"],c:2,e:"Great Bear Lake (31,153 km²) is the largest lake entirely within Canada and the world's 8th largest lake.",tag:"Canadian Physical"},
+  {q:"What physiographic region underlies the flat, fertile prairies of Alberta, Saskatchewan, and Manitoba?",opts:["A) Canadian Shield","B) Interior Plains","C) Hudson Bay Lowlands","D) Great Lakes-St. Lawrence Lowlands"],c:1,e:"The Interior Plains are a sedimentary basin overlying the ancient Canadian Shield, stretching from the US border to the Mackenzie River delta.",tag:"Canadian Physical"},
+  {q:"What is the name of Canada's largest river delta, located in the Northwest Territories?",opts:["A) Fraser Delta","B) Churchill Delta","C) Mackenzie Delta","D) Nelson Delta"],c:2,e:"The Mackenzie Delta is one of the largest river deltas in the world, covering about 13,000 km², and is a critical wetland habitat.",tag:"Canadian Physical"},
+  {q:"The Columbia Icefield straddles the border between Alberta and British Columbia and feeds rivers that drain into how many oceans?",opts:["A) One","B) Two","C) Three","D) Four"],c:2,e:"Water from the Columbia Icefield drains into the Atlantic (via Saskatchewan River), Pacific (via Columbia River), and Arctic (via Athabasca-Mackenzie). It is called the 'hydrological apex of North America.'",tag:"Canadian Physical"},
+  {q:"Which Canadian province has the longest freshwater coastline in Canada?",opts:["A) Quebec","B) Ontario","C) Manitoba","D) Saskatchewan"],c:1,e:"Ontario has extensive freshwater coastlines on four of the five Great Lakes plus Hudson Bay, giving it the longest freshwater coast.",tag:"Canadian Physical"},
+  {q:"The Athabasca Oil Sands, one of the largest oil deposits in the world, are located near which Alberta city?",opts:["A) Calgary","B) Red Deer","C) Fort McMurray","D) Grande Prairie"],c:2,e:"The Athabasca Oil Sands near Fort McMurray contain approximately 165 billion barrels of recoverable bitumen — the third-largest proven oil reserve in the world.",tag:"Canadian Physical"},
+  {q:"What is the name of the narrow isthmus that connects the peninsula of Nova Scotia to the Canadian mainland?",opts:["A) Strait of Canso","B) Chignecto Isthmus","C) Cabot Strait","D) Northumberland Strait"],c:1,e:"The Chignecto Isthmus, only about 25 km wide, connects Nova Scotia to New Brunswick. A proposed Chignecto Canal would allow ships to bypass the Bay of Fundy.",tag:"Canadian Physical"},
+  {q:"How many provinces border Hudson Bay?",opts:["A) Two (Ontario and Quebec)","B) Three (Ontario, Quebec, Manitoba)","C) Four (Ontario, Quebec, Manitoba, Nunavut)","D) Five"],c:1,e:"Ontario, Quebec, and Manitoba border Hudson Bay. Nunavut is a territory, not a province. Hudson Bay covers about 1.23 million km².",tag:"Canadian Physical"},
+  {q:"Which city is known as the 'Gateway to the North' and sits at the confluence of the North Saskatchewan and South Saskatchewan rivers?",opts:["A) Saskatoon","B) Regina","C) Prince Albert","D) Lethbridge"],c:0,e:"Saskatoon sits on the South Saskatchewan River (the rivers confluence is actually farther east near Prince Albert). It is a major hub for northern Saskatchewan mining.",tag:"Canadian Physical"},
+  {q:"The Niagara Escarpment, a UNESCO World Biosphere Reserve, extends from Niagara Falls to which Ontario peninsula?",opts:["A) Bruce Peninsula","B) Prince Edward County","C) Georgian Bay Islands","D) Manitoulin Island"],c:0,e:"The Niagara Escarpment is a long cuesta (ridge) extending 725 km from Niagara Falls northward to the Bruce Peninsula, then continuing through Manitoulin Island.",tag:"Canadian Physical"},
+  {q:"Canada has approximately what percentage of the world's freshwater resources?",opts:["A) 7%","B) 14%","C) 20%","D) 33%"],c:2,e:"Canada holds about 20% of the world's freshwater, though much is locked in glaciers. About 9% of renewable freshwater is Canadian.",tag:"Canadian Physical"},
+  {q:"The Rideau Canal, a UNESCO World Heritage Site, connects Ottawa to which Ontario city?",opts:["A) Toronto","B) Kingston","C) Brockville","D) Gananoque"],c:1,e:"The 202-km Rideau Canal was built 1826–1832 for military purposes after the War of 1812. In winter it becomes the world's largest naturally refrigerated skating rink.",tag:"Canadian Physical"}
+],
+"World Countries & Capitals": [
+  {q:"What is the capital of Australia?",opts:["A) Sydney","B) Melbourne","C) Canberra","D) Brisbane"],c:2,e:"Canberra was chosen as a compromise between rival cities Sydney and Melbourne. It was purpose-built and became the capital in 1913.",tag:"World Countries"},
+  {q:"The official name of Turkey was changed in 2022 to:",opts:["A) Türkiye","B) Anatolia","C) Ottoman Republic","D) Turkestan"],c:0,e:"Turkey formally requested the UN use 'Türkiye' in 2022 to better reflect the country's culture and values.",tag:"World Countries"},
+  {q:"Which is the only country whose flag is NOT rectangular?",opts:["A) Qatar","B) Nepal","C) Switzerland","D) Vatican City"],c:1,e:"Nepal's flag is a double pennon — two stacked triangles. Switzerland and Vatican City have square flags, but they are still quadrilateral.",tag:"World Countries"},
+  {q:"Sri Lanka was formerly known as:",opts:["A) Siam","B) Ceylon","C) Rhodesia","D) Persia"],c:1,e:"Sri Lanka was called Ceylon under British colonial rule. The name was changed to Sri Lanka in 1972 when it became a republic.",tag:"World Countries"},
+  {q:"The capital of Brazil is:",opts:["A) Rio de Janeiro","B) São Paulo","C) Brasília","D) Manaus"],c:2,e:"Brasília was purpose-built as a capital city and inaugurated in 1960. It replaced Rio de Janeiro as the nation's capital.",tag:"World Countries"},
+  {q:"Which country has the most neighboring countries (borders the most nations)?",opts:["A) Russia","B) China","C) Brazil","D) Russia and China are tied"],c:3,e:"Both Russia and China border 14 countries each — the most of any nation. Russia: Norway, Finland, Estonia, Latvia, Lithuania, Poland, Belarus, Ukraine, Georgia, Azerbaijan, Kazakhstan, Mongolia, China, North Korea.",tag:"World Countries"},
+  {q:"Ulaanbaatar is the capital of which country AND the world's coldest capital city?",opts:["A) Kazakhstan","B) Mongolia","C) Kyrgyzstan","D) Siberia (Russia)"],c:1,e:"Ulaanbaatar has an average annual temperature of −1.3°C, making it the world's coldest national capital.",tag:"World Countries"},
+  {q:"The country of Bhutan measures national wellbeing using which unique metric instead of GDP?",opts:["A) Gross National Happiness","B) Human Development Index","C) Ecological Footprint","D) Life Satisfaction Score"],c:0,e:"Bhutan's 1972 concept of Gross National Happiness measures spiritual, cultural, environmental, and governance wellbeing — not just economic output.",tag:"World Countries"},
+  {q:"Which country is entirely surrounded by South Africa?",opts:["A) Eswatini","B) Lesotho","C) Botswana","D) Namibia"],c:1,e:"Lesotho is one of only three countries in the world that is entirely surrounded by a single other country (alongside Vatican City and San Marino, both surrounded by Italy).",tag:"World Countries"},
+  {q:"Nauru, one of the world's smallest countries, is located in which ocean?",opts:["A) Atlantic","B) Indian","C) Pacific","D) Arctic"],c:2,e:"Nauru (21 km²) in Micronesia (Pacific Ocean) is the world's smallest island nation and the 3rd smallest country overall. Its economy was devastated by phosphate mining.",tag:"World Countries"},
+  {q:"What is the demonym for a person from the Netherlands?",opts:["A) Netherlandish","B) Hollandic","C) Dutch","D) Flemish"],c:2,e:"People from the Netherlands are called Dutch. The Dutch language is spoken across the Netherlands and Flanders (northern Belgium).",tag:"World Countries"},
+  {q:"Which capital city sits at an elevation of 3,640 m, making it the world's highest capital?",opts:["A) Quito, Ecuador","B) La Paz, Bolivia","C) Kathmandu, Nepal","D) Lhasa, Tibet"],c:1,e:"La Paz (technically the seat of government; Sucre is the constitutional capital) at ~3,640 m is the world's highest capital. Bolivia has two capitals.",tag:"World Countries"},
+  {q:"The former name of Myanmar was:",opts:["A) Siam","B) Indochina","C) Burma","D) Tonkin"],c:2,e:"Burma was the name used under British colonial rule and by the military junta. The civilian government officially changed it to Myanmar in 1989.",tag:"World Countries"},
+  {q:"Reykjavik is the capital of Iceland and the world's northernmost capital. Approximately how far north is it?",opts:["A) 60°N","B) 64°N","C) 68°N","D) 72°N"],c:1,e:"Reykjavik sits at 64°N latitude — just south of the Arctic Circle. It experiences midnight sun in June and polar darkness in winter.",tag:"World Countries"},
+  {q:"What are the three Baltic states?",opts:["A) Estonia, Latvia, Lithuania","B) Finland, Estonia, Latvia","C) Belarus, Latvia, Lithuania","D) Estonia, Finland, Norway"],c:0,e:"The Baltic states — Estonia, Latvia, and Lithuania — were all incorporated into the Soviet Union in 1940 and regained independence in 1991.",tag:"World Countries"},
+  {q:"The island of Hispaniola is shared by which two countries?",opts:["A) Cuba and Jamaica","B) Haiti and Dominican Republic","C) Puerto Rico and US Virgin Islands","D) Cuba and Dominican Republic"],c:1,e:"Haiti (western third) and the Dominican Republic (eastern two-thirds) share the island of Hispaniola in the Greater Antilles.",tag:"World Countries"},
+  {q:"Which country has the most UNESCO World Heritage Sites?",opts:["A) France","B) Spain","C) China","D) Italy"],c:3,e:"Italy and China are tied with the most UNESCO World Heritage Sites (around 58–59 each as of 2024). This is a frequently updated figure.",tag:"World Countries"},
+  {q:"The Maldives is notable in climate discussions because it is the world's lowest-lying country. Its average elevation is approximately:",opts:["A) 0.5 m above sea level","B) 1.5 m above sea level","C) 3 m above sea level","D) 5 m above sea level"],c:1,e:"The Maldives averages just 1.5 m above sea level — making it highly vulnerable to sea level rise. The government has considered buying land in other countries for relocation.",tag:"World Countries"},
+  {q:"Which South American country is the only one where Portuguese is the official language?",opts:["A) Uruguay","B) Paraguay","C) Brazil","D) Guyana"],c:2,e:"Brazil is the world's largest Portuguese-speaking country and the only one in South America. All other South American countries speak Spanish (or Dutch in Suriname, English in Guyana).",tag:"World Countries"},
+  {q:"What is the capital of Pakistan?",opts:["A) Lahore","B) Karachi","C) Islamabad","D) Rawalpindi"],c:2,e:"Islamabad became the capital in 1966, replacing Karachi. It was purpose-built in the 1960s and sits adjacent to Rawalpindi.",tag:"World Countries"}
+],
+"Rivers, Lakes & Oceans": [
+  {q:"Which river is generally considered the longest in the world?",opts:["A) Amazon","B) Nile","C) Yangtze","D) Mississippi-Missouri"],c:1,e:"The Nile (6,650 km) is generally accepted as the longest river, though some measurements suggest the Amazon may be longer. The Nile flows north through northeastern Africa to the Mediterranean.",tag:"Rivers & Oceans"},
+  {q:"The Amazon River carries approximately what fraction of all river water that flows into the world's oceans?",opts:["A) 1/10","B) 1/5","C) 1/4","D) 1/3"],c:1,e:"The Amazon discharges about 20% of all freshwater entering the world's oceans — more than the next seven largest rivers combined.",tag:"Rivers & Oceans"},
+  {q:"Lake Baikal in Siberia is the world's deepest lake. Approximately how deep is it?",opts:["A) 800 m","B) 1,200 m","C) 1,642 m","D) 2,100 m"],c:2,e:"Lake Baikal (1,642 m deep) contains about 20% of the world's unfrozen surface freshwater. It is also the world's oldest lake (~25 million years).",tag:"Rivers & Oceans"},
+  {q:"The Dead Sea is the lowest point on Earth's land surface. Approximately how far below sea level is its surface?",opts:["A) −150 m","B) −250 m","C) −430 m","D) −600 m"],c:2,e:"The Dead Sea surface is approximately 430 m below sea level. Its high salinity (34%) prevents most aquatic life — hence its name.",tag:"Rivers & Oceans"},
+  {q:"The Mariana Trench in the Pacific Ocean contains the deepest point on Earth. What is it called?",opts:["A) Vityaz Deep","B) Challenger Deep","C) Horizon Deep","D) Sirena Deep"],c:1,e:"Challenger Deep in the Mariana Trench reaches approximately 10,935 m below sea level. It was first reached by the US Navy bathyscaphe Trieste in 1960.",tag:"Rivers & Oceans"},
+  {q:"Which ocean is both the smallest and shallowest?",opts:["A) Southern Ocean","B) Arctic Ocean","C) Indian Ocean","D) Atlantic Ocean"],c:1,e:"The Arctic Ocean (14.06 million km²) is the world's smallest and shallowest ocean, with an average depth of just 1,038 m.",tag:"Rivers & Oceans"},
+  {q:"The Yangtze River is Asia's longest river. The Three Gorges Dam on the Yangtze is the world's largest power station. In which country is it located?",opts:["A) India","B) China","C) Bangladesh","D) Myanmar"],c:1,e:"The Three Gorges Dam in China can generate 22,500 MW of power. It caused significant displacement of communities and changes to river ecology.",tag:"Rivers & Oceans"},
+  {q:"Lake Victoria is the world's largest tropical lake and Africa's largest lake. It is shared by three countries. Which three?",opts:["A) Kenya, Uganda, Tanzania","B) Kenya, Ethiopia, Uganda","C) Tanzania, Mozambique, Malawi","D) Uganda, Rwanda, DRC"],c:0,e:"Kenya, Uganda, and Tanzania share Lake Victoria (68,800 km²). Its outlet is the Victoria Nile, which flows north into Lake Albert.",tag:"Rivers & Oceans"},
+  {q:"The Missouri River is the longest river in the United States. Into which river does it flow?",opts:["A) Ohio River","B) Arkansas River","C) Mississippi River","D) Tennessee River"],c:2,e:"The Missouri River (3,767 km) flows into the Mississippi River near St. Louis, Missouri. Together they form one of the world's longest river systems.",tag:"Rivers & Oceans"},
+  {q:"The Caspian Sea is classified as a lake, not a sea. Which country does NOT border the Caspian Sea?",opts:["A) Iran","B) Kazakhstan","C) Iraq","D) Azerbaijan"],c:2,e:"The Caspian Sea is bordered by Russia, Kazakhstan, Turkmenistan, Iran, and Azerbaijan. Iraq is not a Caspian state.",tag:"Rivers & Oceans"},
+  {q:"The Gulf Stream is an important ocean current. It keeps temperatures warmer in which region?",opts:["A) Eastern Canada","B) Northeastern USA","C) Northwestern Europe","D) West Africa"],c:2,e:"The Gulf Stream carries warm water from the Gulf of Mexico northeastward across the Atlantic, significantly warming Western Europe, particularly the British Isles and Scandinavia.",tag:"Rivers & Oceans"},
+  {q:"Lake Titicaca, the world's highest navigable lake, sits on the border between which two countries?",opts:["A) Chile and Argentina","B) Peru and Bolivia","C) Ecuador and Colombia","D) Bolivia and Chile"],c:1,e:"Lake Titicaca (3,812 m above sea level) is shared between Peru and Bolivia. It holds cultural significance as the birthplace of Inca civilization.",tag:"Rivers & Oceans"},
+  {q:"The Strait of Hormuz is a critical global shipping lane through which approximately what percentage of the world's oil passes?",opts:["A) 5%","B) 10%","C) 20%","D) 35%"],c:2,e:"About 20% of global oil supplies pass through the Strait of Hormuz between Oman and Iran — making it one of the world's most strategically important waterways.",tag:"Rivers & Oceans"},
+  {q:"The Volga River is the longest river in Europe. It empties into which body of water?",opts:["A) Black Sea","B) Baltic Sea","C) Caspian Sea","D) White Sea"],c:2,e:"The Volga (3,531 km) flows southward through western Russia into the Caspian Sea. It drains about 40% of European Russia and is historically Russia's most important river.",tag:"Rivers & Oceans"},
+  {q:"El Niño is a climate pattern associated with the warming of surface waters in which ocean?",opts:["A) Atlantic Ocean (tropical)","B) Pacific Ocean (tropical/central)","C) Indian Ocean (western)","D) Southern Ocean"],c:1,e:"El Niño involves the warming of surface waters in the central and eastern tropical Pacific, disrupting global weather patterns — causing droughts in some regions and floods in others.",tag:"Rivers & Oceans"},
+  {q:"The Amazon River Basin contains approximately what percentage of Earth's remaining tropical rainforest?",opts:["A) 20%","B) 40%","C) 60%","D) 80%"],c:1,e:"The Amazon Basin contains roughly 40% of the world's remaining tropical rainforest, covering about 5.5 million km². It is sometimes called 'the lungs of the Earth.'",tag:"Rivers & Oceans"},
+  {q:"The Aral Sea, once the world's 4th largest lake, has shrunk dramatically. In which two countries is its basin located?",opts:["A) Russia and Kazakhstan","B) Uzbekistan and Kazakhstan","C) Turkmenistan and Uzbekistan","D) Kyrgyzstan and Tajikistan"],c:1,e:"Soviet-era irrigation diverted the Amu Darya and Syr Darya rivers, causing the Aral Sea to shrink by 90%. It is one of history's worst environmental disasters.",tag:"Rivers & Oceans"},
+  {q:"The Rhine River originates in the Swiss Alps and empties into which sea?",opts:["A) Baltic Sea","B) North Sea","C) Mediterranean Sea","D) Adriatic Sea"],c:1,e:"The Rhine (1,230 km) flows through Switzerland, Liechtenstein, Austria, Germany, and the Netherlands before emptying into the North Sea near Rotterdam.",tag:"Rivers & Oceans"},
+  {q:"Ocean acidification is caused primarily by oceans absorbing what substance from the atmosphere?",opts:["A) Methane (CH₄)","B) Nitrogen (N₂)","C) Carbon dioxide (CO₂)","D) Sulfur dioxide (SO₂)"],c:2,e:"Oceans absorb about 30% of CO₂ emissions, forming carbonic acid. Ocean pH has dropped by 0.1 units since industrialization — threatening coral reefs and shellfish.",tag:"Rivers & Oceans"},
+  {q:"The Congo River in Africa is notable for being the world's deepest river. Approximately how deep does it reach?",opts:["A) 100 m","B) 220 m","C) 350 m","D) 500 m"],c:1,e:"The Congo River reaches depths of 220+ meters — the deepest river in the world. It also has the second-largest discharge of any river after the Amazon.",tag:"Rivers & Oceans"}
+],
+"Climate Zones & Biomes": [
+  {q:"The taiga (boreal forest) is the world's largest land biome. In which latitudinal zone is it found?",opts:["A) Tropical (0°–23.5°)","B) Subtropical (23.5°–35°)","C) Temperate (35°–55°)","D) Subarctic (50°–70°)"],c:3,e:"The taiga (subarctic/boreal forest) stretches across Canada, Russia, and Scandinavia between roughly 50°N and 70°N, dominated by conifers like spruce, fir, and larch.",tag:"Climate & Biomes"},
+  {q:"The Sahara Desert covers approximately how much of Africa?",opts:["A) 15%","B) 25%","C) 30%","D) 40%"],c:2,e:"The Sahara (9.2 million km²) covers about 30% of Africa — making it the world's largest hot desert and roughly the size of the United States.",tag:"Climate & Biomes"},
+  {q:"A Mediterranean climate is characterized by:",opts:["A) Wet summers and dry winters","B) Dry summers and wet winters","C) Year-round rainfall","D) Very cold winters and hot summers"],c:1,e:"Mediterranean climates feature hot, dry summers and mild, wet winters. Found around the Mediterranean Sea, California, Chile, southwestern Australia, and South Africa's Cape region.",tag:"Climate & Biomes"},
+  {q:"Which climate classification system uses letters like 'Af,' 'Cfc,' and 'Dfa' to categorize climates?",opts:["A) Thornthwaite System","B) Köppen Climate Classification","C) Bergeron Classification","D) IPCC Framework"],c:1,e:"The Köppen Climate Classification (1884) uses combinations of letters based on temperature and precipitation patterns. It is the most widely used climate classification system.",tag:"Climate & Biomes"},
+  {q:"The Antarctic Ice Sheet holds approximately what fraction of the world's freshwater?",opts:["A) 30%","B) 50%","C) 70%","D) 90%"],c:2,e:"Antarctica holds about 70% of Earth's freshwater — 26.5 million km³ of ice. If it all melted, sea levels would rise about 60 meters.",tag:"Climate & Biomes"},
+  {q:"'Permafrost' refers to ground that remains frozen for at least how long?",opts:["A) One season","B) One year","C) Two consecutive years","D) A decade"],c:2,e:"Permafrost is defined as ground that remains at or below 0°C for at least two consecutive years. It underlies about 24% of the Northern Hemisphere's land area.",tag:"Climate & Biomes"},
+  {q:"The ITCZ (Intertropical Convergence Zone) is important in global climate because it:",opts:["A) Marks where the trade winds diverge, creating deserts","B) Is where northeast and southeast trade winds converge, creating rising air and heavy rainfall","C) Separates the subtropical high-pressure belts","D) Marks the boundary between tropical and polar air masses"],c:1,e:"The ITCZ follows the sun's position seasonally. Where trade winds meet, air rises, cools, and releases heavy rainfall — creating tropical rainforests along the equator.",tag:"Climate & Biomes"},
+  {q:"Which biome has the greatest biodiversity on Earth?",opts:["A) Tropical rainforest","B) Coral reef","C) Temperate deciduous forest","D) Mangrove forest"],c:0,e:"Tropical rainforests contain over 50% of the world's plant and animal species despite covering only about 7% of Earth's land surface.",tag:"Climate & Biomes"},
+  {q:"The 'rain shadow' effect causes deserts to form on which side of mountain ranges?",opts:["A) Windward (facing the wind)","B) Leeward (away from the wind)","C) Northern side in the Northern Hemisphere","D) Southern side in the Southern Hemisphere"],c:1,e:"As moist air rises over mountains, it cools and releases precipitation on the windward side. The leeward side receives dry, descending air — creating a 'rain shadow' desert.",tag:"Climate & Biomes"},
+  {q:"Climate change is accelerating Arctic sea ice loss. The Arctic is warming approximately how many times faster than the global average?",opts:["A) Same rate","B) Twice as fast","C) Three to four times faster","D) Ten times faster"],c:2,e:"Arctic amplification — caused by ice-albedo feedback (darker ocean absorbs more heat when ice melts) — causes Arctic temperatures to rise 3–4x faster than the global average.",tag:"Climate & Biomes"},
+  {q:"Permafrost thawing is a serious climate concern because it releases which potent greenhouse gas?",opts:["A) Oxygen","B) Nitrogen","C) Methane","D) Carbon monoxide"],c:2,e:"Permafrost contains vast stores of organic carbon. As it thaws, microbes decompose this organic matter and release methane (CH₄) — a greenhouse gas 80x more potent than CO₂ over 20 years.",tag:"Climate & Biomes"},
+  {q:"The savanna biome is characterized by:",opts:["A) Dense forest with year-round rainfall","B) Tropical grassland with distinct wet and dry seasons","C) Cold semi-arid steppe with seasonal drought","D) Scrubland with Mediterranean rainfall patterns"],c:1,e:"Savannas cover much of sub-Saharan Africa, northern Australia, and parts of South America (Cerrado). They support large grazing animals and the world's greatest terrestrial wildlife migrations.",tag:"Climate & Biomes"},
+  {q:"What is the name of the climate phenomenon characterized by cooler-than-average sea surface temperatures in the central Pacific — the opposite of El Niño?",opts:["A) La Niña","B) El Viejo","C) Pacific Dipole","D) Southern Oscillation"],c:0,e:"La Niña (Spanish for 'the girl') involves cooler Pacific sea surface temperatures. It typically strengthens the jet stream, bringing increased rainfall to Australia and Southeast Asia while causing drought in parts of the Americas.",tag:"Climate & Biomes"},
+  {q:"The Sahel region of Africa is undergoing severe desertification. The Sahel is located:",opts:["A) In the Sahara Desert interior","B) Along Africa's southern coast","C) In the transitional zone between the Sahara and tropical savanna","D) In the Congo Basin rainforest region"],c:2,e:"The Sahel is a semi-arid transition zone spanning from Senegal to Ethiopia across 11 countries. It experiences chronic drought, desertification, and food insecurity.",tag:"Climate & Biomes"},
+  {q:"Tundra vegetation is characterized by:",opts:["A) Tall coniferous trees and dense undergrowth","B) Low-growing plants, lichens, mosses, and sedges adapted to cold, dry conditions","C) Grasses and scattered shrubs with distinct wet/dry seasons","D) Dense tropical vegetation with multi-story canopy"],c:1,e:"Tundra plants are adapted to short growing seasons, extreme cold, and permafrost. They grow close to the ground to avoid wind and conserve warmth.",tag:"Climate & Biomes"},
+  {q:"Which Canadian climate zone covers the greatest area of the country?",opts:["A) Temperate Maritime","B) Arctic / Subarctic","C) Mediterranean","D) Humid Continental"],c:1,e:"Arctic and Subarctic climates cover northern Canada (roughly 60% of the country) — characterized by long, bitterly cold winters, short cool summers, and low precipitation.",tag:"Climate & Biomes"},
+  {q:"Mangrove forests are important coastal ecosystems primarily found in:",opts:["A) Cold temperate coastlines","B) Tropical and subtropical intertidal zones","C) Arctic coastlines","D) Mediterranean coastal lagoons"],c:1,e:"Mangroves grow in tropical/subtropical intertidal areas and provide critical ecosystem services: coastal protection from storms, carbon storage, fish nursery habitat, and water filtration.",tag:"Climate & Biomes"},
+  {q:"The Paris Agreement (2015) established a global temperature target of limiting warming to well below:",opts:["A) 1.0°C above pre-industrial levels","B) 1.5°C with efforts to limit to 1.5°C","C) 2°C, with efforts to limit to 1.5°C","D) 3°C"],c:2,e:"The Paris Agreement sets a goal of 'well below 2°C above pre-industrial levels' with efforts to limit to 1.5°C. Current national pledges put the world on track for ~2.5–3°C.",tag:"Climate & Biomes"}
+],
+"Human & Population Geography": [
+  {q:"A 'megacity' is defined as an urban area with a population of at least:",opts:["A) 1 million","B) 5 million","C) 10 million","D) 20 million"],c:2,e:"A megacity has a population of 10 million or more. Tokyo (~37 million) is the world's largest megacity, followed by Delhi (~30 million) and Shanghai (~27 million).",tag:"Human Geography"},
+  {q:"The Human Development Index (HDI) measures three dimensions. Which of these is NOT one of them?",opts:["A) Life expectancy","B) Education (years of schooling)","C) GNI per capita","D) Environmental sustainability"],c:3,e:"The HDI measures: (1) long and healthy life (life expectancy), (2) knowledge (education), and (3) decent standard of living (GNI per capita). Environmental sustainability is measured separately.",tag:"Human Geography"},
+  {q:"The demographic transition model shows that population growth is highest during which stage?",opts:["A) Stage 1 (pre-industrial: high birth rate, high death rate)","B) Stage 2 (early industrial: high birth rate, falling death rate)","C) Stage 4 (post-industrial: low birth rate, low death rate)","D) Stage 5 (post-transition: birth rate falls below death rate)"],c:1,e:"During Stage 2, death rates fall rapidly (due to improved medicine, sanitation) while birth rates remain high — causing rapid population growth. This is the stage of the 'population explosion.'",tag:"Human Geography"},
+  {q:"Canada accepts approximately how many immigrants per year (as of recent federal targets)?",opts:["A) 100,000","B) 200,000","C) 400,000–500,000","D) 700,000"],c:2,e:"Canada's federal immigration targets aim for approximately 400,000–500,000 permanent residents per year to address population aging and labour shortages.",tag:"Human Geography"},
+  {q:"The 'push-pull theory' of migration states that:",opts:["A) People move in response to government orders pushing them out","B) Negative factors push people away from origin; positive factors pull toward destination","C) Only economic factors determine migration decisions","D) Migration is exclusively driven by conflict and natural disasters"],c:1,e:"Push factors: war, poverty, natural disasters, persecution. Pull factors: economic opportunity, political stability, quality of life, family ties. Both act together to drive migration decisions.",tag:"Human Geography"},
+  {q:"Which region of the world has the highest rate of urbanization?",opts:["A) Sub-Saharan Africa (fastest growing urban areas)","B) East Asia (highest total urban population)","C) North America (highest percentage urban)","D) Latin America (highest income urban areas)"],c:0,e:"Sub-Saharan Africa has the world's fastest urbanization rate (~4% per year). Cities like Lagos, Kinshasa, and Dar es Salaam are among the world's fastest-growing. North America has the highest proportion of urban population.",tag:"Human Geography"},
+  {q:"Gentrification refers to:",opts:["A) Government planning to relocate urban residents","B) The process where wealthier residents move into low-income areas, raising costs and displacing original communities","C) Converting rural areas to suburban development","D) Urban renewal through demolition of historic buildings"],c:1,e:"Gentrification displaces lower-income residents as property values and rents rise. It is a contentious urban geography issue in cities like Toronto, Vancouver, London, and New York.",tag:"Human Geography"},
+  {q:"The 'replacement fertility rate' — the fertility rate needed to maintain a stable population — is approximately:",opts:["A) 1.5 children per woman","B) 2.1 children per woman","C) 2.5 children per woman","D) 3.0 children per woman"],c:1,e:"A fertility rate of 2.1 replaces both parents (with a small allowance for childhood mortality). Canada's fertility rate is ~1.4 — below replacement, which is why immigration is essential for population growth.",tag:"Human Geography"},
+  {q:"The Gini coefficient measures:",opts:["A) Economic growth rate","B) Life expectancy against income","C) Income inequality within a country (0 = perfect equality, 1 = maximum inequality)","D) Urban-rural population ratios"],c:2,e:"A Gini coefficient of 0 means all people have identical income; 1 means one person has all income. Scandinavian countries have Gini ~0.25; some Latin American nations exceed 0.50.",tag:"Human Geography"},
+  {q:"'Brain drain' refers to:",opts:["A) The loss of creativity when too many cities compete for talent","B) Emigration of highly educated/skilled people from less developed to more developed countries","C) The depletion of education budgets in developing nations","D) A neurological condition affecting urban planners"],c:1,e:"Brain drain weakens developing economies by losing doctors, engineers, and scientists. Canada itself benefits from global brain drain but also loses talent to the United States.",tag:"Human Geography"},
+  {q:"The Three Indigenous groups recognized in Canada's Constitution Act (1982) are:",opts:["A) First Nations, Métis, and Inuit","B) First Nations, Cree, and Inuit","C) Aboriginal, Native, and Métis","D) Algonquin, Iroquois, and Inuit"],c:0,e:"Section 35 of the Constitution Act recognizes First Nations (500+ nations), Métis (mixed European-Indigenous ancestry), and Inuit (Arctic peoples). Approximately 1.8 million Canadians identify as Indigenous.",tag:"Human Geography"},
+  {q:"A 'primate city' is one that:",opts:["A) Is the oldest settlement in a country","B) Is disproportionately larger than all other cities in the country — typically 2–3x the size of the second city","C) Has the highest GDP per capita","D) Was the first city to industrialize"],c:1,e:"Bangkok is 30x larger than Thailand's second city. Paris is 5x larger than Lyon. Canada does NOT have a classic primate city — Toronto is dominant but not overwhelmingly so.",tag:"Human Geography"},
+  {q:"What percentage of Canada's population is classified as urban?",opts:["A) 55%","B) 66%","C) 82%","D) 94%"],c:2,e:"About 82% of Canadians live in urban areas, mostly concentrated within 200 km of the US border. Canada is one of the world's most urbanized countries.",tag:"Human Geography"}
+],
+"Environmental Issues & Sustainability": [
+  {q:"The 'ozone layer' that protects Earth from harmful ultraviolet radiation is found in which atmospheric layer?",opts:["A) Troposphere","B) Stratosphere","C) Mesosphere","D) Thermosphere"],c:1,e:"The ozone layer sits in the stratosphere, 15–35 km above Earth's surface. The Montreal Protocol (1987) phased out CFC emissions that were depleting the ozone layer.",tag:"Environment"},
+  {q:"The Great Pacific Garbage Patch is primarily composed of:",opts:["A) Entire plastic bags and bottles","B) Microplastics — tiny fragments from degraded larger plastic items","C) Industrial chemical waste","D) Radioactive material from nuclear testing"],c:1,e:"About 94% of the Great Pacific Garbage Patch is microplastics — particles under 5mm. These concentrate in the North Pacific Gyre and enter the food chain through marine organisms.",tag:"Environment"},
+  {q:"Deforestation of the Amazon is most driven by which human activity?",opts:["A) Logging for timber","B) Agricultural expansion (cattle ranching, soy farming)","C) Infrastructure (roads, dams)","D) Mining operations"],c:1,e:"Agricultural expansion — particularly cattle ranching and soy farming (primarily as animal feed) — accounts for about 80% of Amazon deforestation.",tag:"Environment"},
+  {q:"Canada's oil sands produce which hydrocarbon extracted from sandy deposits?",opts:["A) Conventional crude oil","B) Natural gas","C) Bitumen (a heavy, viscous oil)","D) Shale oil"],c:2,e:"Bitumen must be separated from sand using hot water or solvents, then upgraded to synthetic crude. The Athabasca Oil Sands near Fort McMurray hold ~165 billion barrels of recoverable bitumen.",tag:"Environment"},
+  {q:"The concept of 'ecological footprint' measures:",opts:["A) The physical area of forests destroyed per year","B) The biologically productive land/sea required to support a population's consumption and absorb its waste","C) Carbon emissions per unit of GDP","D) The area of land needed to feed one person"],c:1,e:"If everyone lived like the average Canadian, we would need ~4.7 Earths. The ecological footprint concept was developed by Mathis Wackernagel and William Rees at UBC.",tag:"Environment"},
+  {q:"The term 'carbon sequestration' refers to:",opts:["A) Burning carbon fuels more efficiently","B) Capturing and storing CO₂ from the atmosphere or emission sources","C) Measuring carbon emissions from industrial processes","D) Trading carbon credits between countries"],c:1,e:"Carbon sequestration includes natural methods (forests, oceans, soil absorbing CO₂) and technological methods (carbon capture and storage — CCS).",tag:"Environment"},
+  {q:"The Intergovernmental Panel on Climate Change (IPCC) was established by the UN in which year?",opts:["A) 1972","B) 1988","C) 1997","D) 2005"],c:1,e:"The IPCC was established in 1988 by the World Meteorological Organization and UNEP. It reviews and synthesizes climate science and issues comprehensive Assessment Reports.",tag:"Environment"},
+  {q:"Which Canadian environmental concern relates to the loss of permafrost leading to ground instability and the release of greenhouse gases?",opts:["A) Acid rain","B) Thermokarst formation","C) Estuary pollution","D) Prairie drought"],c:1,e:"Thermokarst is irregular terrain with depressions formed when permafrost thaws. It threatens Arctic infrastructure and releases stored CO₂ and methane into the atmosphere.",tag:"Environment"},
+  {q:"The '30×30' global biodiversity target refers to:",opts:["A) Reducing emissions 30% by 2030","B) Protecting 30% of land and oceans by 2030","C) 30 countries committing to 30% renewable energy by 2030","D) Reducing plastic use by 30% by 2030"],c:1,e:"The 30×30 target (Kunming-Montreal Biodiversity Framework, 2022) commits nations to protect 30% of land and 30% of oceans by 2030 to halt biodiversity loss.",tag:"Environment"},
+  {q:"Canada committed to which emissions reduction target under the Paris Agreement?",opts:["A) 30% below 2005 levels by 2030","B) 40–45% below 2005 levels by 2030","C) Net-zero by 2030","D) 50% below 1990 levels by 2035"],c:1,e:"Canada's updated Nationally Determined Contribution (NDC) commits to reducing greenhouse gas emissions by 40–45% below 2005 levels by 2030.",tag:"Environment"},
+  {q:"The Montreal Protocol (1987) successfully addressed which environmental problem?",opts:["A) Ocean acidification","B) Ozone layer depletion by CFCs (chlorofluorocarbons)","C) Amazon deforestation","D) Acid rain from SO₂ emissions"],c:1,e:"The Montreal Protocol phased out chlorofluorocarbons (used in refrigerants, aerosols) that were depleting the ozone layer. It is considered the most successful international environmental treaty.",tag:"Environment"},
+  {q:"'Eutrophication' of water bodies is caused by excess nutrients, typically from:",opts:["A) Industrial heavy metals","B) Agricultural fertilizers (nitrogen and phosphorus runoff)","C) Oil spills","D) Acid rain"],c:1,e:"Eutrophication causes excessive algae growth (algal blooms) that depletes oxygen as it decomposes — creating 'dead zones' where aquatic life cannot survive.",tag:"Environment"}
+],
+"Cartography & Map Skills": [
+  {q:"On a topographic map, what do closely spaced contour lines indicate?",opts:["A) A flat plain","B) A steep slope","C) A river valley","D) A plateau"],c:1,e:"Contour lines connect points of equal elevation. When they are close together, the elevation changes rapidly over a short horizontal distance — indicating steep terrain.",tag:"Cartography"},
+  {q:"The prime meridian (0° longitude) passes through which city?",opts:["A) Paris, France","B) Rome, Italy","C) Greenwich, London, UK","D) Athens, Greece"],c:2,e:"The Prime Meridian was established at the Royal Observatory, Greenwich, London at the International Meridian Conference in 1884. It divides Earth into Eastern and Western hemispheres.",tag:"Cartography"},
+  {q:"A map with a scale of 1:50,000 means that 1 cm on the map equals how much on the ground?",opts:["A) 50 m","B) 500 m","C) 5 km","D) 50 km"],c:1,e:"1:50,000 means 1 cm = 50,000 cm = 500 m = 0.5 km. This is a large-scale topographic map used for detailed navigation.",tag:"Cartography"},
+  {q:"The Mercator projection distorts size especially near:",opts:["A) The equator","B) The tropics","C) The poles","D) The prime meridian"],c:2,e:"The Mercator projection stretches areas near the poles. Greenland appears as large as Africa on Mercator maps, but in reality Africa is 14× larger.",tag:"Cartography"},
+  {q:"GIS stands for:",opts:["A) Global Information Systems","B) Geographic Information Systems","C) Geospatial Intelligence Software","D) General Information for Science"],c:1,e:"Geographic Information Systems capture, store, analyze, and display spatial data. GIS is used in urban planning, emergency response, environmental monitoring, and navigation.",tag:"Cartography"},
+  {q:"A 'choropleth map' displays data using:",opts:["A) Circles of different sizes to represent quantities","B) Flow lines to show movement","C) Different colors/shading to show variation in a value across areas","D) 3D terrain models"],c:2,e:"Choropleth maps shade regions based on statistical values (e.g., population density, election results, COVID rates). Darker shading typically represents higher values.",tag:"Cartography"},
+  {q:"What does the term 'map projection' refer to?",opts:["A) The legend or key on a map","B) The method of transferring a spherical Earth onto a flat surface","C) The future prediction of territorial changes","D) The process of updating outdated maps"],c:1,e:"Any flat map of the spherical Earth distorts at least one of: shape, area, distance, or direction. Different projections preserve different properties depending on the purpose.",tag:"Cartography"},
+  {q:"Lines of latitude are parallel to the equator. The Tropic of Cancer is at approximately:",opts:["A) 0°","B) 23.5°N","C) 45°N","D) 66.5°N"],c:1,e:"The Tropic of Cancer (23.5°N) marks the northernmost point where the sun is directly overhead — at the summer solstice (June 21). The Tropic of Capricorn (23.5°S) is its southern equivalent.",tag:"Cartography"},
+  {q:"What is the Arctic Circle's approximate latitude?",opts:["A) 60°N","B) 63.5°N","C) 66.5°N","D) 70°N"],c:2,e:"The Arctic Circle at ~66.5°N marks the southernmost latitude where the sun does not set on the summer solstice (midnight sun) or rise on the winter solstice (polar night).",tag:"Cartography"},
+  {q:"Remote sensing is the practice of:",opts:["A) Conducting surveys by phone and internet","B) Collecting data about Earth's surface from satellites or aircraft without direct contact","C) Operating research stations in remote Arctic locations","D) Measuring earthquake waves from distant seismometers"],c:1,e:"Remote sensing uses electromagnetic radiation reflected/emitted from Earth's surface. Applications include monitoring deforestation, tracking ice melt, disaster response, and crop yield estimation.",tag:"Cartography"},
+  {q:"The International Date Line runs near which line of longitude?",opts:["A) 0° (Prime Meridian)","B) 90°E","C) 180°","D) 90°W"],c:2,e:"The International Date Line runs near 180° longitude in the Pacific Ocean (with deviations to avoid splitting island nations). Crossing east-to-west: you gain a day. West-to-east: you lose a day.",tag:"Cartography"},
+  {q:"What type of map shows the physical features of Earth's surface, including elevation, mountains, and rivers?",opts:["A) Political map","B) Thematic map","C) Topographic/Physical map","D) Road map"],c:2,e:"Physical/topographic maps show natural features. Political maps show human boundaries. Thematic maps show specific data (climate, population, economic activity).",tag:"Cartography"},
+  {q:"GPS (Global Positioning System) determines location using signals from how many satellites?",opts:["A) At least 3 satellites","B) Exactly 4 satellites","C) 12 satellites","D) 24 satellites"],c:0,e:"GPS requires signals from at least 3 satellites for 2D position and 4 for 3D position (including altitude). The US GPS system has 31 operational satellites in orbit.",tag:"Cartography"}
+],
+"Economic Geography": [
+  {q:"NAFTA (now CUSMA/USMCA) created a free trade zone between which three countries?",opts:["A) Canada, USA, Mexico","B) Canada, USA, Brazil","C) USA, Mexico, Guatemala","D) Canada, USA, Cuba"],c:0,e:"NAFTA (1994) and its successor CUSMA (2020) link Canada, USA, and Mexico in North America's largest trading bloc. Canada's top trading partner is the USA (~73% of exports).",tag:"Economic"},
+  {q:"Canada's single largest export commodity (by value) is:",opts:["A) Wheat and agricultural products","B) Crude oil and petroleum products","C) Automobiles and vehicle parts","D) Lumber and forest products"],c:1,e:"Crude oil and petroleum products are Canada's largest export. The oil sands of Alberta make Canada the world's 4th largest oil producer and 4th largest oil exporter.",tag:"Economic"},
+  {q:"The term 'globalization' in economic geography refers to:",opts:["A) The spread of English as a global language","B) The increasing integration of economies, trade, investment, and culture worldwide","C) The standardization of all products worldwide","D) The dominance of US corporations in global markets"],c:1,e:"Globalization has accelerated since the 1990s through trade liberalization, internet communications, and multinational corporations. It has shifted manufacturing to lower-wage countries.",tag:"Economic"},
+  {q:"Special Economic Zones (SEZs) were pioneered most famously in which country?",opts:["A) Singapore","B) South Korea","C) China (Shenzhen, 1980)","D) India"],c:2,e:"China's Shenzhen SEZ (1980) had relaxed regulations to attract foreign investment. It transformed a fishing village into a megacity and became the model for China's economic transformation.",tag:"Economic"},
+  {q:"Saskatchewan is Canada's leading producer of which global commodity?",opts:["A) Canola oil","B) Uranium","C) Potash (potassium fertilizer)","D) All of the above"],c:3,e:"Saskatchewan is the world's largest exporter of potash (~31% of global supply), produces ~15% of the world's uranium, and is a leading canola producer. A remarkable concentration of global commodity dominance.",tag:"Economic"},
+  {q:"The 'Rust Belt' in North America refers to:",opts:["A) Mining regions of northern Canada","B) Former industrial heartland of northeastern USA and southern Ontario experiencing deindustrialization","C) Iron-stained desert regions of the American Southwest","D) Aging oil infrastructure in Alberta"],c:1,e:"Cities like Detroit, Cleveland, Pittsburgh, Windsor, and Hamilton formed the manufacturing core. Deindustrialization from the 1970s–1990s caused economic decline and population loss.",tag:"Economic"},
+  {q:"Fair trade certification ensures that:",opts:["A) Products meet international safety standards","B) Producers in developing countries receive minimum prices and better trading conditions","C) Products are environmentally certified organic","D) Manufacturing meets carbon emission standards"],c:1,e:"Fair trade addresses power imbalances in global trade, ensuring farmers (especially coffee, cocoa, banana producers in developing countries) receive fair wages and working conditions.",tag:"Economic"},
+  {q:"Which Canadian province has the largest GDP?",opts:["A) British Columbia","B) Alberta","C) Ontario","D) Quebec"],c:2,e:"Ontario generates approximately 38% of Canada's GDP, driven by Toronto's financial sector, automotive manufacturing, and tech industry.",tag:"Economic"},
+  {q:"The term 'primary sector' in economic geography refers to:",opts:["A) The most important economic activities in a country","B) Activities that extract raw materials from the natural environment","C) Manufacturing and processing industries","D) Service industries like finance and retail"],c:1,e:"Primary sector = extracting natural resources (mining, farming, fishing, forestry, oil extraction). Secondary = manufacturing. Tertiary = services. Quaternary = knowledge/research.",tag:"Economic"},
+  {q:"Canada is the world's leading producer of which mineral used in nuclear power and medicine?",opts:["A) Thorium","B) Uranium","C) Plutonium","D) Radium"],c:1,e:"Saskatchewan's Athabasca Basin is the world's richest uranium deposit. Canada produces about 15% of the world's uranium supply, primarily from the McArthur River and Cigar Lake mines.",tag:"Economic"}
+],
+"Political Geography & Borders": [
+  {q:"Canada became a self-governing dominion through which act?",opts:["A) The British North America Act, 1867","B) The Constitutional Act, 1791","C) The Statute of Westminster, 1931","D) The Confederation Agreement, 1871"],c:0,e:"The British North America Act (July 1, 1867) united Ontario, Quebec, Nova Scotia, and New Brunswick into the Dominion of Canada. July 1 is celebrated as Canada Day.",tag:"Political"},
+  {q:"The Nunavut territory was created in 1999 through an agreement with which Indigenous group?",opts:["A) Cree First Nations","B) Métis National Council","C) Inuit Tapiriit Kanatami (Inuit people)","D) Assembly of First Nations"],c:2,e:"The Nunavut Land Claims Agreement (1993) with the Inuit people led to the creation of Nunavut on April 1, 1999 — the largest Indigenous land settlement in Canadian history.",tag:"Political"},
+  {q:"An 'exclave' is:",opts:["A) A territory that entirely surrounds another country","B) A portion of a country separated from the main territory by the territory of another country","C) A disputed border zone between two nations","D) A colony that has not yet achieved independence"],c:1,e:"Examples: Kaliningrad (Russia, surrounded by Lithuania, Latvia, Poland and the sea), Alaska (USA, separated by Canada), Cabinda (Angola). Different from an 'enclave' (territory surrounded by another country).",tag:"Political"},
+  {q:"The principle of 'terra nullius' that was used to justify colonial land claims meant:",opts:["A) Land belonging to the state","B) Land belonging to nobody — used to ignore Indigenous land rights","C) Territory acquired through military conquest","D) Land in dispute between two colonial powers"],c:1,e:"'Terra nullius' ('nobody's land') was used by European colonial powers to claim lands already occupied by Indigenous peoples. It was invalidated in Australia by the Mabo decision (1992) and challenged worldwide.",tag:"Political"},
+  {q:"The United Nations Security Council has five permanent members with veto power. Which of these is NOT a permanent member?",opts:["A) France","B) Germany","C) Russia","D) China"],c:1,e:"The five permanent members (P5) are: USA, UK, France, Russia, and China — the victors of WWII. Germany, Japan, India, and Brazil have long campaigned for permanent membership.",tag:"Political"},
+  {q:"Which international organization is the primary forum for global trade agreements and dispute resolution?",opts:["A) IMF (International Monetary Fund)","B) WTO (World Trade Organization)","C) World Bank","D) OECD (Organisation for Economic Co-operation and Development)"],c:1,e:"The WTO (founded 1995, replacing GATT) governs international trade rules and provides mechanisms for resolving trade disputes between 164 member countries.",tag:"Political"},
+  {q:"Canada's Charter of Rights and Freedoms was entrenched in the Constitution in which year?",opts:["A) 1867","B) 1949","C) 1982","D) 1995"],c:2,e:"The Constitution Act, 1982 (patriation from Britain under PM Pierre Trudeau) included the Canadian Charter of Rights and Freedoms. Before 1982, Britain's Parliament had to approve Canadian constitutional amendments.",tag:"Political"},
+  {q:"Which of Canada's provinces was the last to join Confederation?",opts:["A) Saskatchewan","B) Alberta","C) British Columbia","D) Newfoundland"],c:3,e:"Newfoundland joined Confederation on March 31, 1949, after a narrow referendum (52% in favour). It was the 10th and last province to join.",tag:"Political"},
+  {q:"Indigenous land treaties in Canada are significant because they:",opts:["A) Transferred all mineral rights to provincial governments","B) Were voluntary agreements with no legal standing","C) Establish nation-to-nation relationships and obligations between the Crown and First Nations","D) Only applied west of Ontario"],c:2,e:"Treaties (historically made between First Nations and the British Crown/Canadian government) set out rights to land, resources, and governance. Many First Nations argue treaties were not honoured.",tag:"Political"},
+  {q:"Canada's Official Languages Act (1969) gave equal legal status to which two languages?",opts:["A) French and Indigenous languages","B) English and French","C) English and Inuktitut","D) French and Cree"],c:1,e:"The Official Languages Act (1969), championed by PM Pierre Trudeau, declared English and French as Canada's two official languages for all federal government services.",tag:"Political"}
+],
+"Natural Disasters & Hazards": [
+  {q:"Each whole number increase on the Richter scale represents approximately how much more energy release?",opts:["A) 2 times more","B) 10 times more","C) 32 times more","D) 100 times more"],c:2,e:"Each whole number increase on the Richter scale represents ~32 times more energy release (and 10 times more ground motion amplitude). A magnitude 7 releases ~1,000 times more energy than a magnitude 5.",tag:"Hazards"},
+  {q:"The 'Ring of Fire' surrounds which ocean?",opts:["A) Atlantic Ocean","B) Indian Ocean","C) Pacific Ocean","D) Arctic Ocean"],c:2,e:"The Pacific Ring of Fire contains about 75% of the world's active volcanoes and generates about 90% of the world's earthquakes. It follows convergent and transform plate boundaries around the Pacific.",tag:"Hazards"},
+  {q:"A 'tsunami' is most commonly triggered by:",opts:["A) Powerful hurricanes","B) Submarine earthquakes that displace water","C) Extreme low-pressure weather systems","D) Volcanic eruptions on land"],c:1,e:"Tsunamis are triggered when underwater earthquakes, landslides, or volcanic eruptions displace large volumes of water. In deep water they travel at ~800 km/h; in shallow water they slow and increase in height.",tag:"Hazards"},
+  {q:"Canada's most earthquake-prone regions are in:",opts:["A) The Canadian Shield (Ontario and Quebec)","B) The prairies (Alberta and Saskatchewan)","C) British Columbia and Yukon","D) Atlantic Canada"],c:2,e:"British Columbia and Yukon have the highest seismic risk in Canada due to their location near the Cascadia Subduction Zone and Queen Charlotte Fault — two major tectonic boundaries.",tag:"Hazards"},
+  {q:"The 2010 Haiti earthquake killed approximately how many people?",opts:["A) 5,000","B) 50,000","C) 200,000","D) 500,000"],c:2,e:"The January 12, 2010 earthquake (magnitude 7.0) near Port-au-Prince killed an estimated 100,000–316,000 people and displaced over 1.5 million. Haiti's extreme poverty and poor construction magnified the disaster.",tag:"Hazards"},
+  {q:"The 'Cascadia Subduction Zone' runs along the coast of which Canadian province?",opts:["A) Alberta","B) Manitoba","C) British Columbia","D) Nova Scotia"],c:2,e:"The Cascadia Subduction Zone extends ~1,000 km along the Pacific coast from northern California to Vancouver Island. A 'megathrust' earthquake here could be magnitude 9+ with a catastrophic tsunami.",tag:"Hazards"},
+  {q:"Which province experiences the most tornadoes in Canada?",opts:["A) Ontario","B) Alberta","C) Manitoba","D) Saskatchewan"],c:1,e:"Alberta averages the most tornadoes per year in Canada, but Saskatchewan and Manitoba ('Tornado Alley North') have higher per-area frequencies. The Canadian prairies have the most tornado activity.",tag:"Hazards"},
+  {q:"The 1998 Quebec/Ontario ice storm was caused by which meteorological phenomenon?",opts:["A) A polar vortex collapse","B) Freezing rain forming when warm wet air flows over a cold surface layer","C) A nor'easter blizzard from the Atlantic","D) Lake-effect snow from the Great Lakes"],c:1,e:"Freezing rain occurs when warm air rides over cold air near the surface. The 1998 ice storm deposited up to 100 mm of ice, cut power to 4 million people, and caused $3 billion in damage.",tag:"Hazards"},
+  {q:"Wildfire risk in western Canada has increased significantly due to climate change. The 2016 Fort McMurray wildfire destroyed approximately how many buildings?",opts:["A) 1,000","B) 2,400","C) 5,000","D) 10,000"],c:1,e:"The 2016 Horse River wildfire forced the evacuation of 88,000 people and destroyed ~2,400 structures in Fort McMurray, Alberta. It was the costliest natural disaster in Canadian history at ~$10 billion.",tag:"Hazards"},
+  {q:"The Saffir-Simpson scale rates the intensity of which type of natural disaster?",opts:["A) Earthquakes","B) Tornadoes","C) Hurricanes","D) Volcanic eruptions"],c:2,e:"The Saffir-Simpson Hurricane Wind Scale rates hurricanes from Category 1 (winds 119–153 km/h) to Category 5 (≥252 km/h). Category 3–5 are 'major' hurricanes causing extreme damage.",tag:"Hazards"}
+],
+"Oceans & Marine Science": [
+  {q:"The Great Barrier Reef — the world's largest coral reef system — is located off the coast of which Australian state?",opts:["A) New South Wales","B) Western Australia","C) Queensland","D) South Australia"],c:2,e:"The Great Barrier Reef stretches 2,300 km off Queensland's coast. It is home to 1,500 species of fish and is under threat from coral bleaching caused by warming ocean temperatures.",tag:"Marine"},
+  {q:"What percentage of Earth's surface is covered by the ocean?",opts:["A) 51%","B) 61%","C) 71%","D) 81%"],c:2,e:"About 71% of Earth's surface is ocean. The ocean contains 97% of Earth's water, produces 50% of Earth's oxygen, and absorbs about 25% of CO₂ emissions.",tag:"Marine"},
+  {q:"Coral bleaching occurs when:",opts:["A) Corals are smothered by algae","B) Water temperature rises causing corals to expel their symbiotic algae (zooxanthellae)","C) Ocean acidification dissolves coral calcium carbonate","D) Increased UV radiation bleaches coral pigments"],c:1,e:"Corals get their colour and 90% of their energy from symbiotic algae. When water is too warm (even 1–2°C above normal), corals expel the algae — turning white. If stress continues, corals die.",tag:"Marine"},
+  {q:"Canada has the world's longest coastline. Approximately how long is it (including islands)?",opts:["A) 50,000 km","B) 100,000 km","C) 202,080 km","D) 350,000 km"],c:2,e:"Canada's 202,080 km coastline is the longest in the world — more than twice the second-longest (Norway at ~83,000 km). It borders three oceans.",tag:"Marine"},
+  {q:"The term 'thermocline' refers to:",opts:["A) A rapid increase in salinity with depth","B) A layer of water where temperature decreases rapidly with increasing depth","C) The boundary between deep and shallow ocean zones","D) A temperature inversion in the atmosphere near the ocean"],c:1,e:"The thermocline separates warm surface water from deep cold water. It acts as a barrier to vertical mixing. The deep ocean below the thermocline is dark, cold (~2–4°C), and high-pressure.",tag:"Marine"},
+  {q:"Ocean currents are driven primarily by which two forces?",opts:["A) Gravity and Earth's rotation","B) Wind patterns and density differences (thermohaline circulation)","C) Tidal forces and submarine topography","D) Solar radiation and river outflow"],c:1,e:"Surface currents are driven by wind. Deep ocean currents are driven by density differences from temperature and salinity variations — called thermohaline circulation or the 'ocean conveyor belt.'",tag:"Marine"},
+  {q:"The Northwest Passage — a sea route through Canada's Arctic Archipelago — is becoming more navigable because:",opts:["A) New icebreaker technology can navigate year-round","B) Climate change is reducing Arctic sea ice, opening the route more frequently","C) Canada has invested in a new deep-water channel","D) The passage has always been navigable — it just wasn't used"],c:1,e:"Arctic sea ice has declined ~13% per decade since satellite records began in 1979. The Northwest Passage is projected to be reliably navigable by mid-century, with implications for global shipping routes.",tag:"Marine"},
+  {q:"Bioluminescence in the ocean is produced by:",opts:["A) Reflection of moonlight off wave crests","B) Chemical reactions in living organisms (e.g., dinoflagellates, deep-sea fish)","C) Phosphorescent minerals dissolved in seawater","D) Radioactive decay in deep ocean sediments"],c:1,e:"Many marine organisms — including dinoflagellates, jellyfish, anglerfish, and squid — produce light through chemical reactions (luciferin + oxygen + luciferase enzyme).",tag:"Marine"},
+  {q:"The Mariana Trench is located in which ocean?",opts:["A) Atlantic Ocean","B) Indian Ocean","C) Pacific Ocean","D) Southern Ocean"],c:2,e:"The Mariana Trench in the western Pacific Ocean is the world's deepest oceanic trench. Challenger Deep at its southern end reaches approximately 10,935 m below sea level.",tag:"Marine"},
+  {q:"Canada's Exclusive Economic Zone (EEZ) extends how far from the coast?",opts:["A) 12 nautical miles","B) 50 nautical miles","C) 200 nautical miles","D) 350 nautical miles"],c:2,e:"Under UNCLOS (UN Convention on the Law of the Sea), countries have exclusive rights to resources within 200 nautical miles (~370 km) of their coastline. Canada's EEZ is one of the world's largest.",tag:"Marine"}
+],
+"Indigenous Lands & Cultures": [
+  {q:"Approximately how many distinct First Nations languages are spoken in Canada?",opts:["A) Around 30","B) Around 70","C) Around 120","D) Around 200"],c:1,e:"About 70 distinct Indigenous languages are spoken in Canada, belonging to 11 major language families. Many are critically endangered with fewer than 100 fluent speakers.",tag:"Indigenous"},
+  {q:"'Reconciliation' in the Canadian Indigenous context refers primarily to:",opts:["A) Legal processes for land claim settlements","B) Rebuilding respectful relationships between Indigenous peoples and the Crown/Canadian society to address legacy of colonialism","C) Financial compensation for residential school survivors only","D) Translation of government documents into Indigenous languages"],c:1,e:"The Truth and Reconciliation Commission's 94 Calls to Action (2015) provide a framework for reconciliation across government, education, health, and justice systems.",tag:"Indigenous"},
+  {q:"The Indian Residential School system in Canada operated from approximately the 1870s to which decade?",opts:["A) 1940s","B) 1960s","C) 1980s","D) The last school closed in 1996"],c:3,e:"The last federally funded residential school (Gordon's Residential School in Saskatchewan) closed in 1996. Over 150,000 Indigenous children attended these schools. The TRC estimated 3,000–6,000 children died.",tag:"Indigenous"},
+  {q:"'Inuit Tapiriit Kanatami' (ITK) represents the Inuit peoples of Canada. In which regions do Inuit primarily live?",opts:["A) British Columbia coast and Yukon","B) The four Inuit Nunangat regions: Inuvialuit, Nunavut, Nunavik (northern Quebec), Nunatsiavut (northern Labrador)","C) Throughout the Canadian Prairies","D) Primarily in Ontario and Manitoba"],c:1,e:"Inuit Nunangat covers approximately 40% of Canada's land mass and 72% of the coastline. About 65,000 Inuit live in Canada, primarily in these four regions.",tag:"Indigenous"},
+  {q:"The United Nations Declaration on the Rights of Indigenous Peoples (UNDRIP) was adopted by the UN General Assembly in which year?",opts:["A) 1989","B) 2000","C) 2007","D) 2015"],c:2,e:"UNDRIP was adopted in 2007. Canada initially opposed it but endorsed it in 2016. In 2021, Canada passed legislation to implement UNDRIP in Canadian law.",tag:"Indigenous"},
+  {q:"What is 'Two-Eyed Seeing' (Etuaptmumk)?",opts:["A) A traditional Inuit method of navigating using both stars and landmarks","B) An approach that integrates Indigenous knowledge and Western science as equal, complementary ways of knowing","C) A bilateral treaty framework between First Nations and provincial governments","D) A legal standard for Indigenous land rights evidence"],c:1,e:"Developed by Mi'kmaw Elder Albert Marshall, Two-Eyed Seeing (Etuaptmumk) is used widely in research, healthcare, and environmental management to honour both knowledge systems.",tag:"Indigenous"},
+  {q:"The Métis people are recognized in Canada as a distinct Indigenous group with rights. The Métis homeland is primarily in which region?",opts:["A) British Columbia and the Pacific coast","B) The Red River Settlement area and the western Canadian prairies","C) Northern Quebec and Labrador","D) Southern Ontario around the Great Lakes"],c:1,e:"The Métis Nation evolved from unions between European fur traders and Indigenous women, primarily in the Red River Settlement (Manitoba). Louis Riel led the Red River Resistance (1869–70) and Northwest Resistance (1885).",tag:"Indigenous"},
+  {q:"How many of the 94 Calls to Action from the Truth and Reconciliation Commission (TRC) relate to education?",opts:["A) 5","B) 15","C) 25","D) 40"],c:1,e:"The TRC's Calls to Action include 12 calls specifically related to education (primarily calls 62–65). They include mandatory Indigenous history and residential school curriculum in all Canadian schools.",tag:"Indigenous"},
+  {q:"The term 'Unceded territory' means:",opts:["A) Territory where Indigenous peoples have ceded all rights to the Crown","B) Indigenous land where sovereignty was never formally transferred through treaty","C) Land set aside as Indian Reserves under the Indian Act","D) Territory under dispute between two First Nations"],c:1,e:"Much of British Columbia, portions of Quebec and Ontario have never been covered by treaties — meaning Indigenous nations never formally agreed to surrender their territories. Land acknowledgments often specify 'unceded' territory.",tag:"Indigenous"},
+  {q:"Potlatch ceremonies, which include the redistribution of wealth, were banned in Canada from 1885 to 1951. These ceremonies are associated with which cultural group?",opts:["A) Plains First Nations (Cree, Blackfoot)","B) Northwest Coast First Nations (Haida, Tsimshian, Kwakwaka'wakw, etc.)","C) Haudenosaunee (Iroquois) Confederacy","D) Inuit of the Arctic"],c:1,e:"Potlatch is central to the cultural, spiritual, and political life of Northwest Coast First Nations. The ban was part of the Canadian government's broader campaign to eliminate Indigenous cultural practices.",tag:"Indigenous"}
+]
+};
 
-// Test if API key is configured
-const HAS_API_KEY = API_KEY && API_KEY.length > 20 && API_KEY.startsWith('sk-ant-');
+// ─────────────────────────────────────────────
+//  JEOPARDY QUESTION BANKS
+// ─────────────────────────────────────────────
+const JQ = {
+"Canadian Physical Geography":[
+  {p:200,clue:"This is Canada's longest river, flowing 4,241 km from Great Slave Lake to the Arctic Ocean.",answer:"What is the Mackenzie River?",ex:"It drains much of northwestern Canada and flows through the Northwest Territories."},
+  {p:400,clue:"This Columbia Icefield straddles the border of Alberta and BC and is called the 'hydrological apex of North America' because meltwater flows to this many oceans.",answer:"What is three? (Pacific, Atlantic, Arctic)",ex:"Rivers flowing from the Columbia Icefield include the Columbia (Pacific), Athabasca-Mackenzie (Arctic), and North Saskatchewan (Atlantic via Hudson Bay)."},
+  {p:600,clue:"At 507,451 km², this island in Nunavut is both Canada's largest island and the world's 5th largest island.",answer:"What is Baffin Island?",ex:"Baffin Island is home to Auyuittuq National Park, which features the Penny Ice Cap and dramatic fjords."},
+  {p:800,clue:"This narrow isthmus only about 25 km wide connects the Nova Scotia peninsula to mainland New Brunswick.",answer:"What is the Chignecto Isthmus?",ex:"A proposed Chignecto Canal would allow ships to travel between the Bay of Fundy and Northumberland Strait without circumnavigating Nova Scotia."},
+  {p:1000,clue:"The Great Bear Lake in the Northwest Territories holds this world distinction among lakes entirely within Canada.",answer:"What is the largest lake entirely within Canada? (world's 8th largest lake)",ex:"Great Bear Lake covers 31,153 km². Unlike Lake Superior, which is shared with the USA, Great Bear Lake lies entirely within Canadian territory."}
+],
+"World Countries & Capitals":[
+  {p:200,clue:"This African country's capital is Nairobi and its official languages are English and Swahili.",answer:"What is Kenya?",ex:"Kenya straddles the equator in East Africa. It borders Ethiopia, Somalia, Tanzania, Uganda, and South Sudan."},
+  {p:400,clue:"This is the only country in South America where Portuguese is the official language.",answer:"What is Brazil?",ex:"Brazil's 215+ million people make it the world's 6th most populous country. Its capital is Brasília, though São Paulo and Rio de Janeiro are larger cities."},
+  {p:600,clue:"Nauru, in the Pacific Ocean, holds this distinction as one of only three countries that meets this definition.",answer:"What is the world's smallest island nation? (or: one of three countries with no rivers)",ex:"Nauru (21 km²) also has no rivers — freshwater comes from rainfall and desalination. The other countries with no rivers are Saudi Arabia and Monaco."},
+  {p:800,clue:"This country's flag features a lion on a saffron/maroon background with green and orange stripes — and its capital is Sri Jayawardenepura Kotte, not the larger city of Colombo.",answer:"What is Sri Lanka?",ex:"Sri Lanka (formerly Ceylon) has two capitals: Sri Jayawardenepura Kotte (legislative) and Colombo (commercial/executive). The lion holds a sword on the flag."},
+  {p:1000,clue:"Bhutan uses this unique national metric as an alternative to GDP to guide government policy.",answer:"What is Gross National Happiness (GNH)?",ex:"GNH was introduced by Bhutan's 4th King in 1972. It measures spiritual, cultural, environmental, and governance wellbeing rather than purely economic growth."}
+],
+"Landforms & Geomorphology":[
+  {p:200,clue:"These long, narrow, deep inlets carved by glaciers and flooded by the sea are most famous in Norway, New Zealand, and British Columbia.",answer:"What are fjords?",ex:"Fjords form when U-shaped glacial valleys are flooded by seawater as glaciers retreat or sea levels rise. Some fjords are deeper than the adjacent open ocean."},
+  {p:400,clue:"This pyramidal peak in the Swiss Alps is a classic example of a glacial 'horn' formed by cirques eroding from all sides.",answer:"What is the Matterhorn?",ex:"The Matterhorn (4,478 m) lies on the border of Switzerland and Italy. Its four near-vertical ridges face the cardinal directions."},
+  {p:600,clue:"In karst topography, this is the name for a sinkhole or enclosed depression formed by the dissolution of soluble limestone.",answer:"What is a doline (sinkhole/karst depression)?",ex:"Dolines range from small circular depressions to massive cenotes (flooded sinkholes in Mexico's Yucatan Peninsula used by the ancient Maya)."},
+  {p:800,clue:"These sinuous ridges of sand and gravel crossing the Canadian Shield landscape were formed by meltwater flowing through subglacial tunnels.",answer:"What are eskers?",ex:"Eskers can extend hundreds of kilometres. They mark the exact path of ancient subglacial rivers and are common across the Canadian Shield from the last Ice Age."},
+  {p:1000,clue:"A barchan dune's crescent-shaped arms point in this direction relative to the prevailing wind.",answer:"What is downwind? (in the direction the wind blows)",ex:"Sand moves up the gentle windward slope and avalanches down the steep slip face. The horns of the crescent advance faster than the central crest, creating the curved shape."}
+],
+"Environmental Issues":[
+  {p:200,clue:"This international agreement, adopted in 1987, successfully phased out CFCs that were destroying the ozone layer.",answer:"What is the Montreal Protocol?",ex:"The Montreal Protocol is widely considered the most successful international environmental treaty. The ozone layer is expected to recover to pre-1980 levels by around 2065."},
+  {p:400,clue:"This Alberta city was evacuated in 2016 when a wildfire destroyed ~2,400 structures and became the costliest natural disaster in Canadian history.",answer:"What is Fort McMurray?",ex:"The Horse River wildfire in May 2016 forced the evacuation of 88,000 people and caused approximately $10 billion in insured losses."},
+  {p:600,clue:"The process by which oceans absorb CO₂ and become more acidic, threatening coral reefs and shellfish, is called this.",answer:"What is ocean acidification?",ex:"Ocean pH has dropped by 0.1 units since the Industrial Revolution. This 'acid' dissolves the calcium carbonate shells of oysters, mussels, corals, and plankton."},
+  {p:800,clue:"This ecological concept, developed by UBC researchers Wackernagel and Rees, measures the biologically productive area required to sustain a population's consumption.",answer:"What is the ecological footprint?",ex:"Canada's ecological footprint is approximately 8 global hectares per person — one of the highest in the world. The Earth can sustainably provide only about 1.6 global hectares per person."},
+  {p:1000,clue:"Canada's updated climate target under the Paris Agreement commits to reducing emissions by this percentage below 2005 levels by 2030.",answer:"What is 40–45%?",ex:"Canada's 2030 Emissions Reduction Plan details sector-by-sector strategies. Canada has historically struggled to meet its climate targets — emissions remain above 1990 levels."}
+],
+"Indigenous Geography":[
+  {p:200,clue:"These are the three groups of Indigenous peoples recognized under Section 35 of Canada's Constitution Act, 1982.",answer:"What are First Nations, Métis, and Inuit?",ex:"About 1.8 million Canadians (4.9% of the population) identify as Indigenous according to the 2021 census."},
+  {p:400,clue:"This is the collective term for the four Inuit homelands in Canada — Inuvialuit, Nunavut, Nunavik, and Nunatsiavut — covering 40% of Canada's land area.",answer:"What is Inuit Nunangat?",ex:"Inuit Nunangat covers approximately 3.9 million km². Its 65,000 Inuit residents face extreme infrastructure gaps compared to southern Canadians."},
+  {p:600,clue:"The 94 Calls to Action released in 2015 were produced by this body that investigated the Indian Residential School system.",answer:"What is the Truth and Reconciliation Commission (TRC)?",ex:"The TRC was chaired by Justice Murray Sinclair. It documented the experiences of over 150,000 residential school survivors and concluded the system constituted 'cultural genocide.'"},
+  {p:800,clue:"This approach, developed by Mi'kmaw Elder Albert Marshall, integrates Indigenous knowledge and Western science as equal, complementary ways of understanding the world.",answer:"What is Two-Eyed Seeing (Etuaptmumk)?",ex:"Two-Eyed Seeing is applied in environmental research, healthcare, fisheries management, and education across Canada."},
+  {p:1000,clue:"These Northwest Coast ceremonies, involving the redistribution of wealth and cultural protocols, were banned in Canada from 1885 to 1951 as part of the campaign against Indigenous culture.",answer:"What are Potlatch ceremonies?",ex:"The Potlatch ban was part of the 1885 amendment to the Indian Act. Nations including the Kwakwaka'wakw, Haida, Tsimshian, and Tlingit continued potlatches secretly despite the ban."}
+],
+"Physical World Geography":[
+  {p:200,clue:"This river carries approximately 20% of all freshwater that flows into the world's oceans and has the world's largest drainage basin.",answer:"What is the Amazon River?",ex:"The Amazon Basin covers 7 million km² across 9 countries. The river itself stretches ~6,400 km and discharges an average of 209,000 m³ per second."},
+  {p:400,clue:"The Himalayan mountain range was formed when this Indian tectonic plate collided with the Eurasian plate approximately 50 million years ago.",answer:"What is the Indian (Indo-Australian) Plate?",ex:"Mount Everest continues to grow by ~2 mm per year as the Indian Plate pushes under Eurasia. The Himalayas are the youngest major mountain range on Earth."},
+  {p:600,clue:"This is the world's largest desert, covering approximately 30% of Africa, with an area of about 9.2 million km².",answer:"What is the Sahara Desert?",ex:"The Sahara is the world's largest HOT desert. The Antarctic Desert (14.2 million km²) is technically larger but is a cold desert. The Sahara spans 11 countries."},
+  {p:800,clue:"Lake Baikal in Siberia holds this world record for a lake, reaching a depth of 1,642 metres.",answer:"What is the world's deepest lake?",ex:"Baikal also contains about 20% of Earth's unfrozen surface freshwater and is the world's oldest lake (~25 million years). It is home to the Baikal seal (nerpa), the world's only freshwater seal species."},
+  {p:1000,clue:"The Dead Sea is shrinking by approximately one metre in depth every year due to this primary human cause.",answer:"What is the diversion of water from the Jordan River for irrigation and industry?",ex:"The Jordan River historically replenished the Dead Sea. Today, Israel, Jordan, and Palestine divert ~1.3 billion cubic metres annually, leaving only a trickle reaching the Dead Sea."}
+]
+};
 
-const CATS = [
-  "Canadian Physical Geography","World Countries & Capitals",
-  "Rivers, Lakes & Oceans","Climate Zones & Biomes",
-  "Human & Population Geography","Environmental Issues & Sustainability",
-  "Cartography & Map Skills","Economic Geography",
-  "Political Geography & Borders","Natural Disasters & Hazards",
-  "Oceans & Marine Science","Indigenous Lands & Cultures"
-];
-
-const TOPICS = [
-  "Mixed — All Topics",
-  "Canadian Geography (provinces, rivers, landforms, resources)",
-  "World Physical Geography (mountains, rivers, deserts, biomes)",
-  "Human & Population Geography",
-  "Environmental Geography & Climate Change",
-  "Geographic Concepts, Maps & GIS",
-  "Political & Economic Geography"
-];
-
+// ─────────────────────────────────────────────
+//  APP STATE
+// ─────────────────────────────────────────────
+const TOPICS_LIST = Object.keys(QB);
+const J_CATS = Object.keys(JQ);
 const PTS = [200,400,600,800,1000];
 
 let S = {
   screen:'home',
-  writtenTopic:'Mixed — All Topics',writtenCount:20,
-  questions:[],currentQ:0,userAnswers:[],writtenLoading:false,
-  numPlayers:1,playerNames:['Solo','Player 2','Player 3'],
-  scores:[0,0,0],categories:[],board:[],lastCats:[],
-  boardLoading:false,answered:new Set(),
-  activeQ:null,timerInterval:null,timeLeft:30,
-  lastError: null
+  wTopic:'Mixed — All Topics', wCount:20,
+  questions:[], curQ:0, answers:[], loading:false,
+  jPlayers:1, jNames:['Solo','Player 2','Player 3'],
+  jScores:[0,0,0], board:[], answered:new Set(),
+  lastCats:[], boardLoading:false,
+  activeQ:null, timerI:null, timeLeft:30,
+  sgCat:'', sgIdx:0,
 };
 
-async function callAPI(systemPrompt, userPrompt) {
-    if (!HAS_API_KEY) {
-        throw new Error('No valid API key. Please add your Anthropic API key (starts with "sk-ant-") to the API_KEY variable.');
+// ─────────────────────────────────────────────
+//  QUESTION BUILDER
+// ─────────────────────────────────────────────
+function buildTest(topic, count) {
+  let pool = [];
+  if (topic === 'Mixed — All Topics') {
+    Object.values(QB).forEach(qs => pool.push(...qs));
+  } else {
+    pool = QB[topic] ? [...QB[topic]] : [];
+    if (pool.length < count) {
+      Object.entries(QB).forEach(([k,v]) => {
+        if (k !== topic) pool.push(...v);
+      });
     }
-    
-    console.log('Calling Anthropic API...');
-    
-    const response = await fetch(API, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': API_KEY,
-            'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-            model: 'claude-3-haiku-20240307',  // Using Haiku for faster/cheaper responses
-            max_tokens: 2000,
-            temperature: 0.7,
-            system: systemPrompt,
-            messages: [{ role: 'user', content: userPrompt }]
-        })
-    });
-    
-    if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error:', response.status, errorText);
-        
-        if (response.status === 401) {
-            throw new Error('Invalid API key. Please check your Anthropic API key.');
-        } else if (response.status === 429) {
-            throw new Error('Rate limit exceeded. Please wait a moment and try again.');
-        } else {
-            throw new Error(`API Error (${response.status}): ${errorText.substring(0, 200)}`);
-        }
-    }
-    
-    const data = await response.json();
-    console.log('API Response received');
-    return data.content[0].text;
-}
-
-function parseJSONResponse(text) {
-    try {
-        // Clean the JSON string
-        let cleaned = text.trim();
-        
-        // Remove markdown code blocks
-        if (cleaned.startsWith('```json')) {
-            cleaned = cleaned.substring(7);
-        } else if (cleaned.startsWith('```')) {
-            cleaned = cleaned.substring(3);
-        }
-        if (cleaned.endsWith('```')) {
-            cleaned = cleaned.substring(0, cleaned.length - 3);
-        }
-        cleaned = cleaned.trim();
-        
-        return JSON.parse(cleaned);
-    } catch (e) {
-        console.error('JSON parse error:', e);
-        console.error('Raw response:', text.substring(0, 500));
-        throw new Error('Failed to parse API response as JSON');
-    }
-}
-
-async function genCat(category) {
-    const systemPrompt = `You are an expert geography educator creating questions for the Canadian Geographic Challenge National Finals. Return ONLY valid JSON, no other text.`;
-    
-    const userPrompt = `Category: "${category}". Generate exactly 5 Jeopardy-style clues for $200, $400, $600, $800, $1000 (higher points = harder difficulty).
-
-Each clue must be a declarative statement. The answer must start with "What is" or "Who is". Be specific and geographic.
-
-Return a JSON array of exactly 5 objects:
-[
-  {"points":200,"clue":"...","answer":"What is ...?","explanation":"1-2 sentence geographic context"},
-  {"points":400,"clue":"...","answer":"What is ...?","explanation":"..."},
-  {"points":600,"clue":"...","answer":"What is ...?","explanation":"..."},
-  {"points":800,"clue":"...","answer":"What is ...?","explanation":"..."},
-  {"points":1000,"clue":"...","answer":"What is ...?","explanation":"..."}
-]
-
-Return ONLY the JSON array, no markdown formatting, no extra text.`;
-    
-    const response = await callAPI(systemPrompt, userPrompt);
-    return parseJSONResponse(response);
-}
-
-async function genWritten(topic, count) {
-    const systemPrompt = `You are an expert geography educator creating a written test for the Canadian Geographic Challenge National Finals. Return ONLY valid JSON, no other text.`;
-    
-    const userPrompt = `Topic: "${topic}". Generate exactly ${count} multiple-choice questions at national championship difficulty.
-
-Requirements:
-- Mix of: specific geographic facts, reasoning questions, data interpretation, map-reading concepts
-- At least 30% Canadian content if topic includes "Mixed"
-- Each question has 4 options (A, B, C, D)
-- Vary the correct answer position - don't always put it as A
-
-Return a JSON array of exactly ${count} objects:
-[
-  {
-    "question": "...",
-    "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
-    "correct": 0,
-    "explanation": "Detailed explanation of why the answer is correct",
-    "topic_tag": "Canadian Geography|World Geography|Human Geography|Environmental|Concepts & Skills|Economic & Political"
   }
-]
-
-IMPORTANT: "correct" must be 0, 1, 2, or 3 representing A, B, C, or D.
-Return ONLY the JSON array, no markdown formatting, no extra text.`;
-    
-    const response = await callAPI(systemPrompt, userPrompt);
-    const questions = parseJSONResponse(response);
-    
-    // Validate and fix if needed
-    if (!Array.isArray(questions)) {
-        throw new Error('Response is not an array');
-    }
-    
-    return questions.slice(0, count);
+  for (let i = pool.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [pool[i],pool[j]] = [pool[j],pool[i]];
+  }
+  return pool.slice(0, count);
 }
 
-function sc(name) {
-    if (S.timerInterval) { clearInterval(S.timerInterval); S.timerInterval = null; }
-    S.screen = name;
-    S.lastError = null;
-    render();
+function buildBoard(cats) {
+  return cats.map(cat => {
+    const qs = JQ[cat] ? [...JQ[cat]] : [];
+    return { category: cat, questions: qs };
+  });
+}
+
+// ─────────────────────────────────────────────
+//  NAVIGATION & RENDER LOGIC
+// ─────────────────────────────────────────────
+function go(screen) {
+  if (S.timerI) { clearInterval(S.timerI); S.timerI = null; }
+  S.screen = screen;
+  render();
+  window.scrollTo(0,0);
 }
 
 function render() {
-    const map = {
-        home: rHome, 'written-setup': rWSetup, 'written-quiz': rWQuiz,
-        'written-results': rWResults, 'written-review': rWReview,
-        'j-setup': rJSetup, 'j-board': rJBoard
-    };
-    document.getElementById('app').innerHTML = (map[S.screen] || rHome)();
+  const screens = {
+    home: rHome, 'w-setup': rWSetup, 'w-quiz': rWQuiz,
+    'w-results': rWResults, 'w-review': rWReview,
+    'j-setup': rJSetup, 'j-board': rJBoard,
+    'guide': rGuide,
+  };
+  document.getElementById('app').innerHTML = (screens[S.screen] || rHome)();
 }
 
+// ─────────────────────────────────────────────
+//  SCREENS RENDER CODES
+// ─────────────────────────────────────────────
 function rHome() {
-    const apiStatus = HAS_API_KEY ? '✅ API Key detected' : '❌ No API Key - using sample questions';
-    const apiColor = HAS_API_KEY ? 'var(--color-text-success)' : 'var(--color-text-danger)';
-    
-    return `
-<div style="max-width:600px;margin:0 auto;">
-  <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 6px;text-transform:uppercase;letter-spacing:.07em;">Canadian Geographic Challenge — Finals Prep</p>
-  <h1 style="font-size:26px;font-weight:500;margin:0 0 8px;">Written Test & Jeopardy Final Round</h1>
-  <p style="color:var(--color-text-secondary);margin:0 0 2rem;font-size:15px;line-height:1.65;">AI-generated questions at national finals difficulty. Fresh questions every session.</p>
-  
-  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;margin-bottom:16px;font-size:12px;">
-    <span style="color:${apiColor};">●</span> ${apiStatus}
-    ${!HAS_API_KEY ? `<br><span style="color:var(--color-text-secondary);">Get your API key from: <a href="https://console.anthropic.com/" target="_blank" style="color:var(--color-text-info);">console.anthropic.com</a></span>` : ''}
+  const totalQs = Object.values(QB).reduce((a,v)=>a+v.length,0);
+  return `
+<div style="max-width:640px;margin:0 auto;padding:1.5rem 0">
+  <p style="font-size:11px;color:var(--text-secondary);margin:0 0 4px;text-transform:uppercase;letter-spacing:.08em;font-weight:500">Canadian Geographic Challenge</p>
+  <h1 style="margin:0 0 8px">Finals Prep — Ottawa, May 30</h1>
+  <p style="color:var(--text-secondary);margin:0 0 2rem;font-size:14px;line-height:1.65">${totalQs}+ built-in questions at national finals difficulty · Works offline</p>
+
+  <div class="notice notice-green" style="margin-bottom:1.5rem">
+    <strong style="color:var(--text-success)">All questions are built into this file</strong> — open it in any browser, works completely offline, no API setup needed.
+    <br>
+    <span style="font-size:12px;opacity:.85">Covers: Canadian geography · World geography · Climate & biomes · Indigenous lands · Environmental issues · Cartography · Economic geography · Political geography · Natural hazards · Marine science</span>
   </div>
-  
-  ${S.lastError ? `<div class="error-banner"><strong>⚠️ Last error:</strong> ${S.lastError}</div>` : ''}
-  
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem;">
-    <div class="card-hover" onclick="sc('written-setup')">
-      <i class="ti ti-file-text" aria-hidden="true" style="font-size:24px;margin-bottom:12px;display:block;color:var(--color-text-info);"></i>
-      <div style="font-size:17px;font-weight:500;margin-bottom:8px;">Written Test</div>
-      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:14px;">Multiple choice, critical thinking, data interpretation. Up to 30 questions, any topic focus.</div>
-      <div style="font-size:13px;color:var(--color-text-info);">Start practice →</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+    <div class="card card-click" onclick="go('w-setup')">
+      <i class="ti ti-file-description" aria-hidden="true" style="font-size:22px;color:var(--text-info);display:block;margin-bottom:10px"></i>
+      <h3 style="margin:0 0 6px">Written Test Practice</h3>
+      <p style="font-size:13px;color:var(--text-secondary);margin:0 0 14px;line-height:1.55">Multiple-choice questions from every category. Instant feedback + detailed explanations.</p>
+      <span class="pill pill-blue">Up to ${Object.values(QB).reduce((a,v)=>a+v.length,0)} questions</span>
     </div>
-    <div class="card-hover" onclick="sc('j-setup')">
-      <i class="ti ti-trophy" aria-hidden="true" style="font-size:24px;margin-bottom:12px;display:block;color:var(--color-text-warning);"></i>
-      <div style="font-size:17px;font-weight:500;margin-bottom:8px;">Jeopardy Final Round</div>
-      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:14px;">Live board simulation. Up to 3 players. 30-second timer per clue. 6 categories × $200–$1,000.</div>
-      <div style="font-size:13px;color:var(--color-text-warning);">Build board →</div>
+    <div class="card card-click" onclick="go('j-setup')">
+      <i class="ti ti-trophy" aria-hidden="true" style="font-size:22px;color:var(--text-warn);display:block;margin-bottom:10px"></i>
+      <h3 style="margin:0 0 6px">Jeopardy Final Round</h3>
+      <p style="font-size:13px;color:var(--text-secondary);margin:0 0 14px;line-height:1.55">Live board simulation. 1–3 players, 30-sec timer, 6 categories × $200–$1000.</p>
+      <span class="pill pill-warn">${Object.values(JQ).reduce((a,v)=>a+v.length,0)} clues across ${Object.keys(JQ).length} categories</span>
     </div>
   </div>
-  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem 1.25rem;">
-    <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">
-      <i class="ti ti-calendar-event" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"></i>
-      <strong style="color:var(--color-text-primary);">Final Round — Monday June 1, 10:00 AM</strong> · Royal Canadian Geographical Society · 50 Sussex Drive, Ottawa
+  <div class="card card-click" onclick="go('guide')">
+    <div style="display:flex;align-items:center;gap:14px">
+      <i class="ti ti-book-2" aria-hidden="true" style="font-size:22px;color:var(--text-success);flex-shrink:0"></i>
+      <div>
+        <h3 style="margin:0 0 4px">Study Guide Browser</h3>
+        <p style="font-size:13px;color:var(--text-secondary);margin:0;line-height:1.55">Browse all questions by topic with answers visible. Perfect for rapid review before the exam.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:var(--bg-secondary);border-radius:var(--br-md)">
+    <p style="font-size:12px;color:var(--text-secondary);margin:0;line-height:1.6">
+      <i class="ti ti-calendar-event" aria-hidden="true" style="vertical-align:-2px;margin-right:6px"></i>
+      <strong style="color:var(--text-primary)">Final Round — Ottawa · May 30</strong> · Royal Canadian Geographical Society · 50 Sussex Drive
     </p>
   </div>
 </div>`;
 }
 
 function rWSetup() {
-    return `
-<div style="max-width:480px;margin:0 auto;">
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:2rem;">
-    <button class="back-btn" onclick="sc('home')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
-    <h2 style="font-size:20px;font-weight:500;margin:0;">Written Test Practice</h2>
+  const totalFor = (t) => t==='Mixed — All Topics'
+    ? Object.values(QB).reduce((a,v)=>a+v.length,0)
+    : (QB[t]||[]).length;
+  return `
+<div style="max-width:480px;margin:0 auto;padding:1.5rem 0">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:2rem">
+    <button class="back-btn" onclick="go('home')"><i class="ti ti-arrow-left"></i> Back</button>
+    <h2 style="margin:0">Written Test</h2>
   </div>
-  <div style="margin-bottom:1.5rem;">
-    <label style="font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:8px;">Topic focus</label>
-    <select onchange="S.writtenTopic=this.value" style="width:100%;">
-      ${TOPICS.map(t => `<option value="${t}"${t === S.writtenTopic ? ' selected' : ''}>${t}</option>`).join('')}
+
+  <div style="margin-bottom:1.5rem">
+    <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:8px;font-weight:500">Topic focus</label>
+    <select onchange="S.wTopic=this.value;render()" style="width:100%">
+      <option value="Mixed — All Topics" ${S.wTopic==='Mixed — All Topics'?'selected':''}>Mixed — All Topics</option>
+      ${Object.keys(QB).map(t=>`<option value="${t}" ${S.wTopic===t?'selected':''}>${t} (${QB[t].length} questions)</option>`).join('')}
     </select>
+    <p style="font-size:12px;color:var(--text-tertiary);margin:6px 0 0">${totalFor(S.wTopic)} questions available in this topic</p>
   </div>
-  <div style="margin-bottom:2rem;">
-    <label style="font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:8px;">Questions: <strong id="cd">${S.writtenCount}</strong></label>
-    <input type="range" min="5" max="30" step="5" value="${S.writtenCount}" style="width:100%;"
-           oninput="S.writtenCount=+this.value;document.getElementById('cd').textContent=this.value" />
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-tertiary);margin-top:4px;">
+
+  <div style="margin-bottom:2rem">
+    <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:8px;font-weight:500">Number of questions: <strong id="qcd">${S.wCount}</strong></label>
+    <input type="range" min="5" max="${Math.min(30, totalFor(S.wTopic))}" step="5" value="${S.wCount}" style="width:100%"
+      oninput="S.wCount=+this.value;document.getElementById('qcd').textContent=this.value">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-tertiary);margin-top:4px">
       <span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span>
     </div>
   </div>
-  <button onclick="doStartWritten()" style="width:100%;padding:12px;font-size:15px;font-weight:500;cursor:pointer;">Generate ${S.writtenCount} Questions ↗</button>
-  <p style="font-size:13px;color:var(--color-text-tertiary);text-align:center;margin-top:12px;">AI-generated at national finals difficulty — unique every session</p>
+
+  <button onclick="doStartWritten()" style="width:100%;padding:13px;font-size:15px;font-weight:500;cursor:pointer;border-radius:var(--br-md)">
+    Start ${S.wCount}-Question Test
+  </button>
+  <p style="font-size:12px;color:var(--text-tertiary);text-align:center;margin-top:10px">Questions drawn randomly from the question bank</p>
 </div>`;
 }
 
+function doStartWritten() {
+  S.questions = buildTest(S.wTopic, S.wCount);
+  S.curQ = 0;
+  S.answers = [];
+  go('w-quiz');
+}
+
 function rWQuiz() {
-    if (S.writtenLoading) {
-        return `
-<div style="max-width:400px;margin:4rem auto;text-align:center;">
-  <i class="ti ti-loader spin" aria-hidden="true" style="font-size:32px;margin-bottom:1rem;display:block;color:var(--color-text-secondary);"></i>
-  <p style="font-size:16px;font-weight:500;margin:0 0 8px;">Generating ${S.writtenCount} questions…</p>
-  <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">Using Claude AI for national finals difficulty</p>
-</div>`;
-    }
-    if (!S.questions.length) return rWSetup();
-    const q = S.questions[S.currentQ];
-    const answered = S.userAnswers[S.currentQ] !== undefined;
-    const chosen = S.userAnswers[S.currentQ];
-    const correct = S.userAnswers.filter((a, i) => a === S.questions[i].correct).length;
-    const prog = Math.round((S.currentQ + (answered ? 1 : 0)) / S.questions.length * 100);
-    return `
-<div style="max-width:620px;margin:0 auto;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-    <button class="back-btn" onclick="if(confirm('Exit test and lose progress?'))sc('written-setup')"><i class="ti ti-x" aria-hidden="true"></i> Exit</button>
-    <span style="font-size:13px;color:var(--color-text-secondary);">Q${S.currentQ + 1}/${S.questions.length}${q.topic_tag ? ' · ' + q.topic_tag : ''}</span>
-    <span style="font-size:13px;font-weight:500;">${correct} correct</span>
+  if (!S.questions.length) return rWSetup();
+  const q = S.questions[S.curQ];
+  const answered = S.answers[S.curQ] !== undefined;
+  const chosen = S.answers[S.curQ];
+  const correct = S.answers.filter((a,i)=>a===S.questions[i].c).length;
+  const prog = Math.round((S.curQ+(answered?1:0))/S.questions.length*100);
+  const isLast = S.curQ === S.questions.length-1;
+
+  return `
+<div style="max-width:640px;margin:0 auto;padding:1.5rem 0">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <button class="back-btn" onclick="if(confirm('Exit and lose progress?'))go('w-setup')"><i class="ti ti-x"></i> Exit</button>
+    <span style="font-size:12px;color:var(--text-secondary)">Q${S.curQ+1}/${S.questions.length}${q.tag?' · '+q.tag:''}</span>
+    <span style="font-size:13px;font-weight:500;color:var(--text-success)">${correct} correct</span>
   </div>
-  <div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin-bottom:2rem;overflow:hidden;">
-    <div style="height:100%;width:${prog}%;background:var(--color-text-info);transition:width .3s;"></div>
+  <div class="pbar-wrap" style="margin-bottom:1.75rem">
+    <div class="pbar-fill" style="width:${prog}%;background:var(--text-info)"></div>
   </div>
-  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.5rem;margin-bottom:1.25rem;">
-    <p style="font-size:16px;line-height:1.7;margin:0;font-weight:500;">${q.question}</p>
+
+  <div class="card" style="margin-bottom:1rem">
+    <p style="font-size:15px;line-height:1.7;margin:0;font-weight:500">${q.q}</p>
   </div>
-  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:1.25rem;">
-    ${q.options.map((opt, i) => {
-        let border = '0.5px solid var(--color-border-tertiary)';
-        let bg = 'var(--color-background-primary)';
-        let col = 'var(--color-text-primary)';
-        if (answered) {
-            if (i === q.correct) { bg = 'var(--color-background-success)'; border = '0.5px solid var(--color-border-success)'; col = 'var(--color-text-success)'; }
-            else if (i === chosen && chosen !== q.correct) { bg = 'var(--color-background-danger)'; border = '0.5px solid var(--color-border-danger)'; col = 'var(--color-text-danger)'; }
-        }
-        return `<button class="opt-btn" onclick="${answered ? '' : 'doAns(' + i + ')'}" ${answered ? 'disabled' : ''} style="background:${bg};border:${border};color:${col};">${opt}</button>`;
+
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:1rem">
+    ${q.opts.map((opt,i) => {
+      let border='.5px solid var(--border)', bg='var(--bg-primary)', col='var(--text-primary)';
+      if (answered) {
+        if(i===q.c){bg='var(--bg-success)';border='.5px solid var(--border-success)';col='var(--text-success)'}
+        else if(i===chosen&&chosen!==q.c){bg='var(--bg-danger)';border='.5px solid var(--border-danger)';col='var(--text-danger)'}
+      }
+      return `<button class="opt-btn" onclick="${answered?'':'doAns('+i+')'}" ${answered?'disabled':''} style="background:${bg};border:${border};color:${col}">${opt}</button>`;
     }).join('')}
   </div>
+
   ${answered ? `
-  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem 1.25rem;margin-bottom:1.25rem;">
-    <p style="font-size:11px;font-weight:500;margin:0 0 6px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;">Explanation</p>
-    <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.65;">${q.explanation}</p>
+  <div style="background:var(--bg-secondary);border-radius:var(--br-md);padding:1rem 1.25rem;margin-bottom:1rem">
+    <p class="tag" style="margin:0 0 5px">Explanation</p>
+    <p style="font-size:13px;color:var(--text-secondary);margin:0;line-height:1.65">${q.e}</p>
   </div>
-  <button onclick="${S.currentQ < S.questions.length - 1 ? 'doNext()' : 'sc(\'written-results\')'}" style="width:100%;padding:12px;font-size:15px;font-weight:500;cursor:pointer;">
-    ${S.currentQ < S.questions.length - 1 ? 'Next Question →' : 'See Results →'}
+  <button onclick="${isLast?'go(\'w-results\')':'doNext()'}" style="width:100%;padding:13px;font-size:15px;font-weight:500;cursor:pointer;border-radius:var(--br-md)">
+    ${isLast?'See Results →':'Next Question →'}
   </button>` : ''}
 </div>`;
 }
 
+function doAns(i) { S.answers[S.curQ]=i; render(); }
+function doNext() { if(S.curQ<S.questions.length-1){S.curQ++;render();} }
+
 function rWResults() {
-    const correct = S.userAnswers.filter((a, i) => a === S.questions[i].correct).length;
-    const pct = Math.round(correct / S.questions.length * 100);
-    const grade = pct >= 90 ? 'Exceptional' : pct >= 75 ? 'Strong' : pct >= 60 ? 'Solid' : pct >= 45 ? 'Developing' : 'Needs Focus';
-    const gc = pct >= 75 ? 'var(--color-text-success)' : pct >= 55 ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
-    const topicMap = {};
-    S.questions.forEach((q, i) => {
-        const t = q.topic_tag || 'General';
-        if (!topicMap[t]) topicMap[t] = { c: 0, n: 0 };
-        topicMap[t].n++;
-        if (S.userAnswers[i] === q.correct) topicMap[t].c++;
-    });
-    return `
-<div style="max-width:540px;margin:0 auto;">
-  <div style="text-align:center;margin-bottom:2.5rem;">
-    <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 10px;text-transform:uppercase;letter-spacing:.07em;">Test Complete</p>
-    <div style="font-size:52px;font-weight:500;margin:0 0 6px;">${correct}<span style="font-size:28px;color:var(--color-text-secondary);">/${S.questions.length}</span></div>
-    <div style="font-size:20px;font-weight:500;color:${gc};">${pct}% — ${grade}</div>
+  const correct = S.answers.filter((a,i)=>a===S.questions[i].c).length;
+  const pct = Math.round(correct/S.questions.length*100);
+  const grade = pct>=90?'Exceptional':pct>=75?'Strong':pct>=60?'Solid':pct>=45?'Developing':'Needs Focus';
+  const gc = pct>=75?'var(--text-success)':pct>=55?'var(--text-warn)':'var(--text-danger)';
+  const tagMap = {};
+  S.questions.forEach((q,i)=>{
+    const t=q.tag||'General';
+    if(!tagMap[t])tagMap[t]={c:0,n:0};
+    tagMap[t].n++;
+    if(S.answers[i]===q.c)tagMap[t].c++;
+  });
+  return `
+<div style="max-width:520px;margin:0 auto;padding:1.5rem 0">
+  <div style="text-align:center;margin-bottom:2.5rem">
+    <p class="tag" style="margin:0 0 10px">Test complete</p>
+    <div style="font-size:54px;font-weight:500;margin:0 0 4px;line-height:1">${correct}<span style="font-size:28px;color:var(--text-secondary)">/${S.questions.length}</span></div>
+    <div style="font-size:20px;font-weight:500;color:${gc}">${pct}% — ${grade}</div>
   </div>
-  <p style="font-size:14px;color:var(--color-text-secondary);font-weight:500;margin:0 0 12px;">Performance by topic</p>
-  ${Object.entries(topicMap).map(([tag, d]) => {
-        const p = Math.round(d.c / d.n * 100);
-        const c = p >= 75 ? 'var(--color-text-success)' : p >= 50 ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
-        return `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-      <span style="font-size:13px;color:var(--color-text-secondary);min-width:195px;flex-shrink:0;">${tag}</span>
-      <div style="flex:1;height:5px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden;">
-        <div style="height:100%;width:${p}%;background:${c};border-radius:3px;"></div>
-      </div>
-      <span style="font-size:13px;font-weight:500;min-width:32px;text-align:right;">${d.c}/${d.n}</span>
+
+  <p style="font-size:13px;color:var(--text-secondary);font-weight:500;margin:0 0 10px">Performance by topic</p>
+  ${Object.entries(tagMap).map(([tag,d])=>{
+    const p=Math.round(d.c/d.n*100);
+    const c=p>=75?'var(--text-success)':p>=50?'var(--text-warn)':'var(--text-danger)';
+    return `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="font-size:12px;color:var(--text-secondary);min-width:200px;flex-shrink:0">${tag}</span>
+      <div class="pbar-wrap" style="flex:1"><div class="pbar-fill" style="width:${p}%;background:${c}"></div></div>
+      <span style="font-size:13px;font-weight:500;min-width:32px;text-align:right">${d.c}/${d.n}</span>
     </div>`;
-    }).join('')}
-  <div style="display:flex;gap:12px;margin-top:2rem;">
-    <button onclick="doReview()" style="flex:1;padding:12px;font-size:14px;cursor:pointer;">Review Answers</button>
-    <button onclick="sc('written-setup')" style="flex:1;padding:12px;font-size:14px;cursor:pointer;">New Test ↗</button>
+  }).join('')}
+
+  <div style="display:flex;gap:10px;margin-top:2rem">
+    <button onclick="go('w-review')" style="flex:1;padding:12px;cursor:pointer;border-radius:var(--br-md)">Review Answers</button>
+    <button onclick="go('w-setup')" style="flex:1;padding:12px;cursor:pointer;border-radius:var(--br-md)">New Test</button>
   </div>
 </div>`;
 }
 
 function rWReview() {
-    return `
-<div style="max-width:640px;margin:0 auto;">
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:2rem;">
-    <button class="back-btn" onclick="sc('written-results')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Results</button>
-    <h2 style="font-size:18px;font-weight:500;margin:0;">Answer Review</h2>
+  return `
+<div style="max-width:660px;margin:0 auto;padding:1.5rem 0">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem">
+    <button class="back-btn" onclick="go('w-results')"><i class="ti ti-arrow-left"></i> Results</button>
+    <h2 style="margin:0">Answer Review</h2>
   </div>
-  ${S.questions.map((q, i) => {
-        const ok = S.userAnswers[i] === q.correct;
-        return `<div style="margin-bottom:1.5rem;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;">
-      <div style="padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:12px;background:var(--color-background-primary);">
-        <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;background:${ok ? 'var(--color-background-success)' : 'var(--color-background-danger)'};color:${ok ? 'var(--color-text-success)' : 'var(--color-text-danger)'};">${i + 1}</span>
-        <p style="font-size:14px;margin:0;line-height:1.65;">${q.question}</p>
+  ${S.questions.map((q,i)=>{
+    const ok=S.answers[i]===q.c;
+    return `<div style="margin-bottom:1.25rem;border:.5px solid var(--border);border-radius:var(--br-lg);overflow:hidden">
+      <div style="padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:10px;background:var(--bg-primary)">
+        <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;background:${ok?'var(--bg-success)':'var(--bg-danger)'};color:${ok?'var(--text-success)':'var(--text-danger)'}">${i+1}</span>
+        <p style="font-size:13px;margin:0;line-height:1.65">${q.q}</p>
       </div>
-      <div style="padding:1rem 1.25rem;background:var(--color-background-secondary);">
-        <p style="font-size:13px;margin:0 0 4px;color:var(--color-text-success);font-weight:500;">✓ ${q.options[q.correct]}</p>
-        ${S.userAnswers[i] !== undefined && !ok ? `<p style="font-size:13px;margin:0 0 8px;color:var(--color-text-danger);">✗ ${q.options[S.userAnswers[i]]}</p>` : ''}
-        <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.65;">${q.explanation}</p>
+      <div style="padding:.875rem 1.25rem;background:var(--bg-secondary)">
+        <p style="font-size:13px;margin:0 0 ${!ok&&S.answers[i]!==undefined?'4px':'8px'};color:var(--text-success);font-weight:500">✓ ${q.opts[q.c]}</p>
+        ${S.answers[i]!==undefined&&!ok?`<p style="font-size:13px;margin:0 0 8px;color:var(--text-danger)">✗ ${q.opts[S.answers[i]]}</p>`:''}
+        <p style="font-size:12px;color:var(--text-secondary);margin:0;line-height:1.65">${q.e}</p>
       </div>
     </div>`;
-    }).join('')}
-  <button onclick="sc('written-setup')" style="width:100%;padding:12px;font-size:14px;margin-bottom:2rem;cursor:pointer;">New Test ↗</button>
+  }).join('')}
+  <button onclick="go('w-setup')" style="width:100%;padding:12px;font-size:14px;margin-bottom:2rem;cursor:pointer;border-radius:var(--br-md)">New Test</button>
+</div>`;
+}
+
+function rGuide() {
+  const cats = Object.keys(QB);
+  const curCat = S.sgCat || cats[0];
+  const qs = QB[curCat]||[];
+  return `
+<div style="max-width:760px;margin:0 auto;padding:1.5rem 0">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem">
+    <button class="back-btn" onclick="go('home')"><i class="ti ti-arrow-left"></i> Home</button>
+    <h2 style="margin:0">Study Guide</h2>
+  </div>
+
+  <div style="margin-bottom:1.5rem">
+    <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;font-weight:500">Browse by topic</label>
+    <select onchange="S.sgCat=this.value;render()" style="width:100%;max-width:400px">
+      ${cats.map(c=>`<option value="${c}" ${curCat===c?'selected':''}>${c} (${QB[c].length})</option>`).join('')}
+    </select>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+    <p style="font-size:13px;color:var(--text-secondary);margin:0">${qs.length} questions · answers shown</p>
+    <button onclick="go('w-setup')" style="font-size:12px;padding:6px 12px;cursor:pointer;border-radius:var(--br-sm)">Take a test on this topic</button>
+  </div>
+
+  ${qs.map((q,i)=>`
+  <div style="border:.5px solid var(--border);border-radius:var(--br-lg);overflow:hidden;margin-bottom:1rem">
+    <div style="padding:1rem 1.25rem;background:var(--bg-primary)">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <span style="flex-shrink:0;min-width:24px;height:24px;border-radius:50%;background:var(--bg-info);color:var(--text-info);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500">${i+1}</span>
+        <div style="flex:1">
+          <p style="font-size:14px;font-weight:500;margin:0 0 10px;line-height:1.6">${q.q}</p>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            ${q.opts.map((opt,j)=>`<div style="font-size:13px;padding:6px 10px;border-radius:var(--br-sm);background:${j===q.c?'var(--bg-success)':'var(--bg-secondary)'};color:${j===q.c?'var(--text-success)':'var(--text-secondary)'};border:.5px solid ${j===q.c?'var(--border-success)':'var(--border)'}">${j===q.c?'✓ ':''} ${opt}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:.75rem 1.25rem;background:var(--bg-secondary);border-top:.5px solid var(--border)">
+      <p class="tag" style="margin:0 0 4px">Key fact</p>
+      <p style="font-size:12px;color:var(--text-secondary);margin:0;line-height:1.65">${q.e}</p>
+    </div>
+  </div>`).join('')}
 </div>`;
 }
 
 function rJSetup() {
-    return `
-<div style="max-width:520px;margin:0 auto;">
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:2rem;">
-    <button class="back-btn" onclick="sc('home')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
-    <h2 style="font-size:20px;font-weight:500;margin:0;">Jeopardy Final Round</h2>
+  return `
+<div style="max-width:520px;margin:0 auto;padding:1.5rem 0">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:2rem">
+    <button class="back-btn" onclick="go('home')"><i class="ti ti-arrow-left"></i> Back</button>
+    <h2 style="margin:0">Jeopardy Final Round</h2>
   </div>
-  <div style="margin-bottom:1.5rem;">
-    <label style="font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:8px;">Players</label>
-    <div style="display:flex;gap:8px;">
-      ${[1, 2, 3].map(n => `<button onclick="S.numPlayers=${n};render()" style="flex:1;padding:10px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:${S.numPlayers === n ? 'var(--color-background-secondary)' : 'var(--color-background-primary)'};">${n} Player${n > 1 ? 's' : ''}</button>`).join('')}
+
+  <div style="margin-bottom:1.5rem">
+    <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:8px;font-weight:500">Number of players</label>
+    <div style="display:flex;gap:8px">
+      ${[1,2,3].map(n=>`<button onclick="S.jPlayers=${n};render()" style="flex:1;padding:10px;cursor:pointer;border-radius:var(--br-md);border:.5px solid var(--border);background:${S.jPlayers===n?'var(--bg-tertiary)':'var(--bg-primary)'};font-weight:${S.jPlayers===n?'500':'400'}">${n} Player${n>1?'s':''}</button>`).join('')}
     </div>
   </div>
-  ${S.numPlayers > 1 ? Array.from({ length: S.numPlayers }, (_, i) => `
-  <div style="margin-bottom:1rem;">
-    <label style="font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:6px;">Player ${i + 1} name</label>
-    <input type="text" value="${S.playerNames[i]}" onchange="S.playerNames[${i}]=this.value" style="width:100%;" />
-  </div>`).join('') : ''}
-  <div style="margin-bottom:1.5rem;">
-    <label style="font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:10px;">Categories <span style="font-weight:400;">(check exactly 6 to force, or leave all unchecked for 6 random)</span></label>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      ${CATS.map((cat, i) => `
-      <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:13px;color:var(--color-text-secondary);">
-        <input type="checkbox" id="c${i}" value="${cat}" style="margin-top:2px;cursor:pointer;flex-shrink:0;" />
+
+  ${S.jPlayers>1?Array.from({length:S.jPlayers},(_,i)=>`
+  <div style="margin-bottom:1rem">
+    <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;font-weight:500">Player ${i+1} name</label>
+    <input type="text" value="${S.jNames[i]}" onchange="S.jNames[${i}]=this.value" style="width:100%">
+  </div>`).join(''):''}
+
+  <div style="margin-bottom:1.5rem">
+    <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:10px;font-weight:500">Categories <span style="font-weight:400">(select exactly 6, or leave unchecked for 6 random)</span></label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      ${J_CATS.map((cat,i)=>`
+      <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:13px;color:var(--text-secondary)">
+        <input type="checkbox" id="jc${i}" value="${cat}" style="margin-top:2px;cursor:pointer;flex-shrink:0">
         ${cat}
       </label>`).join('')}
     </div>
   </div>
-  <button onclick="doStartJ()" style="width:100%;padding:12px;font-size:15px;font-weight:500;cursor:pointer;">Generate Board ↗</button>
-  <p style="font-size:13px;color:var(--color-text-tertiary);text-align:center;margin-top:12px;">30 AI-generated clues at national finals difficulty</p>
+  <button onclick="doStartJ()" style="width:100%;padding:13px;font-size:15px;font-weight:500;cursor:pointer;border-radius:var(--br-md)">Generate Board ↗</button>
+  <p style="font-size:12px;color:var(--text-tertiary);text-align:center;margin-top:10px">${Object.values(JQ).reduce((a,v)=>a+v.length,0)} clues at national finals difficulty</p>
 </div>`;
 }
 
+function doStartJ() {
+  const checked = Array.from(document.querySelectorAll('#app input[type=checkbox]:checked')).map(c=>c.value);
+  let cats;
+  if (checked.length>=6) cats=checked.slice(0,6);
+  else { const rest=J_CATS.filter(c=>!checked.includes(c)).sort(()=>Math.random()-.5); cats=[...checked,...rest].slice(0,6); }
+  S.lastCats=cats;
+  S.board=buildBoard(cats);
+  S.jScores=[0,0,0];
+  S.answered=new Set();
+  go('j-board');
+}
+
 function rJBoard() {
-    const loaded = S.board.filter(c => c.questions).length;
-    const total = S.board.length || 6;
-    if (S.boardLoading && loaded < total) {
-        return `
-<div style="max-width:400px;margin:4rem auto;text-align:center;">
-  <i class="ti ti-loader spin" aria-hidden="true" style="font-size:32px;margin-bottom:1rem;display:block;color:var(--color-text-secondary);"></i>
-  <p style="font-size:16px;font-weight:500;margin:0 0 8px;">Building board…</p>
-  <p style="font-size:14px;color:var(--color-text-secondary);margin:0 0 1.5rem;" id="lct">${loaded} of ${total} categories ready</p>
-  <div style="height:4px;background:var(--color-background-secondary);border-radius:2px;overflow:hidden;max-width:200px;margin:0 auto;">
-    <div id="lbar" style="height:100%;width:${Math.round(loaded / total * 100)}%;background:var(--color-text-warning);transition:width .4s;"></div>
-  </div>
-</div>`;
-    }
-    const allDone = S.answered.size === S.board.length * 5;
-    return `
-<div style="max-width:740px;margin:0 auto;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px;">
-    <button class="back-btn" onclick="if(confirm('Leave this board?'))sc('j-setup')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Setup</button>
-    <div style="display:flex;gap:20px;">
-      ${S.playerNames.slice(0, S.numPlayers).map((name, i) => `
-      <div style="text-align:center;">
-        <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em;">${name}</div>
-        <div style="font-size:20px;font-weight:500;color:${S.scores[i] >= 0 ? 'var(--color-text-primary)' : 'var(--color-text-danger)'};">${S.scores[i] < 0 ? '−$' : '$'}${Math.abs(S.scores[i]).toLocaleString()}</div>
+  const allDone = S.answered.size===S.board.length*5;
+  return `
+<div style="max-width:900px;margin:0 auto;padding:1rem 0">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+    <button class="back-btn" onclick="if(confirm('Leave board?'))go('j-setup')"><i class="ti ti-arrow-left"></i> Setup</button>
+    <div style="display:flex;gap:20px">
+      ${S.jNames.slice(0,S.jPlayers).map((n,i)=>`
+      <div style="text-align:center">
+        <div class="tag" style="margin-bottom:2px">${n}</div>
+        <div style="font-size:20px;font-weight:500;color:${S.jScores[i]<0?'var(--text-danger)':'var(--text-primary)'}">${S.jScores[i]<0?'−$':'$'}${Math.abs(S.jScores[i]).toLocaleString()}</div>
       </div>`).join('')}
     </div>
-    <div style="font-size:13px;color:var(--color-text-secondary);">${S.answered.size}/${S.board.length * 5} played</div>
+    <div style="font-size:12px;color:var(--text-secondary)">${S.answered.size}/${S.board.length*5} played</div>
   </div>
-  <div style="overflow-x:auto;">
-    <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
-      <thead>
-        <tr>${S.board.map(c => `<th style="padding:8px 4px;font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);text-align:center;height:52px;line-height:1.35;vertical-align:middle;">${c.category}</th>`).join('')}
-        </tr>
-      </thead>
+
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;table-layout:fixed">
+      <thead><tr>
+        ${S.board.map(c=>`<th style="padding:10px 6px;font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;border:.5px solid var(--border);background:var(--bg-secondary);text-align:center;height:54px;line-height:1.4;vertical-align:middle">${c.category}</th>`).join('')}
+      </tr></thead>
       <tbody>
-        ${PTS.map((pt, pi) => `<tr>${S.board.map((cat, ci) => {
-            const key = `${ci}-${pi}`;
-            const done = S.answered.has(key);
-            const loading = !cat.questions;
-            return `<td style="border:0.5px solid var(--color-border-tertiary);height:60px;padding:4px;text-align:center;vertical-align:middle;">
-            ${loading ? `<span style="font-size:11px;color:var(--color-text-tertiary);">…</span>`
-                    : done ? `<span style="font-size:16px;font-weight:500;color:var(--color-text-secondary);opacity:.2;">$${pt}</span>`
-                        : `<button class="jpt-btn" onclick="openQ(${ci},${pi})">$${pt}</button>`}
-            </td>`;
+        ${PTS.map((pt,pi)=>`<tr>${S.board.map((cat,ci)=>{
+          const key=`${ci}-${pi}`, done=S.answered.has(key);
+          return `<td style="border:.5px solid var(--border);height:62px;padding:4px;text-align:center;vertical-align:middle">
+            ${done?`<span style="font-size:16px;font-weight:500;color:var(--border-strong);opacity:.3">$${pt}</span>`
+            :`<button class="jpt-btn" onclick="openQ(${ci},${pi})">$${pt}</button>`}
+          </td>`;
         }).join('')}</tr>`).join('')}
       </tbody>
     </table>
   </div>
-  ${allDone ? `
-  <div style="margin-top:2rem;padding:1.5rem;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);text-align:center;">
-    <p style="font-size:16px;font-weight:500;margin:0 0 1.25rem;">Board complete!</p>
-    ${S.numPlayers > 1 ? `<div style="display:flex;gap:12px;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;">
-      ${S.playerNames.slice(0, S.numPlayers).map((n, i) => ({ n, s: S.scores[i] })).sort((a, b) => b.s - a.s).map((p, rank) => `
-      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:1rem 1.5rem;min-width:120px;">
-        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;">${['1st place', '2nd place', '3rd place'][rank]}</div>
-        <div style="font-size:15px;font-weight:500;margin-bottom:4px;">${p.n}</div>
-        <div style="font-size:22px;font-weight:500;">$${p.s.toLocaleString()}</div>
+
+  ${allDone?`
+  <div style="margin-top:1.5rem;padding:1.5rem;background:var(--bg-secondary);border-radius:var(--br-lg);text-align:center">
+    <p style="font-size:15px;font-weight:500;margin:0 0 1rem">Board complete!</p>
+    ${S.jPlayers>1?`<div style="display:flex;gap:10px;justify-content:center;margin-bottom:1.25rem;flex-wrap:wrap">
+      ${S.jNames.slice(0,S.jPlayers).map((n,i)=>({n,s:S.jScores[i]})).sort((a,b)=>b.s-a.s).map((p,rank)=>`
+      <div style="background:var(--bg-primary);border:.5px solid var(--border);border-radius:var(--br-md);padding:.875rem 1.25rem;min-width:110px">
+        <div class="tag" style="margin-bottom:4px">${['1st','2nd','3rd'][rank]}</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:4px">${p.n}</div>
+        <div style="font-size:20px;font-weight:500">$${p.s.toLocaleString()}</div>
       </div>`).join('')}
-    </div>` : ''}
-    <button onclick="doRegenSame()" style="padding:12px 28px;font-size:14px;cursor:pointer;margin-right:10px;">New Board, Same Categories ↗</button>
-    <button onclick="sc('j-setup')" style="padding:12px 28px;font-size:14px;cursor:pointer;">Change Setup</button>
-  </div>` : ''}
+    </div>`:''}
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button onclick="doRegenSame()" style="padding:11px 22px;cursor:pointer;border-radius:var(--br-md)">New Board, Same Categories</button>
+      <button onclick="go('j-setup')" style="padding:11px 22px;cursor:pointer;border-radius:var(--br-md)">Change Setup</button>
+    </div>
+  </div>`:''}
 </div>`;
 }
 
-function openQ(ci, pi) {
-    if (!S.board[ci] || !S.board[ci].questions) return;
-    S.activeQ = { ci, pi };
-    S.timeLeft = 30;
-    if (S.timerInterval) { clearInterval(S.timerInterval); S.timerInterval = null; }
-    showModal(false);
-    S.timerInterval = setInterval(() => {
-        S.timeLeft--;
-        const el = document.getElementById('tnum');
-        if (el) {
-            el.textContent = S.timeLeft;
-            el.style.color = S.timeLeft > 15 ? 'var(--color-text-success)' : S.timeLeft > 5 ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
-        }
-        if (S.timeLeft <= 0) { clearInterval(S.timerInterval); S.timerInterval = null; showModal(true); }
-    }, 1000);
+function doRegenSame() {
+  if(S.lastCats&&S.lastCats.length===6){S.board=buildBoard(S.lastCats);S.jScores=[0,0,0];S.answered=new Set();go('j-board');}
+  else go('j-setup');
+}
+
+// ─────────────────────────────────────────────
+//  JEOPARDY MODAL MANAGEMENT
+// ─────────────────────────────────────────────
+function openQ(ci,pi) {
+  if(!S.board[ci]||!S.board[ci].questions) return;
+  S.activeQ={ci,pi};
+  S.timeLeft=30;
+  if(S.timerI){clearInterval(S.timerI);S.timerI=null;}
+  showModal(false);
+  S.timerI=setInterval(()=>{
+    S.timeLeft--;
+    const el=document.getElementById('tnum');
+    if(el){
+      el.textContent=S.timeLeft;
+      el.style.color=S.timeLeft>15?'var(--text-success)':S.timeLeft>5?'var(--text-warn)':'var(--text-danger)';
+    }
+    if(S.timeLeft<=0){clearInterval(S.timerI);S.timerI=null;showModal(true);}
+  },1000);
 }
 
 function showModal(revealed) {
-    const { ci, pi } = S.activeQ;
-    const q = S.board[ci].questions[pi];
-    const pt = PTS[pi];
-    const cat = S.board[ci].category;
-    const tc = S.timeLeft > 15 ? 'var(--color-text-success)' : S.timeLeft > 5 ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
-    document.getElementById('modal-root').innerHTML = `
-<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem;">
-  <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);padding:2rem;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;">
+  const {ci,pi}=S.activeQ;
+  const q=S.board[ci].questions[pi];
+  const pt=PTS[pi], cat=S.board[ci].category;
+  const tc=S.timeLeft>15?'var(--text-success)':S.timeLeft>5?'var(--text-warn)':'var(--text-danger)';
+  document.getElementById('modal-root').innerHTML=`
+<div class="modal-bg">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem">
       <div>
-        <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">${cat}</div>
-        <div style="font-size:24px;font-weight:500;color:var(--color-text-warning);">$${pt}</div>
+        <div class="tag" style="margin-bottom:4px">${cat}</div>
+        <div style="font-size:24px;font-weight:500;color:var(--text-warn)">$${pt}</div>
       </div>
-      <div style="display:flex;align-items:center;gap:16px;">
-        ${!revealed ? `<div style="text-align:center;"><div style="font-size:30px;font-weight:500;color:${tc};" id="tnum">${S.timeLeft}</div><div style="font-size:10px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.05em;">sec</div></div>` : ''}
-        <button onclick="closeModal()" style="border:none;background:none;cursor:pointer;color:var(--color-text-secondary);font-size:16px;padding:4px;line-height:1;"><i class="ti ti-x" aria-hidden="true"></i></button>
+      <div style="display:flex;align-items:center;gap:16px">
+        ${!revealed?`<div style="text-align:center"><div style="font-size:30px;font-weight:500;color:${tc}" id="tnum">${S.timeLeft}</div><div class="tag">sec</div></div>`:''}
+        <button onclick="closeModal()" style="border:none;background:none;cursor:pointer;color:var(--text-secondary);font-size:18px;padding:4px;line-height:1"><i class="ti ti-x"></i></button>
       </div>
     </div>
-    <p style="font-size:17px;line-height:1.7;margin:0 0 1.5rem;font-weight:500;">${q.clue}</p>
-    ${revealed ? `
-    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem 1.25rem;margin-bottom:1.5rem;">
-      <div style="font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Answer</div>
-      <div style="font-size:17px;font-weight:500;margin-bottom:${q.explanation ? '8px' : '0'};">${q.answer}</div>
-      ${q.explanation ? `<p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.65;">${q.explanation}</p>` : ''}
+    <p style="font-size:17px;line-height:1.7;margin:0 0 1.5rem;font-weight:500">${q.clue}</p>
+    ${revealed?`
+    <div style="background:var(--bg-secondary);border-radius:var(--br-md);padding:1rem 1.25rem;margin-bottom:1.25rem">
+      <div class="tag" style="margin-bottom:6px">Answer</div>
+      <div style="font-size:16px;font-weight:500;margin-bottom:${q.ex?'8px':'0'}">${q.answer}</div>
+      ${q.ex?`<p style="font-size:13px;color:var(--text-secondary);margin:0;line-height:1.65">${q.ex}</p>`:''}
     </div>
-    ${S.numPlayers > 1 ? `
-    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px;font-weight:500;">Who answered correctly?</p>
-    ${S.playerNames.slice(0, S.numPlayers).map((n, i) => `
-    <button onclick="doAward(${i},${pt})" style="width:100%;padding:10px 14px;text-align:left;cursor:pointer;font-size:14px;border:0.5px solid var(--color-border-success);border-radius:var(--border-radius-md);background:var(--color-background-success);color:var(--color-text-success);margin-bottom:8px;font-family:var(--font-sans);">
-      <i class="ti ti-check" aria-hidden="true" style="vertical-align:-1px;margin-right:6px;"></i>${n} — correct (+$${pt})
-    </button>`).join('')}
-    <button onclick="doAward(-1,${pt})" style="width:100%;padding:10px 14px;text-align:left;cursor:pointer;font-size:14px;border:0.5px solid var(--color-border-danger);border-radius:var(--border-radius-md);background:var(--color-background-danger);color:var(--color-text-danger);font-family:var(--font-sans);">
-      <i class="ti ti-x" aria-hidden="true" style="vertical-align:-1px;margin-right:6px;"></i>Nobody / Skip
-    </button>` : `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <button onclick="doAward(0,${pt})" style="padding:12px;cursor:pointer;font-size:14px;border:0.5px solid var(--color-border-success);border-radius:var(--border-radius-md);background:var(--color-background-success);color:var(--color-text-success);font-family:var(--font-sans);">
-        <i class="ti ti-check" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"></i>Correct +$${pt}
-      </button>
-      <button onclick="doAward(-1,${pt})" style="padding:12px;cursor:pointer;font-size:14px;border:0.5px solid var(--color-border-danger);border-radius:var(--border-radius-md);background:var(--color-background-danger);color:var(--color-text-danger);font-family:var(--font-sans);">
-        <i class="ti ti-x" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"></i>Skip
-      </button>
-    </div>`}` : `
-    <button onclick="revealAns()" style="width:100%;padding:12px;font-size:15px;font-weight:500;cursor:pointer;">Reveal Answer</button>`}
+    ${S.jPlayers>1?`
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;font-weight:500">Who answered correctly?</p>
+    ${S.jNames.slice(0,S.jPlayers).map((n,i)=>`<button onclick="doAward(${i},${pt})" style="width:100%;padding:10px 14px;text-align:left;cursor:pointer;font-size:13px;border:.5px solid var(--border-success);border-radius:var(--br-md);background:var(--bg-success);color:var(--text-success);margin-bottom:7px;font-family:var(--font-sans)"><i class="ti ti-check" style="vertical-align:-1px;margin-right:6px"></i>${n} — correct (+$${pt})</button>`).join('')}
+    <button onclick="doAward(-1,${pt})" style="width:100%;padding:10px 14px;text-align:left;cursor:pointer;font-size:13px;border:.5px solid var(--border-danger);border-radius:var(--br-md);background:var(--bg-danger);color:var(--text-danger);font-family:var(--font-sans)"><i class="ti ti-x" style="vertical-align:-1px;margin-right:6px"></i>Nobody / Skip</button>`:`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button onclick="doAward(0,${pt})" style="padding:12px;cursor:pointer;font-size:14px;border:.5px solid var(--border-success);border-radius:var(--br-md);background:var(--bg-success);color:var(--text-success);font-family:var(--font-sans)"><i class="ti ti-check" style="vertical-align:-1px;margin-right:4px"></i>Correct +$${pt}</button>
+      <button onclick="doAward(-1,${pt})" style="padding:12px;cursor:pointer;font-size:14px;border:.5px solid var(--border-danger);border-radius:var(--br-md);background:var(--bg-danger);color:var(--text-danger);font-family:var(--font-sans)"><i class="ti ti-x" style="vertical-align:-1px;margin-right:4px"></i>Skip</button>
+    </div>`}`:`
+    <button onclick="revealAns()" style="width:100%;padding:13px;font-size:15px;font-weight:500;cursor:pointer;border-radius:var(--br-md)">Reveal Answer</button>`}
   </div>
 </div>`;
 }
 
-function revealAns() { if (S.timerInterval) { clearInterval(S.timerInterval); S.timerInterval = null; } showModal(true); }
-function closeModal() { if (S.timerInterval) { clearInterval(S.timerInterval); S.timerInterval = null; } document.getElementById('modal-root').innerHTML = ''; }
-function doAward(playerIdx, pts) { if (playerIdx >= 0) S.scores[playerIdx] += pts; const { ci, pi } = S.activeQ; S.answered.add(`${ci}-${pi}`); closeModal(); render(); }
-function doAns(idx) { S.userAnswers[S.currentQ] = idx; render(); }
-function doNext() { if (S.currentQ < S.questions.length - 1) { S.currentQ++; render(); } }
-function doReview() { S.screen = 'written-review'; render(); }
+function revealAns(){if(S.timerI){clearInterval(S.timerI);S.timerI=null;}showModal(true);}
+function closeModal(){if(S.timerI){clearInterval(S.timerI);S.timerI=null;}document.getElementById('modal-root').innerHTML='';}
+function doAward(playerIdx,pts){if(playerIdx>=0)S.jScores[playerIdx]+=pts;const{ci,pi}=S.activeQ;S.answered.add(`${ci}-${pi}`);closeModal();render();}
 
-async function doStartWritten() {
-    S.writtenLoading = true;
-    S.questions = [];
-    S.currentQ = 0;
-    S.userAnswers = [];
-    S.screen = 'written-quiz';
-    render();
-    
-    try {
-        S.questions = await genWritten(S.writtenTopic, S.writtenCount);
-        S.writtenLoading = false;
-        S.lastError = null;
-        render();
-    } catch (e) {
-        console.error('Written test generation failed:', e);
-        S.writtenLoading = false;
-        S.lastError = e.message;
-        alert('Error generating questions: ' + e.message + '\n\nPlease check:\n1. Your API key is correct (starts with "sk-ant-")\n2. You have credits in your Anthropic account\n3. Your internet connection is working');
-        sc('written-setup');
-    }
-}
-
-async function runBoardGen(cats) {
-    S.board = cats.map(cat => ({ category: cat, questions: null }));
-    S.scores = [0, 0, 0];
-    S.answered = new Set();
-    S.boardLoading = true;
-    S.screen = 'j-board';
-    render();
-    
-    let loaded = 0;
-    const upd = () => {
-        loaded++;
-        const el = document.getElementById('lct');
-        const bar = document.getElementById('lbar');
-        if (el) el.textContent = `${loaded} of ${S.board.length} categories ready`;
-        if (bar) bar.style.width = Math.round(loaded / S.board.length * 100) + '%';
-    };
-    
-    const results = await Promise.all(cats.map(async (cat, i) => {
-        try {
-            S.board[i].questions = await genCat(cat);
-        } catch (e) {
-            console.error(`Failed to generate ${cat}:`, e);
-            // Create fallback questions for this category
-            S.board[i].questions = PTS.map((pt, idx) => ({
-                points: pt,
-                clue: `${cat} — $${pt} question: What is the capital city of Canada?`,
-                answer: "What is Ottawa?",
-                explanation: "Ottawa is the capital of Canada, located in Ontario along the Ottawa River."
-            }));
-        }
-        upd();
-    }));
-    
-    S.boardLoading = false;
-    render();
-}
-
-async function doStartJ() {
-    const checkboxes = document.querySelectorAll('#app input[type="checkbox"]:checked');
-    const checked = Array.from(checkboxes).map(c => c.value);
-    let cats;
-    if (checked.length >= 6) {
-        cats = checked.slice(0, 6);
-    } else {
-        const rest = CATS.filter(c => !checked.includes(c)).sort(() => Math.random() - 0.5);
-        cats = [...checked, ...rest].slice(0, 6);
-    }
-    S.lastCats = cats;
-    await runBoardGen(cats);
-}
-
-async function doRegenSame() {
-    if (S.lastCats && S.lastCats.length === 6) {
-        await runBoardGen(S.lastCats);
-    } else {
-        sc('j-setup');
-    }
-}
-
-// Initialize
+// ─────────────────────────────────────────────
+//  INITIALIZATION
+// ─────────────────────────────────────────────
 render();
 </script>
 </body>
