@@ -1,0 +1,340 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.guide { padding: 1rem 0; font-family: var(--font-sans); color: var(--color-text-primary); }
+.nav { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.nav-btn { padding: 7px 14px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); font-size: 13px; cursor: pointer; font-family: var(--font-sans); }
+.nav-btn.active { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; font-weight: 500; }
+.section { display: none; }
+.section.active { display: block; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.card-title { font-size: 14px; font-weight: 500; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+.bp { background: #EEEDFE; color: #3C3489; }
+.bt { background: #E1F5EE; color: #085041; }
+.ba { background: #FAEEDA; color: #633806; }
+.bc { background: #FAECE7; color: #4A1B0C; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ci { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; line-height: 1.5; }
+.ci:last-child { border-bottom: none; }
+.chk { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--color-border-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; margin-top: 1px; }
+.chk.done { background: #534AB7; border-color: #534AB7; }
+.chk.done::after { content: '\2713'; color: white; font-size: 11px; }
+.fbox { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 14px; font-family: var(--font-mono); font-size: 13px; margin: 6px 0; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); }
+.tdisplay { font-size: 22px; font-weight: 500; font-family: var(--font-mono); min-width: 64px; }
+.tbtn { padding: 6px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); cursor: pointer; font-size: 13px; font-family: var(--font-sans); color: var(--color-text-primary); }
+.tbtn.primary { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; }
+.qp { font-size: 13px; font-style: italic; color: var(--color-text-secondary); line-height: 1.6; padding: 8px 12px; border-left: 2px solid #AFA9EC; margin: 8px 0; }
+.kf { font-size: 13px; padding: 8px 12px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); margin: 5px 0; line-height: 1.5; }
+.kf b { font-weight: 500; }
+.pbar { height: 4px; background: var(--color-background-secondary); border-radius: 2px; margin-top: 6px; }
+.pfill { height: 4px; background: #534AB7; border-radius: 2px; }
+.sh { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.05em; text-transform: uppercase; margin: 1.25rem 0 0.6rem; }
+.trow { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 13px; }
+.ticon { width: 32px; height: 32px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 15px; }
+.tn { font-weight: 500; font-size: 13px; }
+.td { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; margin-top: 2px; }
+.noteinput { width: 100%; min-height: 60px; resize: vertical; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 8px 10px; font-size: 13px; font-family: var(--font-sans); background: var(--color-background-primary); color: var(--color-text-primary); }
+</style>
+
+<h2 class="sr-only">Fieldwork Test and Data Interpretation Study Guide</h2>
+<div class="guide">
+
+<div class="nav" id="nav">
+  <button class="nav-btn active" data-sec="morning">Morning: Fieldwork</button>
+  <button class="nav-btn" data-sec="afternoon">Afternoon: Data</button>
+  <button class="nav-btn" data-sec="canada">Canadian Patterns</button>
+  <button class="nav-btn" data-sec="evening">Evening: Warmup</button>
+  <button class="nav-btn" data-sec="formulas">Quick Formulas</button>
+</div>
+
+<!-- MORNING -->
+<div class="section active" id="sec-morning">
+  <p class="sh">Urban and rural site observation checklist</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="badge bp">Physical</span></div>
+      <div id="physical-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge bt">Human</span></div>
+      <div id="human-list"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge bc">Environmental quality</span></div>
+    <div id="env-list"></div>
+  </div>
+
+  <p class="sh">Timed observation practice</p>
+  <div class="card">
+    <div style="font-size:13px; color:var(--color-text-secondary); margin-bottom:10px;">Use with Google Street View. Observe for 3 min, then write for 5 min.</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+      <button class="tbtn primary" onclick="startTimer(3)">3 min: observe</button>
+      <button class="tbtn" onclick="startTimer(5)">5 min: write</button>
+      <button class="tbtn" onclick="resetTimer()">Reset</button>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span class="tdisplay" id="timer-display">3:00</span>
+      <span style="font-size:13px; color:var(--color-text-secondary);" id="timer-label">ready</span>
+    </div>
+    <div class="pbar"><div class="pfill" id="timer-bar" style="width:100%"></div></div>
+    <div style="margin-top:14px;">
+      <div class="qp">What three pieces of evidence suggest this area experiences flooding?</div>
+      <div class="qp">What is the most likely pull factor for settlement here?</div>
+      <div class="qp">Justify one environmental impact of what you see.</div>
+    </div>
+  </div>
+
+  <p class="sh">Key field tools</p>
+  <div class="card">
+    <div class="trow">
+      <div class="ticon" style="background:#EEEDFE; color:#534AB7;">N</div>
+      <div>
+        <div class="tn">Compass and back bearing</div>
+        <div class="td">Back bearing = bearing + 180 degrees. Subtract 360 if over 360. Used to check the return direction from a waypoint.</div>
+      </div>
+    </div>
+    <div class="trow">
+      <div class="ticon" style="background:#E1F5EE; color:#0F6E56;">P</div>
+      <div>
+        <div class="tn">Pacing distance</div>
+        <div class="td">Your step is approx 0.75 to 0.8 m. Count double-steps (left foot down = 1). Distance = steps x 0.75 m.</div>
+      </div>
+    </div>
+    <div class="trow">
+      <div class="ticon" style="background:#FAEEDA; color:#854F0B;">W</div>
+      <div>
+        <div class="tn">Wind direction</div>
+        <div class="td">Observe bent trees, cloud movement, smoke drift. Wind direction = where wind comes FROM, not where it goes.</div>
+      </div>
+    </div>
+    <div class="trow" style="margin-bottom:0">
+      <div class="ticon" style="background:#FAECE7; color:#993C1D;">H</div>
+      <div>
+        <div class="tn">Estimating height</div>
+        <div class="td">45 degree method: walk back until angle to top = 45 degrees. Your distance from base equals the object height. Shadow method: compare your shadow to the object shadow ratio.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AFTERNOON -->
+<div class="section" id="sec-afternoon">
+  <p class="sh">Question types to practice</p>
+  <div class="card">
+    <div class="card-title"><span class="badge bp">Choropleth map</span></div>
+    <div class="qp">Explain one limitation of this choropleth map.</div>
+    <div class="kf">Key points: choropleth maps hide variation within regions, assume uniform distribution, and can mislead due to large-area / small-population zones (e.g., Northern Canada looks dominant visually).</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge bt">Population pyramid</span></div>
+    <div class="qp">Based on the pyramid, describe two challenges this community will face in 20 years.</div>
+    <canvas id="pyramidCanvas" style="width:100%; height:200px;"></canvas>
+    <div style="font-size:12px; color:var(--color-text-secondary); text-align:center; margin-top:4px;">Sample aging pyramid: large 50-70 cohort, shrinking youth base</div>
+    <div class="tag-row">
+      <span class="tag">aging workforce</span>
+      <span class="tag">pension strain</span>
+      <span class="tag">healthcare demand</span>
+      <span class="tag">labour shortage</span>
+      <span class="tag">school closures</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge ba">Dependency ratio</span></div>
+    <div class="fbox">DR = ( (0-14) + (65+) ) / (15-64) x 100</div>
+    <div class="kf">A DR of 50 means 50 dependants per 100 working-age people. Canada's is approx 47. Aging communities (e.g., rural Nova Scotia) can exceed 70+.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge bc">Urban vs. rural temperature</span></div>
+    <div class="qp">Why might temperature data from the rural station differ from the urban station?</div>
+    <div class="kf"><b>Urban:</b> concrete and asphalt absorb heat, reduced evapotranspiration, waste heat from vehicles and buildings, reduced wind.</div>
+    <div class="kf"><b>Rural:</b> vegetation cools via transpiration, higher albedo from soil and crops, no anthropogenic heat sources.</div>
+  </div>
+</div>
+
+<!-- CANADA -->
+<div class="section" id="sec-canada">
+  <p class="sh">Population patterns</p>
+  <div class="card">
+    <div class="kf"><b>Fastest growing:</b> Alberta, B.C., Ontario. Driven by immigration, energy sector (AB), and tech/finance (ON/BC).</div>
+    <div class="kf"><b>Aging fastest:</b> Atlantic provinces (NB, NS, PEI, NL). Out-migration of youth, low immigration, natural decrease.</div>
+    <div class="kf"><b>Ecumene:</b> Approx 90% of Canadians live within 160 km of the US border, due to climate, agriculture, and trade access.</div>
+  </div>
+
+  <p class="sh">Climate types: one key feature each</p>
+  <div class="grid2">
+    <div class="card" style="border-left: 2px solid #5DCAA5;">
+      <div class="card-title" style="color:#0F6E56;">Pacific</div>
+      <div style="font-size:13px; line-height:1.6;">Mild, wet winters. Orographic precipitation on coast. Smallest annual temperature range in Canada.</div>
+    </div>
+    <div class="card" style="border-left: 2px solid #EF9F27;">
+      <div class="card-title" style="color:#854F0B;">Continental</div>
+      <div style="font-size:13px; line-height:1.6;">Extreme temperature range (down to -40 C in winter, hot summers). Low precipitation, mostly summer convective rain.</div>
+    </div>
+    <div class="card" style="border-left: 2px solid #85B7EB;">
+      <div class="card-title" style="color:#185FA5;">Atlantic</div>
+      <div style="font-size:13px; line-height:1.6;">Moderate but variable. Influenced by Gulf Stream (mild) and Labrador Current (cold/foggy). High year-round precipitation.</div>
+    </div>
+    <div class="card" style="border-left: 2px solid #B4B2A9;">
+      <div class="card-title" style="color:#444441;">Arctic</div>
+      <div style="font-size:13px; line-height:1.6;">Permafrost, very low precipitation (technically a desert), extreme cold. Short cool summers only.</div>
+    </div>
+  </div>
+
+  <p class="sh">Economic geography</p>
+  <div class="card">
+    <div class="kf"><b>Resource towns:</b> Fort McMurray (oil sands), Sudbury (nickel), Kitimat (aluminum). Boom/bust cycles, in-migration of workers, male-skewed demographics.</div>
+    <div class="kf"><b>Service hubs:</b> Moncton (logistics, bilingual services), Kelowna (tourism/retirement), Waterloo (tech/education). More diversified and stable.</div>
+    <div class="kf"><b>Command and control cities:</b> Toronto, Montreal, Vancouver. Corporate HQs, finance, culture, immigration gateways.</div>
+  </div>
+</div>
+
+<!-- EVENING -->
+<div class="section" id="sec-evening">
+  <p class="sh">Think like a geographer: 10-minute walk exercise</p>
+  <div class="card">
+    <div class="card-title"><span class="badge bp">Spatial patterns (write 3)</span></div>
+    <div style="font-size:12px; color:var(--color-text-secondary); margin-bottom:8px;">e.g. "bus stops every 400 m", "residential lots smaller near the main road"</div>
+    <textarea class="noteinput" placeholder="1. &#10;2. &#10;3. "></textarea>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge bt">Physical and human interactions (write 2)</span></div>
+    <div style="font-size:12px; color:var(--color-text-secondary); margin-bottom:8px;">e.g. "creek constrained to culvert under road", "south-facing slope has more solar panels"</div>
+    <textarea class="noteinput" placeholder="1. &#10;2. "></textarea>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge ba">Ethical question (write 1)</span></div>
+    <div style="font-size:12px; color:var(--color-text-secondary); margin-bottom:8px;">e.g. "Should this green space be developed into housing given the local shortage?"</div>
+    <textarea class="noteinput" id="ethics-notes" style="min-height:48px;" placeholder="Your question..."></textarea>
+    <button class="tbtn primary" style="margin-top:10px;" onclick="sendPrompt('I wrote this ethical geography question for my walk exercise: ' + document.getElementById('ethics-notes').value + '. Can you help me argue both sides of it?')">Explore both sides</button>
+  </div>
+</div>
+
+<!-- FORMULAS -->
+<div class="section" id="sec-formulas">
+  <p class="sh">Essential calculations</p>
+  <div class="card">
+    <div class="card-title"><span class="badge bp">Gradient / slope angle</span></div>
+    <div class="fbox">Gradient = vertical rise / horizontal distance</div>
+    <div class="fbox">As ratio: 1:n (e.g., 1:10 is steep)</div>
+    <div class="kf">On a topo map: contour interval x contour lines crossed = rise. Map distance x scale = horizontal run.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge bt">Dependency ratio</span></div>
+    <div class="fbox">DR = ( youth(0-14) + elderly(65+) ) / working(15-64) x 100</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge ba">Population density</span></div>
+    <div class="fbox">Density = total population / area (km squared)</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge bc">Natural increase rate</span></div>
+    <div class="fbox">NIR = crude birth rate - crude death rate (per 1,000)</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge bp">Compass back bearing</span></div>
+    <div class="fbox">Back bearing = bearing + 180 (if over 360, subtract 360)</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="badge bt">Height estimation (45 degree method)</span></div>
+    <div class="fbox">Height = your distance from base (when angle to top = 45 degrees)</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var physicalItems = [
+  "Slope angle: calculate gradient (rise divided by run)",
+  "Drainage patterns: direction water flows, evidence of erosion",
+  "Vegetation type: pioneer vs. mature, invasive species?",
+  "Soil colour and texture: dark = organic, red = iron, sandy = fast drain",
+  "Aspect: which direction the slope faces (south = warmer, drier)"
+];
+var humanItems = [
+  "Land use zones: residential / commercial / industrial",
+  "Building materials: brick, wood, concrete, age indicators",
+  "Road patterns: grid = planned; organic = historical growth",
+  "Lot sizes: smaller and denser near cores, larger at suburban edge",
+  "Evidence of planning vs. organic growth: zoning signs, infill"
+];
+var envItems = [
+  "Litter levels and type: single-use plastic? industrial waste?",
+  "Noise: traffic, industry, birdsong absent or present",
+  "Lichen on trees: present = clean air; absent = pollution indicator",
+  "Exhaust stains on walls or vegetation damage near roads",
+  "Green space access: within 400 m? barrier to entry?"
+];
+
+function renderList(containerId, items) {
+  var el = document.getElementById(containerId);
+  var html = '';
+  for (var i = 0; i < items.length; i++) {
+    html += '<div class="ci"><div class="chk" id="chk-' + containerId + '-' + i + '" onclick="toggle(this)"></div><span>' + items[i] + '</span></div>';
+  }
+  el.innerHTML = html;
+}
+function toggle(el) { el.classList.toggle('done'); }
+renderList('physical-list', physicalItems);
+renderList('human-list', humanItems);
+renderList('env-list', envItems);
+
+document.querySelectorAll('.nav-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('sec-' + btn.getAttribute('data-sec')).classList.add('active');
+  });
+});
+
+var timerInterval = null, timerTotal = 0, timerLeft = 0;
+function startTimer(mins) {
+  if (timerInterval) clearInterval(timerInterval);
+  timerTotal = mins * 60; timerLeft = timerTotal;
+  document.getElementById('timer-label').textContent = mins === 3 ? 'observing...' : 'writing...';
+  timerInterval = setInterval(function() {
+    timerLeft--;
+    var m = Math.floor(timerLeft / 60), s = timerLeft % 60;
+    document.getElementById('timer-display').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    document.getElementById('timer-bar').style.width = Math.round(timerLeft / timerTotal * 100) + '%';
+    if (timerLeft <= 0) { clearInterval(timerInterval); document.getElementById('timer-label').textContent = 'done!'; }
+  }, 1000);
+}
+function resetTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  document.getElementById('timer-display').textContent = '3:00';
+  document.getElementById('timer-bar').style.width = '100%';
+  document.getElementById('timer-label').textContent = 'ready';
+}
+
+window.addEventListener('load', function() {
+  var cvs = document.getElementById('pyramidCanvas');
+  cvs.width = cvs.offsetWidth; cvs.height = 200;
+  var ctx = cvs.getContext('2d');
+  var W = cvs.width, H = 200;
+  var ages = ['0-9','10-19','20-29','30-39','40-49','50-59','60-69','70-79','80+'];
+  var male =   [5, 4.5, 5.5, 6, 7, 9, 10, 7, 3];
+  var female = [4.8, 4.3, 5.3, 5.8, 6.8, 9.2, 10.5, 8, 4.5];
+  var maxVal = 12, barH = Math.floor((H - 24) / ages.length) - 2;
+  var cx = Math.floor(W / 2), lw = 36;
+  ctx.font = '11px sans-serif'; ctx.textBaseline = 'middle';
+  for (var i = 0; i < ages.length; i++) {
+    var y = H - 10 - i * (barH + 2) - barH;
+    var mw = (male[i] / maxVal) * (cx - lw - 4);
+    var fw = (female[i] / maxVal) * (cx - lw - 4);
+    ctx.fillStyle = '#534AB7'; ctx.fillRect(cx - lw - mw, y, mw, barH);
+    ctx.fillStyle = '#5DCAA5'; ctx.fillRect(cx + lw, y, fw, barH);
+    ctx.fillStyle = '#888780'; ctx.textAlign = 'center';
+    ctx.fillText(ages[i], cx, y + barH / 2);
+  }
+  ctx.fillStyle = '#534AB7'; ctx.fillRect(cx - 120, 4, 12, 10);
+  ctx.fillStyle = '#888780'; ctx.textAlign = 'left'; ctx.font = '11px sans-serif';
+  ctx.fillText('Male', cx - 105, 9);
+  ctx.fillStyle = '#5DCAA5'; ctx.fillRect(cx - 60, 4, 12, 10);
+  ctx.fillText('Female', cx - 45, 9);
+});
+</script>
