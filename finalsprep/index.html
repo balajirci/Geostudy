@@ -1,0 +1,779 @@
+	<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGC Finals Prep - Canadian Geographic Challenge</title>
+    <!-- Tabler Icons CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css">
+    <style>
+        /* CSS Variables - Light Theme */
+        :root {
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --border-radius-sm: 6px;
+            --border-radius-md: 10px;
+            --border-radius-lg: 16px;
+            
+            /* Light theme colors */
+            --color-background-primary: #ffffff;
+            --color-background-secondary: #f5f5f5;
+            --color-background-success: #e6f7e6;
+            --color-background-danger: #fee;
+            
+            --color-text-primary: #1a1a1a;
+            --color-text-secondary: #666;
+            --color-text-tertiary: #999;
+            --color-text-success: #2e7d32;
+            --color-text-danger: #c62828;
+            --color-text-warning: #e65100;
+            --color-text-info: #1565c0;
+            
+            --color-border-primary: #ccc;
+            --color-border-tertiary: #e0e0e0;
+            --color-border-success: #4caf50;
+            --color-border-danger: #f44336;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            background: #f0f0f0;
+            font-family: var(--font-sans);
+            color: var(--color-text-primary);
+        }
+        
+        #app {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .spin {
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        
+        .opt-btn {
+            text-align: left;
+            padding: 12px 16px;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1.55;
+            font-family: var(--font-sans);
+            width: 100%;
+            transition: opacity .1s;
+            border: 0.5px solid var(--color-border-tertiary);
+            background: var(--color-background-primary);
+        }
+        
+        .opt-btn:disabled {
+            cursor: default;
+            opacity: 0.8;
+        }
+        
+        .jpt-btn {
+            width: 100%;
+            height: 52px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 19px;
+            font-weight: 500;
+            color: var(--color-text-warning);
+            border-radius: var(--border-radius-md);
+            font-family: var(--font-sans);
+        }
+        
+        .jpt-btn:hover {
+            background: var(--color-background-secondary);
+        }
+        
+        .card-hover {
+            cursor: pointer;
+            background: var(--color-background-primary);
+            border: 0.5px solid var(--color-border-tertiary);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            transition: border-color .15s;
+        }
+        
+        .card-hover:hover {
+            border-color: var(--color-border-primary);
+        }
+        
+        .back-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--font-sans);
+        }
+        
+        button, select, input {
+            font-family: var(--font-sans);
+        }
+        
+        select, input {
+            padding: 10px 12px;
+            border-radius: var(--border-radius-md);
+            border: 0.5px solid var(--color-border-tertiary);
+            background: var(--color-background-primary);
+            font-size: 14px;
+        }
+        
+        button {
+            background: var(--color-background-secondary);
+            border: 0.5px solid var(--color-border-tertiary);
+            border-radius: var(--border-radius-md);
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            border: 0.5px solid var(--color-border-tertiary);
+            padding: 12px 8px;
+            text-align: center;
+        }
+        
+        th {
+            background: var(--color-background-secondary);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+<h2 class="sr-only" style="position: absolute; left: -10000px;">CGC Finals Preparation — AI-powered Written Test and Jeopardy Final Round practice for the Canadian Geographic Challenge</h2>
+<div id="app" style="padding:1.5rem 0;font-family:var(--font-sans);"></div>
+<div id="modal-root"></div>
+
+<script>
+// ============================================
+// CONFIGURATION - IMPORTANT: Add your API key
+// ============================================
+const API_KEY = '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';  // ← PASTE YOUR ANTHROPIC API KEY HERE
+const API = 'https://api.anthropic.com/v1/messages';
+
+// Check if API key is configured
+const HAS_API_KEY = API_KEY && API_KEY.length > 0 && API_KEY !== '';
+
+const CATS = [
+  "Canadian Physical Geography","World Countries & Capitals",
+  "Rivers, Lakes & Oceans","Climate Zones & Biomes",
+  "Human & Population Geography","Environmental Issues & Sustainability",
+  "Cartography & Map Skills","Economic Geography",
+  "Political Geography & Borders","Natural Disasters & Hazards",
+  "Oceans & Marine Science","Indigenous Lands & Cultures"
+];
+
+const TOPICS = [
+  "Mixed — All Topics",
+  "Canadian Geography (provinces, rivers, landforms, resources)",
+  "World Physical Geography (mountains, rivers, deserts, biomes)",
+  "Human & Population Geography",
+  "Environmental Geography & Climate Change",
+  "Geographic Concepts, Maps & GIS",
+  "Political & Economic Geography"
+];
+
+const PTS = [200,400,600,800,1000];
+
+// Sample fallback questions for when API fails
+const SAMPLE_WRITTEN_QUESTIONS = [
+  {
+    question: "What is the longest river entirely within Canada?",
+    options: ["A) Mackenzie River", "B) St. Lawrence River", "C) Yukon River", "D) Fraser River"],
+    correct: 0,
+    explanation: "The Mackenzie River is 4,241 km long, making it the longest river system in Canada.",
+    topic_tag: "Canadian Geography"
+  },
+  {
+    question: "Which of these Canadian provinces has the highest population?",
+    options: ["A) British Columbia", "B) Alberta", "C) Quebec", "D) Ontario"],
+    correct: 3,
+    explanation: "Ontario has approximately 14.7 million residents, making it Canada's most populous province.",
+    topic_tag: "Canadian Geography"
+  },
+  {
+    question: "The Great Bear Rainforest is located primarily in which province?",
+    options: ["A) British Columbia", "B) Alberta", "C) Ontario", "D) Quebec"],
+    correct: 0,
+    explanation: "The Great Bear Rainforest spans the central and north coast of British Columbia.",
+    topic_tag: "Canadian Geography"
+  },
+  {
+    question: "Which is the largest island in Canada by area?",
+    options: ["A) Vancouver Island", "B) Ellesmere Island", "C) Baffin Island", "D) Newfoundland"],
+    correct: 2,
+    explanation: "Baffin Island is Canada's largest island and the 5th largest in the world.",
+    topic_tag: "Canadian Geography"
+  },
+  {
+    question: "What is the capital city of Nunavut?",
+    options: ["A) Yellowknife", "B) Whitehorse", "C) Iqaluit", "D) Rankin Inlet"],
+    correct: 2,
+    explanation: "Iqaluit, located on Baffin Island, became Nunavut's capital when the territory was created in 1999.",
+    topic_tag: "Canadian Geography"
+  }
+];
+
+let S = {
+  screen:'home',
+  writtenTopic:'Mixed — All Topics',writtenCount:20,
+  questions:[],currentQ:0,userAnswers:[],writtenLoading:false,
+  numPlayers:1,playerNames:['Solo','Player 2','Player 3'],
+  scores:[0,0,0],categories:[],board:[],lastCats:[],
+  boardLoading:false,answered:new Set(),
+  activeQ:null,timerInterval:null,timeLeft:30
+};
+
+async function callAPI(sys, user) {
+  if (!HAS_API_KEY) {
+    throw new Error('API key not configured. Please add your Anthropic API key to the API_KEY variable.');
+  }
+  
+  const response = await fetch(API, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: 'claude-3-sonnet-20240229',
+      max_tokens: 1500,
+      system: sys,
+      messages: [{ role: 'user', content: user }]
+    })
+  });
+  
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`API Error (${response.status}): ${errorText}`);
+  }
+  
+  const data = await response.json();
+  return data.content[0].text;
+}
+
+function pj(t) {
+  try {
+    // Clean the JSON string
+    let cleaned = t.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    return JSON.parse(cleaned);
+  } catch (e) {
+    console.error('JSON parse error:', e);
+    throw new Error('Failed to parse API response');
+  }
+}
+
+async function genCat(cat) {
+  const sys = `You are an expert geography educator creating questions for the Canadian Geographic Challenge National Finals — a live Jeopardy-style competition for the top 5 Grade 8 geography students in Canada. Questions must be challenging, accurate, and verifiable at national championship level. Return ONLY valid JSON.`;
+  const user = `Category: "${cat}". Generate exactly 5 Jeopardy-style clues for $200, $400, $600, $800, $1000. Higher = harder. Each clue is a declarative statement; the answer starts with "What is" or "Who is". Be specific and geographic — no trivial facts.
+
+Return JSON array of 5:
+[{"points":200,"clue":"...","answer":"What is ...?","explanation":"1-2 sentences of geographic context"},...]`;
+  
+  try {
+    return pj(await callAPI(sys, user));
+  } catch (e) {
+    console.error(`Failed to generate category "${cat}":`, e);
+    // Return fallback questions for this category
+    return PTS.map((pts, idx) => ({
+      points: pts,
+      clue: `${cat} — Question ${idx + 1} for $${pts}. (API error: ${e.message})`,
+      answer: "What is [Answer]?",
+      explanation: "Please try regenerating the board or check your API key."
+    }));
+  }
+}
+
+async function genWritten(topic, count) {
+  const sys = `You are an expert geography educator creating a written test for the Canadian Geographic Challenge National Finals. These are top Grade 8 Canadian geography students. All facts must be accurate and verifiable. Return ONLY valid JSON.`;
+  const user = `Topic: "${topic}". Generate exactly ${count} multiple-choice questions at national championship difficulty.
+
+Include mix of: specific geographic facts, reasoning questions, data interpretation scenarios (describe stats/trends in the question), map-reading concepts, Canadian content (≥30% if mixed topic), environmental issues, economic geography.
+
+Return JSON array of ${count}:
+[{
+  "question":"...",
+  "options":["A) ...","B) ...","C) ...","D) ..."],
+  "correct":0,
+  "explanation":"Why this answer is correct and why each wrong option is incorrect.",
+  "topic_tag":"Canadian Geography|World Geography|Human Geography|Environmental|Concepts & Skills|Economic & Political"
+},...]
+Vary correct answer positions (0=A,1=B,2=C,3=D). Do NOT cluster answers at position 0.`;
+  
+  try {
+    return pj(await callAPI(sys, user));
+  } catch (e) {
+    console.error('Failed to generate written questions:', e);
+    // Return sample questions, repeated to match count if needed
+    const sample = [...SAMPLE_WRITTEN_QUESTIONS];
+    while (sample.length < count) {
+      sample.push({...SAMPLE_WRITTEN_QUESTIONS[0], question: `Sample question ${sample.length + 1} - ${topic}?`});
+    }
+    return sample.slice(0, count);
+  }
+}
+
+function sc(name) {
+  if (S.timerInterval) { clearInterval(S.timerInterval); S.timerInterval = null; }
+  S.screen = name;
+  render();
+}
+
+function render() {
+  const map = {
+    home: rHome, 'written-setup': rWSetup, 'written-quiz': rWQuiz,
+    'written-results': rWResults, 'written-review': rWReview,
+    'j-setup': rJSetup, 'j-board': rJBoard
+  };
+  document.getElementById('app').innerHTML = (map[S.screen] || rHome)();
+}
+
+function rHome() {
+  return `
+<div style="max-width:600px;margin:0 auto;">
+  <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 6px;text-transform:uppercase;letter-spacing:.07em;">Canadian Geographic Challenge — Finals Prep</p>
+  <h1 style="font-size:26px;font-weight:500;margin:0 0 8px;">Written Test & Jeopardy Final Round</h1>
+  <p style="color:var(--color-text-secondary);margin:0 0 2rem;font-size:15px;line-height:1.65;">AI-generated questions at national finals difficulty. Fresh questions every session.</p>
+  ${!HAS_API_KEY ? `
+  <div style="background:#fff3e0;border:1px solid #ffb74d;border-radius:12px;padding:12px 16px;margin-bottom:16px;">
+    <p style="margin:0;font-size:13px;color:#e65100;"><strong>⚠️ API Key Required</strong><br>Please add your Anthropic API key to the <code>API_KEY</code> variable in the script. Sample questions will be used until then.</p>
+  </div>
+  ` : ''}
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem;">
+    <div class="card-hover" onclick="sc('written-setup')">
+      <i class="ti ti-file-text" aria-hidden="true" style="font-size:24px;margin-bottom:12px;display:block;color:var(--color-text-info);"></i>
+      <div style="font-size:17px;font-weight:500;margin-bottom:8px;">Written Test</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:14px;">Multiple choice, critical thinking, data interpretation. Up to 30 questions, any topic focus.</div>
+      <div style="font-size:13px;color:var(--color-text-info);">Start practice →</div>
+    </div>
+    <div class="card-hover" onclick="sc('j-setup')">
+      <i class="ti ti-trophy" aria-hidden="true" style="font-size:24px;margin-bottom:12px;display:block;color:var(--color-text-warning);"></i>
+      <div style="font-size:17px;font-weight:500;margin-bottom:8px;">Jeopardy Final Round</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:14px;">Live board simulation. Up to 3 players. 30-second timer per clue. 6 categories × $200–$1,000.</div>
+      <div style="font-size:13px;color:var(--color-text-warning);">Build board →</div>
+    </div>
+  </div>
+  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem 1.25rem;">
+    <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">
+      <i class="ti ti-calendar-event" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;"></i>
+      <strong style="color:var(--color-text-primary);">Final Round — Monday June 1, 10:00 AM</strong> · Royal Canadian Geographical Society · 50 Sussex Drive, Ottawa · Top 5 finalists compete live · Recorded for YouTube
+    </p>
+  </div>
+</div>`;
+}
+
+function rWSetup() {
+  return `
+<div style="max-width:480px;margin:0 auto;">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:2rem;">
+    <button class="back-btn" onclick="sc('home')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+    <h2 style="font-size:20px;font-weight:500;margin:0;">Written Test Practice</h2>
+  </div>
+  <div style="margin-bottom:1.5rem;">
+    <label style="font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:8px;">Topic focus</label>
+    <select onchange="S.writtenTopic=this.value" style="width:100%;">
+      ${TOPICS.map(t => `<option value="${t}"${t === S.writtenTopic ? ' selected' : ''}>${t}</option>`).join('')}
+    </select>
+  </div>
+  <div style="margin-bottom:2rem;">
+    <label style="font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:8px;">Questions: <strong id="cd">${S.writtenCount}</strong></label>
+    <input type="range" min="5" max="30" step="5" value="${S.writtenCount}" style="width:100%;"
+           oninput="S.writtenCount=+this.value;document.getElementById('cd').textContent=this.value" />
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-tertiary);margin-top:4px;">
+      <span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span>
+    </div>
+  </div>
+  <button onclick="doStartWritten()" style="width:100%;padding:12px;font-size:15px;font-weight:500;cursor:pointer;">Generate ${S.writtenCount} Questions ↗</button>
+  <p style="font-size:13px;color:var(--color-text-tertiary);text-align:center;margin-top:12px;">AI-generated at national finals difficulty — unique every session</p>
+</div>`;
+}
+
+function rWQuiz() {
+  if (S.writtenLoading) {
+    return `
+<div style="max-width:400px;margin:4rem auto;text-align:center;">
+  <i class="ti ti-loader spin" aria-hidden="true" style="font-size:32px;margin-bottom:1rem;display:block;color:var(--color-text-secondary);"></i>
+  <p style="font-size:16px;font-weight:500;margin:0 0 8px;">Generating ${S.writtenCount} questions…</p>
+  <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">Setting national finals difficulty</p>
+</div>`;
+  }
+  if (!S.questions.length) return rWSetup();
+  const q = S.questions[S.currentQ];
+  const answered = S.userAnswers[S.currentQ] !== undefined;
+  const chosen = S.userAnswers[S.currentQ];
+  const correct = S.userAnswers.filter((a, i) => a === S.questions[i].correct).length;
+  const prog = Math.round((S.currentQ + (answered ? 1 : 0)) / S.questions.length * 100);
+  return `
+<div style="max-width:620px;margin:0 auto;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+    <button class="back-btn" onclick="if(confirm('Exit test and lose progress?'))sc('written-setup')"><i class="ti ti-x" aria-hidden="true"></i> Exit</button>
+    <span style="font-size:13px;color:var(--color-text-secondary);">Q${S.currentQ + 1}/${S.questions.length}${q.topic_tag ? ' · ' + q.topic_tag : ''}</span>
+    <span style="font-size:13px;font-weight:500;">${correct} correct</span>
+  </div>
+  <div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin-bottom:2rem;overflow:hidden;">
+    <div style="height:100%;width:${prog}%;background:var(--color-text-info);transition:width .3s;"></div>
+  </div>
+  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.5rem;margin-bottom:1.25rem;">
+    <p style="font-size:16px;line-height:1.7;margin:0;font-weight:500;">${q.question}</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:1.25rem;">
+    ${q.options.map((opt, i) => {
+      let border = '0.5px solid var(--color-border-tertiary)';
+      let bg = 'var(--color-background-primary)';
+      let col = 'var(--color-text-primary)';
+      if (answered) {
+        if (i === q.correct) { bg = 'var(--color-background-success)'; border = '0.5px solid var(--color-border-success)'; col = 'var(--color-text-success)'; }
+        else if (i === chosen && chosen !== q.correct) { bg = 'var(--color-background-danger)'; border = '0.5px solid var(--color-border-danger)'; col = 'var(--color-text-danger)'; }
+      }
+      return `<button class="opt-btn" onclick="${answered ? '' : 'doAns(' + i + ')'}" ${answered ? 'disabled' : ''} style="background:${bg};border:${border};color:${col};">${opt}</button>`;
+    }).join('')}
+  </div>
+  ${answered ? `
+  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem 1.25rem;margin-bottom:1.25rem;">
+    <p style="font-size:11px;font-weight:500;margin:0 0 6px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;">Explanation</p>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.65;">${q.explanation}</p>
+  </div>
+  <button onclick="${S.currentQ < S.questions.length - 1 ? 'doNext()' : 'sc(\'written-results\')'}" style="width:100%;padding:12px;font-size:15px;font-weight:500;cursor:pointer;">
+    ${S.currentQ < S.questions.length - 1 ? 'Next Question →' : 'See Results →'}
+  </button>` : ''}
+</div>`;
+}
+
+function rWResults() {
+  const correct = S.userAnswers.filter((a, i) => a === S.questions[i].correct).length;
+  const pct = Math.round(correct / S.questions.length * 100);
+  const grade = pct >= 90 ? 'Exceptional' : pct >= 75 ? 'Strong' : pct >= 60 ? 'Solid' : pct >= 45 ? 'Developing' : 'Needs Focus';
+  const gc = pct >= 75 ? 'var(--color-text-success)' : pct >= 55 ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
+  const topicMap = {};
+  S.questions.forEach((q, i) => {
+    const t = q.topic_tag || 'General';
+    if (!topicMap[t]) topicMap[t] = { c: 0, n: 0 };
+    topicMap[t].n++;
+    if (S.userAnswers[i] === q.correct) topicMap[t].c++;
+  });
+  return `
+<div style="max-width:540px;margin:0 auto;">
+  <div style="text-align:center;margin-bottom:2.5rem;">
+    <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 10px;text-transform:uppercase;letter-spacing:.07em;">Test Complete</p>
+    <div style="font-size:52px;font-weight:500;margin:0 0 6px;">${correct}<span style="font-size:28px;color:var(--color-text-secondary);">/${S.questions.length}</span></div>
+    <div style="font-size:20px;font-weight:500;color:${gc};">${pct}% — ${grade}</div>
+  </div>
+  <p style="font-size:14px;color:var(--color-text-secondary);font-weight:500;margin:0 0 12px;">Performance by topic</p>
+  ${Object.entries(topicMap).map(([tag, d]) => {
+    const p = Math.round(d.c / d.n * 100);
+    const c = p >= 75 ? 'var(--color-text-success)' : p >= 50 ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
+    return `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+      <span style="font-size:13px;color:var(--color-text-secondary);min-width:195px;flex-shrink:0;">${tag}</span>
+      <div style="flex:1;height:5px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${p}%;background:${c};border-radius:3px;"></div>
+      </div>
+      <span style="font-size:13px;font-weight:500;min-width:32px;text-align:right;">${d.c}/${d.n}</span>
+    </div>`;
+  }).join('')}
+  <div style="display:flex;gap:12px;margin-top:2rem;">
+    <button onclick="doReview()" style="flex:1;padding:12px;font-size:14px;cursor:pointer;">Review Answers</button>
+    <button onclick="sc('written-setup')" style="flex:1;padding:12px;font-size:14px;cursor:pointer;">New Test ↗</button>
+  </div>
+</div>`;
+}
+
+function rWReview() {
+  return `
+<div style="max-width:640px;margin:0 auto;">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:2rem;">
+    <button class="back-btn" onclick="sc('written-results')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Results</button>
+    <h2 style="font-size:18px;font-weight:500;margin:0;">Answer Review</h2>
+  </div>
+  ${S.questions.map((q, i) => {
+    const ok = S.userAnswers[i] === q.correct;
+    return `<div style="margin-bottom:1.5rem;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;">
+      <div style="padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:12px;background:var(--color-background-primary);">
+        <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;background:${ok ? 'var(--color-background-success)' : 'var(--color-background-danger)'};color:${ok ? 'var(--color-text-success)' : 'var(--color-text-danger)'};">${i + 1}</span>
+        <p style="font-size:14px;margin:0;line-height:1.65;">${q.question}</p>
+      </div>
+      <div style="padding:1rem 1.25rem;background:var(--color-background-secondary);">
+        <p style="font-size:13px;margin:0 0 4px;color:var(--color-text-success);font-weight:500;">✓ ${q.options[q.correct]}</p>
+        ${S.userAnswers[i] !== undefined && !ok ? `<p style="font-size:13px;margin:0 0 8px;color:var(--color-text-danger);">✗ ${q.options[S.userAnswers[i]]}</p>` : ''}
+        <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.65;">${q.explanation}</p>
+      </div>
+    </div>`;
+  }).join('')}
+  <button onclick="sc('written-setup')" style="width:100%;padding:12px;font-size:14px;margin-bottom:2rem;cursor:pointer;">New Test ↗</button>
+</div>`;
+}
+
+function rJSetup() {
+  return `
+<div style="max-width:520px;margin:0 auto;">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:2rem;">
+    <button class="back-btn" onclick="sc('home')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+    <h2 style="font-size:20px;font-weight:500;margin:0;">Jeopardy Final Round</h2>
+  </div>
+  ${!HAS_API_KEY ? `
+  <div style="background:#fff3e0;border:1px solid #ffb74d;border-radius:12px;padding:12px 16px;margin-bottom:16px;">
+    <p style="margin:0;font-size:13px;color:#e65100;"><strong>⚠️ API Key Required</strong><br>Sample questions will be used. Add your Anthropic API key to use AI-generated questions.</p>
+  </div>
+  ` : ''}
+  <div style="margin-bottom:1.5rem;">
+    <label style="font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:8px;">Players</label>
+    <div style="display:flex;gap:8px;">
+      ${[1, 2, 3].map(n => `<button onclick="S.numPlayers=${n};render()" style="flex:1;padding:10px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:${S.numPlayers === n ? 'var(--color-background-secondary)' : 'var(--color-background-primary)'};">${n} Player${n > 1 ? 's' : ''}</button>`).join('')}
+    </div>
+  </div>
+  ${S.numPlayers > 1 ? Array.from({ length: S.numPlayers }, (_, i) => `
+  <div style="margin-bottom:1rem;">
+    <label style="font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:6px;">Player ${i + 1} name</label>
+    <input type="text" value="${S.playerNames[i]}" onchange="S.playerNames[${i}]=this.value" style="width:100%;" />
+  </div>`).join('') : ''}
+  <div style="margin-bottom:1.5rem;">
+    <label style="font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:10px;">Categories <span style="font-weight:400;">(check exactly 6 to force, or leave all unchecked for 6 random)</span></label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      ${CATS.map((cat, i) => `
+      <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:13px;color:var(--color-text-secondary);">
+        <input type="checkbox" id="c${i}" value="${cat}" style="margin-top:2px;cursor:pointer;flex-shrink:0;" />
+        ${cat}
+      </label>`).join('')}
+    </div>
+  </div>
+  <button onclick="doStartJ()" style="width:100%;padding:12px;font-size:15px;font-weight:500;cursor:pointer;">Generate Board ↗</button>
+  <p style="font-size:13px;color:var(--color-text-tertiary);text-align:center;margin-top:12px;">30 AI-generated clues at national finals difficulty</p>
+</div>`;
+}
+
+function rJBoard() {
+  const loaded = S.board.filter(c => c.questions).length;
+  const total = S.board.length || 6;
+  if (S.boardLoading && loaded < total) {
+    return `
+<div style="max-width:400px;margin:4rem auto;text-align:center;">
+  <i class="ti ti-loader spin" aria-hidden="true" style="font-size:32px;margin-bottom:1rem;display:block;color:var(--color-text-secondary);"></i>
+  <p style="font-size:16px;font-weight:500;margin:0 0 8px;">Building board…</p>
+  <p style="font-size:14px;color:var(--color-text-secondary);margin:0 0 1.5rem;" id="lct">${loaded} of ${total} categories ready</p>
+  <div style="height:4px;background:var(--color-background-secondary);border-radius:2px;overflow:hidden;max-width:200px;margin:0 auto;">
+    <div id="lbar" style="height:100%;width:${Math.round(loaded / total * 100)}%;background:var(--color-text-warning);transition:width .4s;"></div>
+  </div>
+</div>`;
+  }
+  const allDone = S.answered.size === S.board.length * 5;
+  return `
+<div style="max-width:740px;margin:0 auto;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px;">
+    <button class="back-btn" onclick="if(confirm('Leave this board?'))sc('j-setup')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Setup</button>
+    <div style="display:flex;gap:20px;">
+      ${S.playerNames.slice(0, S.numPlayers).map((name, i) => `
+      <div style="text-align:center;">
+        <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em;">${name}</div>
+        <div style="font-size:20px;font-weight:500;color:${S.scores[i] >= 0 ? 'var(--color-text-primary)' : 'var(--color-text-danger)'};">${S.scores[i] < 0 ? '−$' : '$'}${Math.abs(S.scores[i]).toLocaleString()}</div>
+      </div>`).join('')}
+    </div>
+    <div style="font-size:13px;color:var(--color-text-secondary);">${S.answered.size}/${S.board.length * 5} played</div>
+  </div>
+  <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+      <thead>
+        <tr>${S.board.map(c => `<th style="padding:8px 4px;font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);text-align:center;height:52px;line-height:1.35;vertical-align:middle;">${c.category}</th>`).join('')}
+        </tr>
+      </thead>
+      <tbody>
+        ${PTS.map((pt, pi) => `<tr>${S.board.map((cat, ci) => {
+          const key = `${ci}-${pi}`;
+          const done = S.answered.has(key);
+          const loading = !cat.questions;
+          return `<td style="border:0.5px solid var(--color-border-tertiary);height:60px;padding:4px;text-align:center;vertical-align:middle;">
+            ${loading ? `<span style="font-size:11px;color:var(--color-text-tertiary);">…</span>`
+              : done ? `<span style="font-size:16px;font-weight:500;color:var(--color-text-secondary);opacity:.2;">$${pt}</span>`
+              : `<button class="jpt-btn" onclick="openQ(${ci},${pi})">$${pt}</button>`}
+           </td>`;
+        }).join('')}</tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+  ${allDone ? `
+  <div style="margin-top:2rem;padding:1.5rem;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);text-align:center;">
+    <p style="font-size:16px;font-weight:500;margin:0 0 1.25rem;">Board complete!</p>
+    ${S.numPlayers > 1 ? `<div style="display:flex;gap:12px;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;">
+      ${S.playerNames.slice(0, S.numPlayers).map((n, i) => ({ n, s: S.scores[i] })).sort((a, b) => b.s - a.s).map((p, rank) => `
+      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:1rem 1.5rem;min-width:120px;">
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;">${['1st place', '2nd place', '3rd place'][rank]}</div>
+        <div style="font-size:15px;font-weight:500;margin-bottom:4px;">${p.n}</div>
+        <div style="font-size:22px;font-weight:500;">$${p.s.toLocaleString()}</div>
+      </div>`).join('')}
+    </div>` : ''}
+    <button onclick="doRegenSame()" style="padding:12px 28px;font-size:14px;cursor:pointer;margin-right:10px;">New Board, Same Categories ↗</button>
+    <button onclick="sc('j-setup')" style="padding:12px 28px;font-size:14px;cursor:pointer;">Change Setup</button>
+  </div>` : ''}
+</div>`;
+}
+
+function openQ(ci, pi) {
+  if (!S.board[ci] || !S.board[ci].questions) return;
+  S.activeQ = { ci, pi };
+  S.timeLeft = 30;
+  if (S.timerInterval) { clearInterval(S.timerInterval); S.timerInterval = null; }
+  showModal(false);
+  S.timerInterval = setInterval(() => {
+    S.timeLeft--;
+    const el = document.getElementById('tnum');
+    if (el) {
+      el.textContent = S.timeLeft;
+      el.style.color = S.timeLeft > 15 ? 'var(--color-text-success)' : S.timeLeft > 5 ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
+    }
+    if (S.timeLeft <= 0) { clearInterval(S.timerInterval); S.timerInterval = null; showModal(true); }
+  }, 1000);
+}
+
+function showModal(revealed) {
+  const { ci, pi } = S.activeQ;
+  const q = S.board[ci].questions[pi];
+  const pt = PTS[pi];
+  const cat = S.board[ci].category;
+  const tc = S.timeLeft > 15 ? 'var(--color-text-success)' : S.timeLeft > 5 ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
+  document.getElementById('modal-root').innerHTML = `
+<div style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);padding:2rem;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;">
+      <div>
+        <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">${cat}</div>
+        <div style="font-size:24px;font-weight:500;color:var(--color-text-warning);">$${pt}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        ${!revealed ? `<div style="text-align:center;"><div style="font-size:30px;font-weight:500;color:${tc};" id="tnum">${S.timeLeft}</div><div style="font-size:10px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.05em;">sec</div></div>` : ''}
+        <button onclick="closeModal()" style="border:none;background:none;cursor:pointer;color:var(--color-text-secondary);font-size:16px;padding:4px;line-height:1;"><i class="ti ti-x" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <p style="font-size:17px;line-height:1.7;margin:0 0 1.5rem;font-weight:500;">${q.clue}</p>
+    ${revealed ? `
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem 1.25rem;margin-bottom:1.5rem;">
+      <div style="font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Answer</div>
+      <div style="font-size:17px;font-weight:500;margin-bottom:${q.explanation ? '8px' : '0'};">${q.answer}</div>
+      ${q.explanation ? `<p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.65;">${q.explanation}</p>` : ''}
+    </div>
+    ${S.numPlayers > 1 ? `
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px;font-weight:500;">Who answered correctly?</p>
+    ${S.playerNames.slice(0, S.numPlayers).map((n, i) => `
+    <button onclick="doAward(${i},${pt})" style="width:100%;padding:10px 14px;text-align:left;cursor:pointer;font-size:14px;border:0.5px solid var(--color-border-success);border-radius:var(--border-radius-md);background:var(--color-background-success);color:var(--color-text-success);margin-bottom:8px;font-family:var(--font-sans);">
+      <i class="ti ti-check" aria-hidden="true" style="vertical-align:-1px;margin-right:6px;"></i>${n} — correct (+$${pt})
+    </button>`).join('')}
+    <button onclick="doAward(-1,${pt})" style="width:100%;padding:10px 14px;text-align:left;cursor:pointer;font-size:14px;border:0.5px solid var(--color-border-danger);border-radius:var(--border-radius-md);background:var(--color-background-danger);color:var(--color-text-danger);font-family:var(--font-sans);">
+      <i class="ti ti-x" aria-hidden="true" style="vertical-align:-1px;margin-right:6px;"></i>Nobody / Skip
+    </button>` : `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="doAward(0,${pt})" style="padding:12px;cursor:pointer;font-size:14px;border:0.5px solid var(--color-border-success);border-radius:var(--border-radius-md);background:var(--color-background-success);color:var(--color-text-success);font-family:var(--font-sans);">
+        <i class="ti ti-check" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"></i>Correct +$${pt}
+      </button>
+      <button onclick="doAward(-1,${pt})" style="padding:12px;cursor:pointer;font-size:14px;border:0.5px solid var(--color-border-danger);border-radius:var(--border-radius-md);background:var(--color-background-danger);color:var(--color-text-danger);font-family:var(--font-sans);">
+        <i class="ti ti-x" aria-hidden="true" style="vertical-align:-1px;margin-right:4px;"></i>Skip
+      </button>
+    </div>`}` : `
+    <button onclick="revealAns()" style="width:100%;padding:12px;font-size:15px;font-weight:500;cursor:pointer;">Reveal Answer</button>`}
+  </div>
+</div>`;
+}
+
+function revealAns() { if (S.timerInterval) { clearInterval(S.timerInterval); S.timerInterval = null; } showModal(true); }
+function closeModal() { if (S.timerInterval) { clearInterval(S.timerInterval); S.timerInterval = null; } document.getElementById('modal-root').innerHTML = ''; }
+function doAward(playerIdx, pts) { if (playerIdx >= 0) S.scores[playerIdx] += pts; const { ci, pi } = S.activeQ; S.answered.add(`${ci}-${pi}`); closeModal(); render(); }
+function doAns(idx) { S.userAnswers[S.currentQ] = idx; render(); }
+function doNext() { if (S.currentQ < S.questions.length - 1) { S.currentQ++; render(); } }
+function doReview() { S.screen = 'written-review'; render(); }
+
+async function doStartWritten() {
+  S.writtenLoading = true; S.questions = []; S.currentQ = 0; S.userAnswers = [];
+  S.screen = 'written-quiz'; render();
+  try {
+    S.questions = await genWritten(S.writtenTopic, S.writtenCount);
+    S.writtenLoading = false; render();
+  } catch (e) {
+    S.writtenLoading = false;
+    alert('Error generating questions: ' + e.message + '\n\nUsing sample questions instead.');
+    // Use sample questions as fallback
+    const sample = [...SAMPLE_WRITTEN_QUESTIONS];
+    while (sample.length < S.writtenCount) {
+      sample.push({...SAMPLE_WRITTEN_QUESTIONS[0], question: `Sample question ${sample.length + 1}?`});
+    }
+    S.questions = sample.slice(0, S.writtenCount);
+    render();
+  }
+}
+
+async function runBoardGen(cats) {
+  S.board = cats.map(cat => ({ category: cat, questions: null }));
+  S.scores = [0, 0, 0]; S.answered = new Set(); S.boardLoading = true;
+  S.screen = 'j-board'; render();
+  let loaded = 0;
+  const upd = () => {
+    loaded++;
+    const el = document.getElementById('lct');
+    const bar = document.getElementById('lbar');
+    if (el) el.textContent = `${loaded} of ${S.board.length} categories ready`;
+    if (bar) bar.style.width = Math.round(loaded / S.board.length * 100) + '%';
+  };
+  await Promise.all(cats.map(async (cat, i) => {
+    try {
+      S.board[i].questions = await genCat(cat);
+    } catch (e) {
+      console.error(`Failed to generate ${cat}:`, e);
+      S.board[i].questions = PTS.map((pt, idx) => ({
+        points: pt,
+        clue: `${cat} — $${pt} question ${idx + 1}: What is the capital of Canada?`,
+        answer: "What is Ottawa?",
+        explanation: "Ottawa is the capital of Canada, located in Ontario along the Ottawa River."
+      }));
+    }
+    upd();
+  }));
+  S.boardLoading = false; render();
+}
+
+async function doStartJ() {
+  const checkboxes = document.querySelectorAll('#app input[type="checkbox"]:checked');
+  const checked = Array.from(checkboxes).map(c => c.value);
+  let cats;
+  if (checked.length >= 6) cats = checked.slice(0, 6);
+  else {
+    const rest = CATS.filter(c => !checked.includes(c)).sort(() => Math.random() - 0.5);
+    cats = [...checked, ...rest].slice(0, 6);
+  }
+  S.lastCats = cats;
+  await runBoardGen(cats);
+}
+
+async function doRegenSame() {
+  if (S.lastCats && S.lastCats.length === 6) await runBoardGen(S.lastCats);
+  else sc('j-setup');
+}
+
+// Initialize
+render();
+</script>
+</body>
+</html>
